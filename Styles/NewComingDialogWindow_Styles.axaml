@@ -1,0 +1,29 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <Border Padding="20">
+      <!-- Add Controls for Previewer Here -->
+    </Border>
+  </Design.PreviewWith>
+
+  <Style Selector="StackPanel#Wrapper">
+    <Setter Property="Background" Value="LightGray"/>
+  </Style>
+
+  <Style Selector="ScrollViewer#TracksScrollViewer">
+    <Setter Property="Margin" Value="20, 10, 0, 0"/>
+    <Setter Property="Background" Value="White"/>
+  </Style>
+
+  <Style Selector="Label">
+    <Setter Property="Margin" Value="20, 10, 0, 0"/>
+  </Style>
+
+  <Style Selector="Button#SaveTrackButton">
+    <Setter Property="Margin" Value="20, 10, 0, 0"/>
+  </Style>
+
+  <Style Selector="TextBlock:pointerover">
+    <Setter Property="Background" Value="LightBlue"/>
+  </Style>
+</Styles>

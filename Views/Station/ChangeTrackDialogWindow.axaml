@@ -1,0 +1,92 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication2.ChangeTrackDialogWindow"
+        Title="ChangeTrackDialogWindow">
+  
+  <StackPanel x:Name="Wrapper" Orientation="Vertical">
+    <StackPanel x:Name="Destination" Orientation="Horizontal">
+      <StackPanel x:Name="ToSation" Orientation="Vertical">
+        <TextBlock Text="В район:"/>
+        <ScrollViewer>
+          <Grid x:Name="Stations" Margin="5">
+            <Grid.ColumnDefinitions>
+              <ColumnDefinition Width="*"/>
+              <ColumnDefinition Width="5*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="0" Grid.Row="0" Grid.Column="0"/>
+            <TextBlock Text="Тобольск" Grid.Row="0" Grid.Column="1"/>
+            <TextBlock Text="1" Grid.Row="1" Grid.Column="0"/>
+            <TextBlock Text="Денисовка" Grid.Row="1" Grid.Column="1"/>
+            <TextBlock Text="2" Grid.Row="2" Grid.Column="0"/>
+            <TextBlock Text="ТСБ Северная" Grid.Row="2" Grid.Column="1"/>
+            <TextBlock Text="3" Grid.Row="3" Grid.Column="0"/>
+            <TextBlock Text="ТСБ Южная" Grid.Row="3" Grid.Column="1"/>
+            <TextBlock Text="4" Grid.Row="4" Grid.Column="0"/>
+            <TextBlock Text="Южная СНЭ" Grid.Row="4" Grid.Column="1"/>
+            <TextBlock Text="5" Grid.Row="5" Grid.Column="0"/>
+            <TextBlock Text="База оборуд." Grid.Row="5" Grid.Column="1"/>
+            <TextBlock Text="6" Grid.Row="6" Grid.Column="0"/>
+            <TextBlock Text="Стройбаза" Grid.Row="6" Grid.Column="1"/>
+            <TextBlock Text="7" Grid.Row="7" Grid.Column="0"/>
+            <TextBlock Text="ТЭЦ" Grid.Row="7" Grid.Column="1"/>
+            <TextBlock Text="8" Grid.Row="8" Grid.Column="0"/>
+            <TextBlock Text="РИП пути 1-8" Grid.Row="8" Grid.Column="1"/>
+            <TextBlock Text="9" Grid.Row="9" Grid.Column="0"/>
+            <TextBlock Text="РИП пути 9-20" Grid.Row="9" Grid.Column="1"/>
+          </Grid>
+        </ScrollViewer>
+      </StackPanel>
+      <StackPanel x:Name="ToTrack" Orientation="Vertical">
+        <TextBlock Text="На путь:"/>
+        <ScrollViewer>
+          <Grid x:Name="Tracks" ColumnDefinitions="*" Margin="5">
+            <Grid.RowDefinitions>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+              <RowDefinition Height="auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="1" Grid.Row="0" Grid.Column="0"/>
+            <TextBlock Text="2" Grid.Row="1" Grid.Column="0"/>
+            <TextBlock Text="3" Grid.Row="2" Grid.Column="0"/>
+            <TextBlock Text="4" Grid.Row="3" Grid.Column="0"/>
+            <TextBlock Text="5" Grid.Row="4" Grid.Column="0"/>
+            <TextBlock Text="6" Grid.Row="5" Grid.Column="0"/>
+            <TextBlock Text="7" Grid.Row="6" Grid.Column="0"/>
+            <TextBlock Text="8" Grid.Row="7" Grid.Column="0"/>
+            <TextBlock Text="22" Grid.Row="8" Grid.Column="0"/>
+          </Grid>
+        </ScrollViewer>
+      </StackPanel>
+    </StackPanel>
+    <StackPanel x:Name="TrackSide" Orientation="Horizontal">
+      <TextBlock Text="Сторона подачи на путь"/>
+      <CheckBox Content="четная" IsChecked="True" Margin="0, 0, 20, 0"/>
+    </StackPanel>
+    <Grid x:Name="Buttons" ColumnDefinitions="*, *, *">
+      <Button Grid.Column="0" Content="Взгляд"/>
+      <Button Grid.Column="1" Content="ОК"/>
+      <Button Grid.Column="2" Content="Отменить"/>
+    </Grid>
+  </StackPanel>
+</Window>

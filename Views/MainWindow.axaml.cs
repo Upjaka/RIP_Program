@@ -22,10 +22,10 @@ namespace AvaloniaApplication2.Views
 
         private async void NewComing_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            //var newComingDialogWindow = new NewComingDialogWindow(this);
-            //newComingDialogWindow.DataContext = this.DataContext;
+            var newComingDialogWindow = new NewComingDialogWindow(this);
+            newComingDialogWindow.DataContext = this.DataContext;
 
-            //await newComingDialogWindow.ShowDialog(this);
+            await newComingDialogWindow.ShowDialog(this);
         }
 
         private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -43,8 +43,8 @@ namespace AvaloniaApplication2.Views
 
         private void ChangeTrack_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            //ChangeTrackWindow changeTrackWindow = new ChangeTrackWindow((MainViewModel)DataContext);
-            //changeTrackWindow.ShowDialog(this);
+            var changeTrackWindow = new ChangeTrackDialogWindow((MainWindowViewModel)DataContext);
+            changeTrackWindow.ShowDialog(this);
         }
     }
 }

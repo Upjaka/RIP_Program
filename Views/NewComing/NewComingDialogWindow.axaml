@@ -1,0 +1,58 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication2.NewComingDialogWindow"
+        Title="Оформить"
+        Width="240" Height="325" CanResize="False">
+
+  <Window.Styles>
+    <StyleInclude Source="/Styles/NewComingDialogWindow_Styles.axaml" />
+  </Window.Styles>
+
+  <StackPanel x:Name="Wrapper" Orientation="Vertical">
+    <Label Content="На путь:"/>
+    <ScrollViewer x:Name="TracksScrollViewer"
+          VerticalScrollBarVisibility="Auto"
+          HorizontalScrollBarVisibility="Disabled"
+          Width="50" Height="200"
+          HorizontalAlignment="Left">
+      <StackPanel>
+        <TextBlock x:Name="Track_1" Text="1" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_2" Text="2" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_3" Text="3" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_4" Text="4" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_5" Text="5" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_6" Text="6" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_7" Text="7" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_8" Text="8" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_9" Text="9" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_10" Text="10" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_11" Text="11" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_12" Text="12" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_13" Text="13" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_14" Text="14" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_15" Text="15" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_16" Text="16" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_17" Text="17" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_18" Text="18" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_19" Text="19" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_20" Text="20" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_21" Text="21" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_22" Text="22" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_23" Text="23" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_24" Text="24" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_25" Text="25" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_26" Text="26" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_27" Text="27" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_28" Text="28" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_29" Text="29" PointerPressed="Track_DoubleTapped"/>
+        <TextBlock x:Name="Track_30" Text="30" PointerPressed="Track_DoubleTapped"/>
+      </StackPanel>
+    </ScrollViewer>
+    <Button x:Name="SaveTrackButton"
+            Content="Сохранить"
+            Click="SaveTrackButton_Click"/>
+  </StackPanel>
+</Window>
