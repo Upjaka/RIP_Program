@@ -1,0 +1,129 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication2.StationStateWindow"
+        Title="Неизвестный район"
+        Width="460" Height="150">
+  
+  <Window.Styles>
+    <StyleInclude Source="/Styles/StationState_Styles.axaml" />
+  </Window.Styles>
+
+  <StackPanel x:Name="Wrapper" Orientation="Vertical" Margin="0">
+    <Grid Classes="Track" ShowGridLines="True">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+        <ColumnDefinition Width="30" />
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="30" />
+        <RowDefinition Height="18" />
+        <RowDefinition Height="30" />
+      </Grid.RowDefinitions>
+
+      <!-- Примеры элементов -->
+      <WrapPanel Classes="GridElement" Grid.Column="0" Grid.Row="0">
+        <TextBlock Text="60"/>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="1" Grid.Row="0">
+        <TextBlock Text="!!" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="2" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="3" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="4" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="5" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="6" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="7" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="8" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="9" Grid.Row="0">
+        <Canvas>
+          <Rectangle/>
+        </Canvas>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="10" Grid.Row="0">
+        <TextBlock Text="!!" />
+      </WrapPanel>
+
+      <WrapPanel Classes="GridElement" Grid.Column="1" Grid.Row="1">
+        <TextBlock Text="_" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="2" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="3" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="4" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="5" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="6" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="7" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="8" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="9" Grid.Row="1">
+        <TextBlock Text="=" />
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="10" Grid.Row="1">
+        <TextBlock Text="_" />
+      </WrapPanel>
+
+      <WrapPanel Classes="GridElement" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2">
+        <TextBlock Text="Путь-0"/>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="5" Grid.ColumnSpan="3" Grid.Row="2">
+        <TextBlock Text="Отметка:0"/>
+      </WrapPanel>
+      <WrapPanel Classes="GridElement" Grid.Column="9" Grid.Row="2">
+        <TextBlock Text="&lt;0"/>
+      </WrapPanel>
+    </Grid>
+  </StackPanel>
+
+</Window>

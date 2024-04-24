@@ -1,4 +1,5 @@
 using Avalonia.Controls;
+using AvaloniaApplication2.ViewModels;
 
 namespace AvaloniaApplication2.Views
 {
@@ -29,9 +30,9 @@ namespace AvaloniaApplication2.Views
 
         private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            //string name = (sender as MenuItem).Header.ToString();
-            //StationStateWindow stateWindow = new StationStateWindow((MainViewModel)this.DataContext, name);
-            //stateWindow.Show();
+            string name = (sender as MenuItem).Header.ToString();
+            StationStateWindow stateWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
+            stateWindow.Show();
         }
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
