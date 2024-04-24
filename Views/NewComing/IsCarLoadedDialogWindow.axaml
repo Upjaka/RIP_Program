@@ -1,0 +1,24 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication2.IsCarLoadedDialogWindow"
+        Title="Наутрный лист"
+        Width="400" Height="150" CanResize="False"
+        WindowStartupLocation="CenterScreen">
+  
+  <StackPanel Orientation="Vertical">
+    <WrapPanel Height="100">
+      <TextBlock Text="Определите комерческое состояние. Вагон груженный?"
+                 HorizontalAlignment="Center" VerticalAlignment="Center" Focusable="False"/>
+    </WrapPanel>
+    <DockPanel Background="LightGray" HorizontalAlignment="Stretch">
+      <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
+                  HorizontalAlignment="Right" Height="50">
+        <Button x:Name="NoButton" Content="Нет" Click="No_Button_Click"/>
+        <Button x:Name="YesButton" Content="Да" Click="Yes_Button_Click"/>
+      </StackPanel>
+    </DockPanel>
+  </StackPanel>
+</Window>

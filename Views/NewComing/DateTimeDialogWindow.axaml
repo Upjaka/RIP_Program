@@ -6,7 +6,7 @@
         x:Class="AvaloniaApplication2.DateTimeDialogWindow"
         Title="Дата и время прихода"
         Width="500" Height="200" CanResize="False"
-        WindowStartupLocation="CenterOwner">
+        WindowStartupLocation="CenterScreen">
   
   <StackPanel Orientation="Vertical" Background="LightGray">
     <Border BorderBrush="White" BorderThickness="1" Margin="50, 20, 50, 20" Padding="20, 20, 20, 20">

@@ -24,8 +24,8 @@ public partial class AddNewCarDialogWindow : Window
         {
             viewModel.CarNumber = CarNumberTextBox.Text;
             CarNumberTextBox.Clear();
-            //IsCarLoadedDialogWindow isCarLoadedDialogWindow = new IsCarLoadedDialogWindow((MainViewModel)this.DataContext);
-            //isCarLoadedDialogWindow.ShowDialog(this);
+            IsCarLoadedDialogWindow isCarLoadedDialogWindow = new IsCarLoadedDialogWindow((MainWindowViewModel)this.DataContext);
+            isCarLoadedDialogWindow.ShowDialog(this);
         }
     }
 
