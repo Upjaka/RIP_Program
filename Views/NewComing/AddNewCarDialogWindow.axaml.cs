@@ -64,7 +64,7 @@ public partial class AddNewCarDialogWindow : Window
 
     private void ConfirmButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        //DateTimeDialogWindow dateTimeDialog = new DateTimeDialogWindow((MainViewModel)DataContext);
-        //dateTimeDialog.ShowDialog(this);
+        DateTimeDialogWindow dateTimeDialog = new DateTimeDialogWindow((MainWindowViewModel)DataContext);
+        dateTimeDialog.ShowDialog(this);
     }
 }
