@@ -1,0 +1,74 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AvaloniaApplication2.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="AvaloniaApplication2.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/avalonia-logo.ico"
+        Title="AvaloniaApplication2">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel/>
+    </Design.DataContext>
+
+  <Window.Styles>
+    <StyleInclude Source="/Styles/MainWindow_Styles.axaml" />
+  </Window.Styles>
+
+  <Grid RowDefinitions="Auto, *, Auto" Classes="Wrapper">
+    <DockPanel Grid.Row="0" VerticalAlignment="Top" Classes="NavMenu">
+      <Menu DockPanel.Dock="Top">
+        <MenuItem Header="Файл">
+          <MenuItem Header="Открыть"/>
+          <MenuItem Header="Сохранить"/>
+          <MenuItem Header="Выйти"/>
+        </MenuItem>
+        <MenuItem Header="Диспетчер">
+          <MenuItem Header="Архив движения"/>
+          <MenuItem Header="Приход в район" Click="NewComing_Click"/>
+          <MenuItem Header="Редактор-путь" Click="TrackEdit_Click"/>
+          <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click"/>
+          <MenuItem Header="Паспорртные данные"/>
+          <MenuItem Header="Натурный лист"/>
+          <MenuItem Header="Натурный лист №2"/>
+          <MenuItem Header="Натурный лист №3"/>
+          <MenuItem Header="Коды брака"/>
+        </MenuItem>
+        <MenuItem Header="Район">
+          <MenuItem Header="Поиск вагона"/>
+          <Separator/>
+          <MenuItem Header="РИП  пути 1-8" Click="OpenStation_Click"/>
+          <MenuItem Header="РИП  пути 9-20" Click="OpenStation_Click"/>
+          <MenuItem Header="Тобольск" Click="OpenStation_Click"/>
+          <MenuItem Header="Денисовка" Click="OpenStation_Click"/>
+        </MenuItem>
+        <MenuItem Header="Окна">
+          <!--  -->
+        </MenuItem>
+        <MenuItem Header="Справка">
+          <MenuItem Header="Просмотр справки"/>
+          <MenuItem Header="О программе"/>
+        </MenuItem>
+      </Menu>
+    </DockPanel>
+
+    <Border Grid.Row="1" Classes="WorkPlace">
+      <StackPanel Orientation="Horizontal">
+
+      </StackPanel>
+    </Border>
+
+    <Border Grid.Row="2" Classes="StatusBar">
+      <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+        <TextBlock>
+          Статус
+        </TextBlock>
+      </StackPanel>
+    </Border>
+  </Grid>
+    
+</Window>
