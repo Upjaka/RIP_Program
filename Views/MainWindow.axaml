@@ -36,7 +36,7 @@
           <MenuItem Header="Натурный лист"/>
           <MenuItem Header="Натурный лист №2"/>
           <MenuItem Header="Натурный лист №3"/>
-          <MenuItem Header="Коды брака"/>
+          <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>
         </MenuItem>
         <MenuItem Header="Район">
           <MenuItem Header="Поиск вагона"/>
@@ -57,7 +57,7 @@
     </DockPanel>
 
     <Border Grid.Row="1" Classes="WorkPlace">
-      <StackPanel Orientation="Horizontal">
+      <StackPanel x:Name="Workplace" Orientation="Horizontal">
 
       </StackPanel>
     </Border>

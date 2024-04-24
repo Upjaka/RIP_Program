@@ -37,6 +37,8 @@ namespace AvaloniaApplication2.Views
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
+            var trackEditing = new TrackEditingDialogWindow((MainWindowViewModel)DataContext);
+            trackEditing.ShowDialog(this);
             //TrackEditWindow trackEditWindow = new TrackEditWindow((MainViewModel)DataContext);
             //trackEditWindow.ShowDialog(this);
         }
@@ -45,6 +47,12 @@ namespace AvaloniaApplication2.Views
         {
             var changeTrackWindow = new ChangeTrackDialogWindow((MainWindowViewModel)DataContext);
             changeTrackWindow.ShowDialog(this);
+        }
+
+        private void DefectCodes_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var defectCodesWindow = new DefectCodesDialogWindow((MainWindowViewModel)DataContext);
+            defectCodesWindow.ShowDialog(this);
         }
     }
 }
