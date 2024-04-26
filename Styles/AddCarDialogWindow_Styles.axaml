@@ -6,11 +6,19 @@
     </Border>
   </Design.PreviewWith>
 
-  <Style Selector="StackPanel#Wrapper">
+  <Style Selector="StackPanel#Root">
     <Setter Property="Background" Value="LightGray"/>
+  </Style>
+
+  <Style Selector="WrapPanel#Wrapper">
+    <Setter Property="Margin" Value="5"/>
   </Style>
 
   <Style Selector="ScrollViewer">
     <Setter Property="Background" Value="White"/>
+  </Style>
+
+  <Style Selector="Grid > Button">
+    <Setter Property="Margin" Value="10, 10, 0, 0"/>
   </Style>
 </Styles>

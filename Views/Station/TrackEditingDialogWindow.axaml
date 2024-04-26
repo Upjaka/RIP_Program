@@ -3,14 +3,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:vm="using:AvaloniaApplication2.ViewModels"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:m="using:AvaloniaApplication2.Models"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.TrackEditingDialogWindow"
         x:DataType="vm:MainWindowViewModel"
-        x:CompileBindings="True"
         Title="Редактор района: ... путь: ..."
         Width="775" Height="375"
-        MinWidth="770" MinHeight="70"
+        MinWidth="770" MinHeight="300"
         WindowStartupLocation="CenterScreen">
 
   <Design.DataContext>
@@ -18,18 +16,18 @@
   </Design.DataContext>
 
   <StackPanel x:Name="Wrapper" Orientation="Horizontal">
-    <Border BorderBrush="Gray" BorderThickness="0, 1, 1, 1">
-      <ScrollViewer>
-        <DataGrid x:Name="TrackGrid" AutoGenerateColumns="False" ItemsSource="{CompiledBinding CarsInfo}">
+    <Border BorderBrush="Gray" BorderThickness="0, 1, 1, 1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
+      <ScrollViewer Height="300">
+        <DataGrid x:Name="TrackGrid" AutoGenerateColumns="False" ItemsSource="{CompiledBinding CarsInfo}" Height="500">
           <DataGrid.Columns>
             <DataGridCheckBoxColumn Header="Отм."/>
-            <DataGridTextColumn Header="№п/п" x:DataType="m:CarInfo" Binding="{CompiledBinding PPNumber}"/>
-            <DataGridTextColumn Header="№вагона" x:DataType="m:CarInfo" Binding="{CompiledBinding CarNumber}"/>
-            <DataGridCheckBoxColumn Header="Испр." x:DataType="m:CarInfo" Binding="{CompiledBinding IsFixed}"/>
-            <DataGridTextColumn Header="Коды брака" x:DataType="m:CarInfo" Binding="{CompiledBinding DefectCodes}"/>
-            <DataGridCheckBoxColumn Header="Загр." x:DataType="m:CarInfo" Binding="{CompiledBinding IsLoaded}"/>
-            <DataGridTextColumn Header="Продукт" x:DataType="m:CarInfo" Binding="{CompiledBinding Product}"/>
-            <DataGridTextColumn Header="Груз" x:DataType="m:CarInfo" Binding="{CompiledBinding Cargo}"/>
+            <DataGridTextColumn Header="№п/п" Binding="{CompiledBinding PPNumber}"/>
+            <DataGridTextColumn Header="№вагона" Binding="{CompiledBinding CarNumber}"/>
+            <DataGridCheckBoxColumn Header="Испр." Binding="{CompiledBinding IsFixed}"/>
+            <DataGridTextColumn Header="Коды брака" Binding="{CompiledBinding DefectCodes}"/>
+            <DataGridCheckBoxColumn Header="Загр." Binding="{CompiledBinding IsLoaded}"/>
+            <DataGridTextColumn Header="Продукт" Binding="{CompiledBinding Product}"/>
+            <DataGridTextColumn Header="Груз" Binding="{CompiledBinding Cargo}"/>
           </DataGrid.Columns>
         </DataGrid>
       </ScrollViewer>

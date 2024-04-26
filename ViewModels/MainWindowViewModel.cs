@@ -8,6 +8,7 @@ namespace AvaloniaApplication2.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        public string Greetings => "Welcome to Avalonia!";
         public string Loaded => "Груж.";
         public string NotLoaded => "Незагруж.";
         public string Station { get; set; }
@@ -16,7 +17,7 @@ namespace AvaloniaApplication2.ViewModels
         public string CarNumber { get; set; }
         public int CarId { get; set; }
         public DateTime ComingDate { get; set; }
-        public ObservableCollection<CarInfo> CarsInfo { get; set; }
+        public ObservableCollection<CarInfo> CarsInfo { get; }
 
         public MainWindowViewModel()
         {

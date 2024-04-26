@@ -11,34 +11,35 @@
     <StyleInclude Source="/Styles/AddCarDialogWindow_Styles.axaml" />
   </Window.Styles>
 
-  <StackPanel x:Name="Wrapper" Orientation="Horizontal">
-    <StackPanel Orientation="Vertical" Width="300">
-      <Grid ColumnDefinitions="100, 100, 100">
-        <TextBlock Text="№вагона" Grid.Row="0" Grid.Column="0"/>
-        <TextBlock Text="№п/п" Grid.Row="0" Grid.Column="1"/>
-        <TextBlock Text="Загрузка" Grid.Row="0" Grid.Column="2"/>
-      </Grid>
-      <ScrollViewer Width="300" Height="300">
-        <Grid x:Name="CarGrid" ColumnDefinitions="*, *, *">
-
+  <StackPanel x:Name="Root" Orientation="Horizontal">
+    <WrapPanel x:Name="Wrapper">
+      <StackPanel Orientation="Vertical" Width="300">
+        <Grid ColumnDefinitions="100, 100, 100" Margin="0, 0, 0, 5">
+          <TextBlock Text="№вагона" Grid.Row="0" Grid.Column="0"/>
+          <TextBlock Text="№п/п" Grid.Row="0" Grid.Column="1"/>
+          <TextBlock Text="Загрузка" Grid.Row="0" Grid.Column="2"/>
         </Grid>
-      </ScrollViewer>
-    </StackPanel>
-    <StackPanel Orientation="Vertical" Width="200">
-      <StackPanel Orientation="Horizontal">
-        <TextBlock Text="Режим ввода данных"/>
-        <StackPanel Orientation="Vertical">
-          <RadioButton Content="Добавить" GroupName="RadioButtonGroup" IsChecked="True"/>
-          <RadioButton Content="Вставить" GroupName="RadioButtonGroup"/>
-        </StackPanel>
+        <ScrollViewer Width="300" Height="300">
+          <Grid x:Name="CarGrid" ColumnDefinitions="*, *, *">
+          </Grid>
+        </ScrollViewer>
       </StackPanel>
-      <Grid RowDefinitions="auto, auto, auto, auto" ColumnDefinitions="auto, auto">
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="№вагона"/>
-        <TextBox x:Name="CarNumberTextBox" Grid.Row="0" Grid.Column="1" Width="100" KeyDown="TextBox_KeyDown"/>
-        <Button Grid.Row="1" Grid.Column="1" Content="Диск А:" Width="100"/>
-        <Button Grid.Row="2" Grid.Column="1" Content="Оформить" Width="100" Click="ConfirmButton_Click"/>
-        <Button Grid.Row="3" Grid.Column="1" Content="Отменить" Width="100" Click="CancelButton_Click"/>
-      </Grid>
-    </StackPanel>
+      <StackPanel Orientation="Vertical" Width="200" Margin="20, 15, 5, 5">
+        <StackPanel Orientation="Horizontal">
+          <TextBlock Text="Режим ввода данных"/>
+          <StackPanel Orientation="Vertical" Margin="10, 0, 0, 0">
+            <RadioButton Content="Добавить" GroupName="RadioButtonGroup" IsChecked="True"/>
+            <RadioButton Content="Вставить" GroupName="RadioButtonGroup"/>
+          </StackPanel>
+        </StackPanel>
+        <Grid RowDefinitions="auto, auto, auto, auto" ColumnDefinitions="auto, auto" Margin="0, 20, 0, 0">
+          <TextBlock Grid.Row="0" Grid.Column="0" Text="№вагона"/>
+          <TextBox x:Name="CarNumberTextBox" Grid.Row="0" Grid.Column="1" Width="120" KeyDown="TextBox_KeyDown"/>
+          <Button Grid.Row="1" Grid.Column="1" Content="Диск А:" Width="100"/>
+          <Button Grid.Row="2" Grid.Column="1" Content="Оформить" Width="100" Click="ConfirmButton_Click"/>
+          <Button Grid.Row="3" Grid.Column="1" Content="Отменить" Width="100" Click="CancelButton_Click"/>
+        </Grid>
+      </StackPanel>
+    </WrapPanel>
   </StackPanel>
 </Window>

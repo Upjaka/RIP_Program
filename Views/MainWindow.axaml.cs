@@ -31,6 +31,7 @@ namespace AvaloniaApplication2.Views
         private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             string name = (sender as MenuItem).Header.ToString();
+            var stationWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
             StationStateWindow stateWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
             stateWindow.Show();
         }
@@ -39,8 +40,6 @@ namespace AvaloniaApplication2.Views
         {
             var trackEditing = new TrackEditingDialogWindow((MainWindowViewModel)DataContext);
             trackEditing.ShowDialog(this);
-            //TrackEditWindow trackEditWindow = new TrackEditWindow((MainViewModel)DataContext);
-            //trackEditWindow.ShowDialog(this);
         }
 
         private void ChangeTrack_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

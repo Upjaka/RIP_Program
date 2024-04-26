@@ -26,5 +26,10 @@ namespace AvaloniaApplication2.Models
             Product = product;
             Cargo = cargo;
         }
+
+        public override string ToString()
+        {
+            return "№п/п " + PPNumber + ", №вагона " + CarNumber + ", коды брака " + DefectCodes + ", продукт " + Product + ", груз " + Cargo;
+        }
     }
 }

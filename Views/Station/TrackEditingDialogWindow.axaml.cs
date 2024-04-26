@@ -14,6 +14,7 @@ public partial class TrackEditingDialogWindow : Window
 
     public TrackEditingDialogWindow(MainWindowViewModel dataContext)
     {
+        DataContext = new MainWindowViewModel();
         InitializeComponent();
         Debug.WriteLine(dataContext.CarsInfo);
         Title = "Редактор района: " + dataContext.Station + " путь: " + dataContext.TrackNumber;

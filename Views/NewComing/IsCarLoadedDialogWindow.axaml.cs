@@ -7,6 +7,8 @@ namespace AvaloniaApplication2;
 
 public partial class IsCarLoadedDialogWindow : Window
 {
+    public IsCarLoadedDialogWindow() { InitializeComponent(); }
+
     public IsCarLoadedDialogWindow(MainWindowViewModel dataContext)
     {
         InitializeComponent();
