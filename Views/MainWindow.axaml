@@ -58,18 +58,7 @@
 
     <Border Grid.Row="1" Classes="WorkPlace">
       <StackPanel x:Name="Workplace" Orientation="Horizontal">
-        <DataGrid x:Name="TrackGrid" AutoGenerateColumns="False" ItemsSource="{CompiledBinding CarsInfo}">
-          <DataGrid.Columns>
-            <DataGridCheckBoxColumn Header="Отм."/>
-            <DataGridTextColumn Header="№п/п" Binding="{CompiledBinding PPNumber}"/>
-            <DataGridTextColumn Header="№вагона" Binding="{CompiledBinding CarNumber}"/>
-            <DataGridCheckBoxColumn Header="Испр." Binding="{CompiledBinding IsFixed}"/>
-            <DataGridTextColumn Header="Коды брака" Binding="{CompiledBinding DefectCodes}"/>
-            <DataGridCheckBoxColumn Header="Загр." Binding="{CompiledBinding IsLoaded}"/>
-            <DataGridTextColumn Header="Продукт" Binding="{CompiledBinding Product}"/>
-            <DataGridTextColumn Header="Груз" Binding="{CompiledBinding Cargo}"/>
-          </DataGrid.Columns>
-        </DataGrid>
+        
       </StackPanel>
     </Border>
 

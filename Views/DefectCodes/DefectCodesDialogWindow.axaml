@@ -1,13 +1,19 @@
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:AvaloniaApplication2.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.DefectCodesDialogWindow"
+        x:DataType="vm:MainWindowViewModel"
         Title="Коды брака"
-        Width="250" Height="400"
-        MinWidth="200"
+        Width="660" Height="600"
+        MinWidth="400" MinHeight="65"
         WindowStartupLocation="CenterScreen">
+
+  <Design.DataContext>
+    <vm:MainWindowViewModel/>
+  </Design.DataContext>
 
   <Window.Styles>
     <Style Selector="Grid > TextBlock">
@@ -15,20 +21,18 @@
     </Style>
   </Window.Styles>
   
-  <StackPanel x:Name="Wrapper">
-    <ScrollViewer Width="200" Height="200" Margin="5" HorizontalAlignment="Left">
-      <Grid ColumnDefinitions="auto, *" RowDefinitions="auto, auto, auto">
-        <TextBlock Grid.Row="0" Grid.Column="0" Text="19"/>
-        <TextBlock Grid.Row="0" Grid.Column="1" Text="Просрочек ВО и ГИ"/>
-        <TextBlock Grid.Row="1" Grid.Column="0" Text="82"/>
-        <TextBlock Grid.Row="1" Grid.Column="1" Text="Наливать бытовой газ!"/>
-        <TextBlock Grid.Row="2" Grid.Column="0" Text="83"/>
-        <TextBlock Grid.Row="2" Grid.Column="1" Text="Профремонт"/>
-
-        <Border BorderBrush="Black" BorderThickness="1, 0, 0, 0" Grid.Row="0" Grid.Column="1"/>
-        <Border BorderBrush="Black" BorderThickness="1, 0, 0, 0" Grid.Row="1" Grid.Column="1"/>
-        <Border BorderBrush="Black" BorderThickness="1, 0, 0, 0" Grid.Row="2" Grid.Column="1"/>
-      </Grid>
-    </ScrollViewer>
+  <StackPanel x:Name="Wrapper" Height="600" VerticalAlignment="Top">
+    <DataGrid x:Name="DefectCodesGrid" AutoGenerateColumns="False"
+              Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}"
+              Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Window}}"
+              ItemsSource="{CompiledBinding DefectCodes}" CanUserResizeColumns="True"
+              VerticalAlignment="Stretch" IsReadOnly="True">
+      <DataGrid.Columns>
+        <DataGridTextColumn Header="Код" Binding="{CompiledBinding Code}"/>
+        <DataGridTextColumn Header="Название" Binding="{CompiledBinding FullName}"/>
+        <DataGridTextColumn Header="Сокращенное" Binding="{CompiledBinding ShortName}"/>
+        <DataGridCheckBoxColumn Header="Налив" Binding="{CompiledBinding IsPouring}" Width="*"/>
+      </DataGrid.Columns>
+    </DataGrid>
   </StackPanel>
 </Window>

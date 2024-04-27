@@ -11,6 +11,12 @@
   <ItemGroup>
     <AvaloniaResource Include="Assets\**" />
   </ItemGroup>
+  
+  <ItemGroup>
+  <Reference Include="System.Data">
+    <HintPath>путь_к_распакованному_пакету\System.Data.dll</HintPath>
+  </Reference>
+</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="11.0.10" />
@@ -20,6 +26,5 @@
     <!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
     <PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.10" />
     <PackageReference Include="Avalonia.ReactiveUI" Version="11.0.10" />
-    <PackageReference Include="System.Data.OleDb" Version="8.0.0" />
   </ItemGroup>
 </Project>

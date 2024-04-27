@@ -5,8 +5,6 @@ namespace AvaloniaApplication2.Views
 {
     public partial class MainWindow : Window
     {
-        private string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\путь_к_вашей_базе_данных.accdb";
-
         public string receivedButtonContent { get; set; }
 
         public MainWindow()
