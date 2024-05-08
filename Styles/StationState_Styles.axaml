@@ -11,7 +11,7 @@
   </Style>
 
   <Style Selector="Canvas">
-    <Setter Property="Background" Value="White"/>
+    <Setter Property="Background" Value="{Binding Background, RelativeSource={RelativeSource AncestorType=Grid}}"/>
     <Setter Property="Width" Value="30"/>
     <Setter Property="Height" Value="30"/>
   </Style>

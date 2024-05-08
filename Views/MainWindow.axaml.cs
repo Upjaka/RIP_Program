@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using AvaloniaApplication2.ViewModels;
+using AvaloniaApplication2.CustomControls;
 
 namespace AvaloniaApplication2.Views
 {
@@ -29,9 +30,14 @@ namespace AvaloniaApplication2.Views
         private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             string name = (sender as MenuItem).Header.ToString();
+            var stationControl = new StationControl(this, name);
+            Workplace.Children.Add(stationControl);
+            /**
+            string name = (sender as MenuItem).Header.ToString();
             var stationWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
             StationStateWindow stateWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
             stateWindow.Show();
+            */
         }
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -50,6 +56,11 @@ namespace AvaloniaApplication2.Views
         {
             var defectCodesWindow = new DefectCodesDialogWindow((MainWindowViewModel)DataContext);
             defectCodesWindow.ShowDialog(this);
+        }
+
+        public void CloseStationControl(StationControl stationControl)
+        {
+            Workplace.Children.Remove(stationControl);
         }
     }
 }

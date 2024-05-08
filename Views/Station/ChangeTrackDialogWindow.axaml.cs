@@ -12,7 +12,6 @@ public partial class ChangeTrackDialogWindow : Window
     {
         InitializeComponent();
         DataContext = dataContext;
-        Title = "Change Track";
     }
 
     private void OkButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)

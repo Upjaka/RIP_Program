@@ -28,10 +28,10 @@
               ItemsSource="{CompiledBinding DefectCodes}" CanUserResizeColumns="True"
               VerticalAlignment="Stretch" IsReadOnly="True">
       <DataGrid.Columns>
-        <DataGridTextColumn Header="Код" Binding="{CompiledBinding Code}"/>
-        <DataGridTextColumn Header="Название" Binding="{CompiledBinding FullName}"/>
-        <DataGridTextColumn Header="Сокращенное" Binding="{CompiledBinding ShortName}"/>
-        <DataGridCheckBoxColumn Header="Налив" Binding="{CompiledBinding IsPouring}" Width="*"/>
+        <DataGridTextColumn Header="Код" Binding="{CompiledBinding Code}" Width="4*"/>
+        <DataGridTextColumn Header="Название" Binding="{CompiledBinding FullName}" Width="19*"/>
+        <DataGridTextColumn Header="Сокращенное" Binding="{CompiledBinding ShortName}" Width="9*"/>
+        <DataGridCheckBoxColumn Header="Налив" Binding="{CompiledBinding IsPouring}" Width="5*"/>
       </DataGrid.Columns>
     </DataGrid>
   </StackPanel>

@@ -4,14 +4,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.ChangeTrackDialogWindow"
-        Title="ChangeTrackDialogWindow"
-        Width="290" Height="280" CanResize="False">
+        Title="Переместить из: ... пути ..."
+        Width="325" Height="300" CanResize="False">
   
   <StackPanel x:Name="Wrapper" Orientation="Vertical" Background="LightGray">
-    <StackPanel x:Name="Destination" Orientation="Horizontal" Margin="5">
+    <StackPanel x:Name="Destination" Orientation="Horizontal" Margin="10">
       <StackPanel x:Name="ToSation" Orientation="Vertical">
         <TextBlock Text="В район:"/>
-        <ScrollViewer Background="White" Margin="5, 0, 0, 0" Width="150" Height="160">
+        <ScrollViewer Background="White" Margin="10, 0, 0, 0" Width="150" Height="160">
           <Grid x:Name="Stations" Margin="5">
             <Grid.ColumnDefinitions>
               <ColumnDefinition Width="*"/>
@@ -52,7 +52,7 @@
           </Grid>
         </ScrollViewer>
       </StackPanel>
-      <StackPanel x:Name="ToTrack" Orientation="Vertical" Margin="45, 0, 0, 0">
+      <StackPanel x:Name="ToTrack" Orientation="Vertical" Margin="60, 0, 0, 0">
         <TextBlock Text="На путь:"/>
         <ScrollViewer Background="White"  Margin="5, 0, 0, 0" Width="42" Height="160">
           <Grid x:Name="Tracks" ColumnDefinitions="*" Margin="5">
@@ -80,11 +80,11 @@
         </ScrollViewer>
       </StackPanel>
     </StackPanel>
-    <StackPanel x:Name="TrackSide" Orientation="Horizontal" Margin="5, 5, 5, 5">
+    <StackPanel x:Name="TrackSide" Orientation="Horizontal" Margin="10, 10, 5, 5">
       <TextBlock Text="Сторона подачи на путь" VerticalAlignment="Center"/>
       <CheckBox Content="четная" IsChecked="True" Margin="10, 0, 0, 0"/>
     </StackPanel>
-    <Grid x:Name="Buttons" ColumnDefinitions="*, *, *" Margin="10, 0, 0, 0">
+    <Grid x:Name="Buttons" ColumnDefinitions="*, *, *" Margin="10, 10, 0, 0">
       <Button Grid.Column="0" Content="Взгляд"/>
       <Button Grid.Column="1" Content="ОК" Click="OkButton_Click" Margin="15, 0, 0, 0"/>
       <Button Grid.Column="2" Content="Отменить" Click="CancelButton_Click"/>

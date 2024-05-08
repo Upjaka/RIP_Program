@@ -3,11 +3,11 @@
         xmlns:vm="using:AvaloniaApplication2.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
-        Title="AvaloniaApplication2">
+        Title="РИП-2.0">
 
     <Design.DataContext>
         <!-- This only sets the DataContext for the previewer in an IDE,
@@ -57,9 +57,9 @@
     </DockPanel>
 
     <Border Grid.Row="1" Classes="WorkPlace">
-      <StackPanel x:Name="Workplace" Orientation="Horizontal">
+      <WrapPanel x:Name="Workplace">
         
-      </StackPanel>
+      </WrapPanel>
     </Border>
 
     <Border Grid.Row="2" Classes="StatusBar">
