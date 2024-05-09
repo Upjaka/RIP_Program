@@ -5,19 +5,19 @@
              xmlns:controls="clr-namespace:AvaloniaApplication2.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaApplication2.CustomControls.StationControl">
-  
-  <Border BorderBrush="Black" BorderThickness="1" Width="390" Height="430">
-    <StackPanel Orientation="Vertical">
-      <DockPanel Height="27">
-        <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>
-        <Button FontSize="12" Margin="1" Click="CloseButton_Click" HorizontalAlignment="Right">X</Button>
-      </DockPanel>
-      <controls:TrackControl Margin="10, 5, 0, 5"/>
-      <controls:TrackControl Margin="10, 5, 0, 5"/>
-      <controls:TrackControl Margin="10, 5, 0, 5"/>
-      <controls:TrackControl Margin="10, 5, 0, 5"/>
-      <controls:TrackControl Margin="10, 5, 0, 5"/>
-    </StackPanel>  
+
+  <Border x:Name="Wrapper" BorderBrush="Black" BorderThickness="1" Width="800">
+      <StackPanel Orientation="Vertical" MaxWidth="{Binding Width, RelativeSource={RelativeSource AncestorType=Border}}">
+        <DockPanel x:Name="ControlPanel" Height="27">
+          <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>
+          <Button FontSize="12" Margin="1" Click="CloseButton_Click" HorizontalAlignment="Right">X</Button>
+        </DockPanel>
+        <Border x:Name="TracksBorder" Width="{Binding Width, ElementName=Wrapper}">
+          <ScrollViewer HorizontalScrollBarVisibility="Visible" Height="{Binding Height, ElementName=TracksBorder}">
+            <StackPanel x:Name="TracksPanel" Orientation="Vertical"/>
+          </ScrollViewer>
+        </Border>
+      </StackPanel>
   </Border>
   
 </UserControl>

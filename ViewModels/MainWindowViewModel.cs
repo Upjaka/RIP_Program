@@ -23,6 +23,7 @@ namespace AvaloniaApplication2.ViewModels
         public ObservableCollection<CarInfo> CarsInfo { get; }
         public ObservableCollection<DefectCode> DefectCodes { get; }
         public List<Station> Stations { get; } = new List<Station>();
+        public Track ?SelectedTrack { get; set; } = null;
     
         public MainWindowViewModel()
         {
@@ -130,11 +131,13 @@ namespace AvaloniaApplication2.ViewModels
                             {
                                 string carNumber = carReader.GetString(carReader.GetOrdinal("CarNumber"));
                                 int serialNumber = carReader.GetInt32(carReader.GetOrdinal("SerialNumber"));
+                                bool isFixed = carReader.GetBoolean(carReader.GetOrdinal("IsFixed"));
                                 string product = carReader.GetString(carReader.GetOrdinal("Product"));
+                                bool isLoaded = carReader.GetBoolean(carReader.GetOrdinal("IsLoaded"));
                                 string defectCodes = carReader.GetString(carReader.GetOrdinal("DefectCodes"));
                                 string cargo = carReader.GetString(carReader.GetOrdinal("Cargo"));
                                 DateTime arrival = carReader.GetDateTime(carReader.GetOrdinal("Arrival"));
-                                Car car = new Car(carNumber, serialNumber, product, defectCodes, cargo, arrival);
+                                Car car = new Car(carNumber, serialNumber, isFixed, defectCodes, isLoaded, product, cargo, arrival);
                                 track.AddCar(car);
                             }
                         }
@@ -145,6 +148,78 @@ namespace AvaloniaApplication2.ViewModels
                 {
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
+            }
+        }
+
+        public Station GetStationByName(string stationName) 
+        {
+            foreach (Station station in Stations) 
+            { 
+                if (station.StationName == stationName) return station;
+            }
+            return null;
+        }
+
+        public int GetTrackIdByNumber(int n)
+        {
+            foreach (Station station in Stations)
+            {
+                foreach (Track track in station.Tracks)
+                {
+                    if (track.TrackNumber == n) return track.TrackId;
+                }
+            }
+            return 0;
+        }
+
+        public void AddCarsToDatabase()
+        {
+            try
+            {
+                string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
+
+                var insertQueryString = "INSERT INTO CARS (CarNumber, SerialNumber, IsFixed, DefectCodes, IsLoaded, Product, Cargo, Arrival, TrackID) VALUES (@CarNumber, @SerialNumber, @IsFixed, @DefectCodes, @IsLoaded, @Product, @Cargo, @Arrival, @TrackID)";
+
+                using (OleDbConnection connection = new OleDbConnection(connectionString))
+                {
+                    connection.Open();
+
+                    for (int i = 0; i < 8; i++)
+                    {
+
+                        using (OleDbCommand command = new OleDbCommand(insertQueryString, connection))
+                        {
+                            // Задание значений параметров
+                            command.Parameters.AddWithValue("@CarNumber", "11111");
+                            command.Parameters.Add("@SerialNumber", OleDbType.Integer).Value = i + 1;
+                            command.Parameters.Add("@IsFixed", OleDbType.Boolean).Value = true;
+                            command.Parameters.AddWithValue("@DefectCodes", "1");
+                            command.Parameters.Add("@IsLoaded", OleDbType.Boolean).Value = false; 
+                            command.Parameters.AddWithValue("@Product", "1");
+                            command.Parameters.AddWithValue("@Cargo", "1");
+                            command.Parameters.Add("@Arrival", OleDbType.DBDate).Value = DateTime.Now;
+                            command.Parameters.Add("@TrackID", OleDbType.Integer).Value = 31;
+
+                            // Выполнение запроса
+                            int rowsAffected = command.ExecuteNonQuery();
+
+                            // Проверка на количество затронутых строк (обычно 1)
+                            if (rowsAffected > 0)
+                            {
+                                Console.WriteLine("Запись успешно добавлена в базу данных.");
+                            }
+                            else
+                            {
+                                Console.WriteLine("Ошибка при добавлении записи в базу данных.");
+                            }
+                        }
+                    }
+
+                }
+            }                   
+            catch (OleDbException ex)
+            {
+                Debug.WriteLine("Error connecting to the database: " + ex.Message);
             }
         }
     }

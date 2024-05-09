@@ -2,91 +2,59 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:controls="clr-namespace:AvaloniaApplication2.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaApplication2.CustomControls.TrackControl">
-
+  
   <UserControl.Styles>
-    <Style Selector="Button">
-      <Setter Property="Background" Value="LightBlue"/>
+    <Style Selector="Border#BorderWrapper">
+      <Setter Property="Background" Value="LightGray"/>
+      <Setter Property="BorderBrush" Value="Black"/>
+      <Setter Property="CornerRadius" Value="5"/>
     </Style>
-    <Style Selector="WrapPanel.GridElement">
-      <Setter Property="HorizontalAlignment" Value="Center"/>
-      <Setter Property="VerticalAlignment" Value="Center"/>
+    <Style Selector="StackPanel.TrackInfoComponent">
+      <Setter Property="Margin" Value="10, 0, 10, 0"/>
+    </Style>
+    <Style Selector="Rectangle.Fixed">
+      <Setter Property="Fill" Value="Black"/>
+    </Style>
+    <Style Selector="Rectangle.Fixed.Loaded">
+      <Setter Property="Fill" Value="Blue"/>
     </Style>
   </UserControl.Styles>
 
-  <Grid Classes="Track" Background="LightGray" Width="355">
-    <Grid.ColumnDefinitions>
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-      <ColumnDefinition Width="30" />
-    </Grid.ColumnDefinitions>
-    <Grid.RowDefinitions>
-      <RowDefinition Height="30" />
-      <RowDefinition Height="18" />
-      <RowDefinition Height="20" />
-    </Grid.RowDefinitions>
-
-    <!-- Примеры элементов -->
-    <WrapPanel x:Name="TrackGrid" Classes="GridElement" Grid.Column="0" Grid.Row="0">
-      <TextBlock Text="60"/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="1" Grid.Row="0">
-      <TextBlock Text="!!" />
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="2" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="3" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="4" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="5" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="6" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="7" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="8" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="9" Grid.Row="0">
-      <controls:CarControl/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="10" Grid.Row="0">
-      <TextBlock Text="!!" />
-    </WrapPanel>
-
-    <Canvas Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="10"
-            Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Grid}}"
-            Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Grid}}">
-      <Line StartPoint="15,7" EndPoint="325,7" Stroke="Black" StrokeThickness="1" />
-      <Line StartPoint="5,11" EndPoint="335,11" Stroke="Black" StrokeThickness="1" />
-    </Canvas>
-
-    <WrapPanel Classes="GridElement" Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="2">
-      <TextBlock Text="Путь-0"/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="5" Grid.ColumnSpan="3" Grid.Row="2">
-      <TextBlock Text="Отметка:0"/>
-    </WrapPanel>
-    <WrapPanel Classes="GridElement" Grid.Column="9" Grid.Row="2">
-      <TextBlock Text="&lt;0"/>
-    </WrapPanel>
-  </Grid>
-
+  <Border x:Name="BorderWrapper" PointerPressed="Track_PointerPressed">
+    <StackPanel x:Name="Wrapper" Orientation="Vertical" Width="410" MinWidth="230"
+                PointerEntered="Track_PointerEntered"
+                PointerExited="Track_PointerExited">
+      <StackPanel x:Name="TrackImage" Orientation="Vertical">
+        <StackPanel x:Name="TrackImageTop" Orientation="Horizontal" Height="30">
+          <Border BorderBrush="Black" Width="40"/>
+          <Border BorderThickness="0,0,0,2" BorderBrush="Black" Margin="0,0,0,3">
+            <Grid x:Name="TrackGrid"/>
+          </Border>
+          <Border BorderBrush="Black" Width="40"/>
+        </StackPanel>
+        <StackPanel x:Name="TrackImageBottom" Height="5">
+          <Line x:Name="BottomLine"
+                StartPoint="20,1"
+                EndPoint="220, 1"
+                Stroke="Black" StrokeThickness="1"/>
+        </StackPanel>
+      </StackPanel>
+      <StackPanel x:Name="TrackInfo" Orientation="Horizontal" HorizontalAlignment="Left">
+        <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal" Margin="30, 0, 10, 0">
+          <TextBlock Text="Путь-"/>
+          <TextBlock x:Name="TrackNumberTextBlock" Text="0"/>
+        </StackPanel>
+        <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal">
+          <TextBlock Text="Отметка:"/>
+          <TextBlock x:Name="MarkedCarsCountTextBlock" Text="0"/>
+        </StackPanel>
+        <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal">
+          <TextBlock Text="&lt;"/>
+          <TextBlock x:Name="CarsCountTextBlock" Text="0"/>
+        </StackPanel>
+      </StackPanel>
+    </StackPanel>
+  </Border>
 </UserControl>

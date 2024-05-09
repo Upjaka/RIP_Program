@@ -26,4 +26,10 @@
   <ItemGroup>
     <Folder Include="Views\CustomControls\" />
   </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="CustomControls\TrackControl.axaml.cs">
+      <DependentUpon>TrackControl.axaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>

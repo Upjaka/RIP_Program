@@ -5,8 +5,19 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaApplication2.CustomControls.CarControl">
 
-  <Canvas Width="30" Height="30" Background="LightGray">
-    <Rectangle Width="26" Height="16" Fill="Black"
-               Canvas.Top="7" Canvas.Left="2"/>
-  </Canvas>
+  <UserControl.Styles>
+    <Style Selector="Rectangle#CarRectangle.Empty">
+      <Setter Property="Fill" Value="Red"/>
+    </Style>
+    <Style Selector="Rectangle#CarRectangle.Fixed">
+      <Setter Property="Fill" Value="Black"/>
+    </Style>
+    <Style Selector="Rectangle#CarRectangle.Fixed.Loaded">
+      <Setter Property="Fill" Value="Blue"/>
+    </Style>
+  </UserControl.Styles>
+
+  <Rectangle x:Name="CarRectangle" Classes="Empty"
+             Width="7" Height="16"
+             Margin="0, 0, 1, 0"/>
 </UserControl>

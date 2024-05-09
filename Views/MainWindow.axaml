@@ -41,8 +41,8 @@
         <MenuItem Header="Район">
           <MenuItem Header="Поиск вагона"/>
           <Separator/>
-          <MenuItem Header="РИП  пути 1-8" Click="OpenStation_Click"/>
-          <MenuItem Header="РИП  пути 9-20" Click="OpenStation_Click"/>
+          <MenuItem Header="РИП пути 1-8" Click="OpenStation_Click"/>
+          <MenuItem Header="РИП пути 9-20" Click="OpenStation_Click"/>
           <MenuItem Header="Тобольск" Click="OpenStation_Click"/>
           <MenuItem Header="Денисовка" Click="OpenStation_Click"/>
         </MenuItem>
@@ -57,9 +57,11 @@
     </DockPanel>
 
     <Border Grid.Row="1" Classes="WorkPlace">
-      <WrapPanel x:Name="Workplace">
-        
-      </WrapPanel>
+      <ScrollViewer>
+        <WrapPanel x:Name="Workplace">
+
+        </WrapPanel>
+      </ScrollViewer>
     </Border>
 
     <Border Grid.Row="2" Classes="StatusBar">
