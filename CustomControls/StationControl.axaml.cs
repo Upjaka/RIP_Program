@@ -28,7 +28,7 @@ public partial class StationControl : UserControl
         station = dataContext.GetStationByName(stationName);
         foreach (Track track in station.Tracks) 
         {
-            var trackControl = new TrackControl(track, dataContext);
+            var trackControl = new TrackControl(track, this);
             trackControl.Margin = new Thickness(10, 5, 0, 5);
             trackControl.HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
             trackControl.ZIndex = 0;
@@ -40,5 +40,31 @@ public partial class StationControl : UserControl
     private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         parent.CloseStationControl(this);
+    }
+
+    public void SelectTrack(Track track) 
+    {
+        ((MainWindowViewModel)DataContext).SelectedStation = station;
+
+        ((MainWindowViewModel)DataContext).SelectedTrack = track;
+
+        foreach (TrackControl trackControl in TracksPanel.Children) 
+        {
+            if (trackControl.Track != track) 
+            {
+                trackControl.MakeUnselected();
+            }
+        }
+    }
+
+    public void UpdateTrack(Track track)
+    {
+        foreach (TrackControl trackControl in TracksPanel.Children)
+        {
+            if (trackControl.Track == track)
+            {
+                trackControl.UpdateTrack();
+            }
+        }
     }
 }

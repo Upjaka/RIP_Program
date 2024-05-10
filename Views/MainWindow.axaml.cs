@@ -32,17 +32,12 @@ namespace AvaloniaApplication2.Views
             string name = (sender as MenuItem).Header.ToString();
             var stationControl = new StationControl(this, name);
             Workplace.Children.Add(stationControl);
-            /**
-            string name = (sender as MenuItem).Header.ToString();
-            var stationWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
-            StationStateWindow stateWindow = new StationStateWindow((MainWindowViewModel)this.DataContext, name);
-            stateWindow.Show();
-            */
         }
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var trackEditing = new TrackEditingDialogWindow((MainWindowViewModel)DataContext);
+            ((MainWindowViewModel)DataContext).UpdateCarsInfo();
+            var trackEditing = new TrackEditingDialogWindow(this, (MainWindowViewModel)DataContext);
             trackEditing.ShowDialog(this);
         }
 
@@ -61,6 +56,18 @@ namespace AvaloniaApplication2.Views
         public void CloseStationControl(StationControl stationControl)
         {
             Workplace.Children.Remove(stationControl);
+        }
+
+        public void UpdateSelectedTrack()
+        {
+            MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+            foreach (StationControl stationControl in Workplace.Children)
+            {
+                if (stationControl.StationName.Text == viewModel.SelectedStation.StationName)
+                {
+                    stationControl.UpdateTrack(viewModel.SelectedTrack);
+                }
+            }
         }
     }
 }

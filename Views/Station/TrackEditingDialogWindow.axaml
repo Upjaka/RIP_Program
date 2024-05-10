@@ -18,17 +18,17 @@
   <StackPanel x:Name="Wrapper" Orientation="Horizontal">
     <Border BorderBrush="Gray" BorderThickness="0, 1, 1, 1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
       <ScrollViewer Height="300">
-        <DataGrid x:Name="TrackGrid" ItemsSource="{CompiledBinding CarsInfo}"
+        <DataGrid x:Name="TrackGrid" ItemsSource="{Binding CarsInfo}"
                   AutoGenerateColumns="False" Height="500" IsReadOnly="False">
           <DataGrid.Columns>
             <DataGridCheckBoxColumn Header="Отм."/>
-            <DataGridTextColumn Header="№п/п" Binding="{CompiledBinding PPNumber}"/>
-            <DataGridTextColumn Header="№вагона" Binding="{CompiledBinding CarNumber}"/>
-            <DataGridCheckBoxColumn Header="Испр." Binding="{CompiledBinding IsFixed}"/>
-            <DataGridTextColumn Header="Коды брака" Binding="{CompiledBinding DefectCodes}"/>
-            <DataGridCheckBoxColumn Header="Загр." Binding="{CompiledBinding IsLoaded}"/>
-            <DataGridTextColumn Header="Продукт" Binding="{CompiledBinding Product}"/>
-            <DataGridTextColumn Header="Груз" Binding="{CompiledBinding Cargo}"/>
+            <DataGridTextColumn Header="№п/п" IsReadOnly="True" Binding="{Binding SerialNumber}"/>
+            <DataGridTextColumn Header="№вагона" IsReadOnly="True" Binding="{Binding CarNumber}"/>
+            <DataGridCheckBoxColumn Header="Испр." Binding="{Binding IsFixed}"/>
+            <DataGridTextColumn Header="Коды брака" Binding="{Binding DefectCodes}"/>
+            <DataGridCheckBoxColumn Header="Загр." Binding="{Binding IsLoaded}"/>
+            <DataGridTextColumn Header="Продукт" Binding="{Binding Product}"/>
+            <DataGridTextColumn Header="Груз" Binding="{Binding Cargo}"/>
           </DataGrid.Columns>
         </DataGrid>
       </ScrollViewer>

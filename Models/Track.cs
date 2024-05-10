@@ -20,6 +20,18 @@ namespace AvaloniaApplication2.Models
             Capacity = capacity;
         }
 
+        public Car? GetCar(int serialNumber) 
+        { 
+            foreach (var car in Cars)
+            {
+                if (car.SerialNumber == serialNumber)
+                {
+                    return car;
+                }
+            }
+            return null;
+        }
+
         public void AddCar(Car car)
         {
             Cars.Add(car);

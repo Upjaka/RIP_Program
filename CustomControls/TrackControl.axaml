@@ -20,12 +20,14 @@
     <Style Selector="Rectangle.Fixed.Loaded">
       <Setter Property="Fill" Value="Blue"/>
     </Style>
+    <Style Selector="Border#BorderWrapper:pointerover">
+      <Setter Property="Background" Value="DarkGray"/>
+    </Style>
   </UserControl.Styles>
 
-  <Border x:Name="BorderWrapper" PointerPressed="Track_PointerPressed">
-    <StackPanel x:Name="Wrapper" Orientation="Vertical" Width="410" MinWidth="230"
-                PointerEntered="Track_PointerEntered"
-                PointerExited="Track_PointerExited">
+  <Border x:Name="BorderWrapper"
+          PointerPressed="Track_PointerPressed">
+    <StackPanel x:Name="Wrapper" Orientation="Vertical" Width="410" MinWidth="230">
       <StackPanel x:Name="TrackImage" Orientation="Vertical">
         <StackPanel x:Name="TrackImageTop" Orientation="Horizontal" Height="30">
           <Border BorderBrush="Black" Width="40"/>

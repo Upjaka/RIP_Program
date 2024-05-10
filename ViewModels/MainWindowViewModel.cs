@@ -21,9 +21,11 @@ namespace AvaloniaApplication2.ViewModels
         public int CarId { get; set; }
         public DateTime ComingDate { get; set; }
         public ObservableCollection<CarInfo> CarsInfo { get; }
+        public List<CarInfo> OldCarsInfo { get; }
         public ObservableCollection<DefectCode> DefectCodes { get; }
         public List<Station> Stations { get; } = new List<Station>();
         public Track ?SelectedTrack { get; set; } = null;
+        public Station ?SelectedStation { get; set; } = null;
     
         public MainWindowViewModel()
         {
@@ -39,11 +41,79 @@ namespace AvaloniaApplication2.ViewModels
         };
             CarsInfo = new ObservableCollection<CarInfo>(carsInfo);
 
+            OldCarsInfo = new List<CarInfo>();
+
             DefectCodes = new ObservableCollection<DefectCode>();
 
             ConnectToDefectCodesDatabase();
 
             ConnectToStationsDatabase();
+        }
+
+        public void UpdateCarsInfo() 
+        {
+            CarsInfo.Clear();
+            OldCarsInfo.Clear();
+
+            if (SelectedTrack != null)
+            {
+                foreach (var c in SelectedTrack.Cars)
+                {
+                    CarsInfo.Add(new CarInfo(c));
+                    OldCarsInfo.Add(new CarInfo(c));
+                }
+            }
+        }
+
+        public void CancelChanges()
+        {
+            CarsInfo.Clear();
+            foreach (var c in OldCarsInfo)
+            {
+                CarsInfo.Add(c);
+            }
+        }
+
+        public void ConfirmChanges()
+        {
+            for (int i = 0; i < CarsInfo.Count; i++)
+            {
+                CarInfo carInfo = CarsInfo[i];
+                if (carInfo != OldCarsInfo[i])
+                {
+                    Car? car = SelectedTrack.GetCar(Convert.ToInt32(CarsInfo[i].SerialNumber));
+                    if (car != null)
+                    {
+                        car.IsFixed = carInfo.IsFixed;
+                        car.IsLoaded = carInfo.IsLoaded;
+                        car.DefectCodes = carInfo.DefectCodes;
+                        car.Product = carInfo.Product;
+                        car.Cargo = carInfo.Cargo;
+                    }
+                }
+            }
+        }
+
+
+        public Station GetStationByName(string stationName)
+        {
+            foreach (Station station in Stations)
+            {
+                if (station.StationName == stationName) return station;
+            }
+            return null;
+        }
+
+        public int GetTrackIdByNumber(int n)
+        {
+            foreach (Station station in Stations)
+            {
+                foreach (Track track in station.Tracks)
+                {
+                    if (track.TrackNumber == n) return track.TrackId;
+                }
+            }
+            return 0;
         }
 
         public void ConnectToDefectCodesDatabase()
@@ -149,27 +219,6 @@ namespace AvaloniaApplication2.ViewModels
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
             }
-        }
-
-        public Station GetStationByName(string stationName) 
-        {
-            foreach (Station station in Stations) 
-            { 
-                if (station.StationName == stationName) return station;
-            }
-            return null;
-        }
-
-        public int GetTrackIdByNumber(int n)
-        {
-            foreach (Station station in Stations)
-            {
-                foreach (Track track in station.Tracks)
-                {
-                    if (track.TrackNumber == n) return track.TrackId;
-                }
-            }
-            return 0;
         }
 
         public void AddCarsToDatabase()

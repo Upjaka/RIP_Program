@@ -11,7 +11,8 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
-    public Track Track { get; set; }
+    public Track Track { get; }
+    private StationControl parent;
     public static int CAR_WIDTH = 8;
     public static int TURNOUT_WIDTH = 40;
 
@@ -20,16 +21,21 @@ public partial class TrackControl : UserControl
         InitializeComponent();
     }
 
-    public TrackControl(Track track, MainWindowViewModel dataContext)
+    public TrackControl(Track track, StationControl parentStation)
     {
         Track = track;
+        parent = parentStation;
+
+
         InitializeComponent();
-        DataContext = dataContext;
+
         TrackNumberTextBlock.Text = track.TrackNumber.ToString();
         CarsCountTextBlock.Text = track.Cars.Count.ToString();
+
         var width = TURNOUT_WIDTH * 2 + CAR_WIDTH * track.Capacity;
         Wrapper.Width = width;
         BottomLine.EndPoint = new Point(width - 20, 1);
+
         for (var i=0; i<track.Capacity; i++)
         {
             ColumnDefinition cd = new ColumnDefinition { 
@@ -61,37 +67,32 @@ public partial class TrackControl : UserControl
         }
     }
 
-    private void Track_PointerEntered(object? sender, Avalonia.Input.PointerEventArgs e)
-    {
-        if (((StackPanel)e.Source).Name == "Wrapper")
-        {
-            BorderWrapper.BorderThickness = new Thickness(1);
-            if (DataContext != null)
-            {
-                var dataContext = (MainWindowViewModel)DataContext;
-                dataContext.SelectedTrack = Track;
-                Debug.WriteLine("Selected track: " + Track.ToString());
-            }
-        }      
-    }
-
-    private void Track_PointerExited(object? sender, Avalonia.Input.PointerEventArgs e)
-    {
-        if (((StackPanel)e.Source).Name == "Wrapper")
-        {
-            BorderWrapper.BorderThickness = new Thickness(0);
-            if (DataContext != null)
-            {
-                var dataContext = (MainWindowViewModel)DataContext;
-                dataContext.SelectedTrack = null;
-                Debug.WriteLine("Released track: " + Track.ToString());
-            }
-        }
-
-    }
-
     private void Track_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
-        Debug.WriteLine("Pointer Pressed! sender=" + sender.ToString());
+        MakeSelected();
+        if (DataContext != null)
+        {
+            parent.SelectTrack(Track);
+            Debug.WriteLine("Selected track: " + Track.ToString());
+        }
+    }
+
+    public void MakeSelected()
+    {
+        BorderWrapper.BorderThickness = new Thickness(1);
+    }
+
+    public void MakeUnselected()
+    {
+        BorderWrapper.BorderThickness = new Thickness(0);
+    }
+
+
+    public void UpdateTrack()
+    {
+        foreach (CarControl carControl in TrackGrid.Children)
+        {
+            carControl.UpdateCar();
+        }
     }
 }

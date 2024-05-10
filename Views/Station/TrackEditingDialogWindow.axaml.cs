@@ -5,23 +5,36 @@ using AvaloniaApplication2.Models;
 using AvaloniaApplication2.ViewModels;
 using System;
 using System.Diagnostics;
+using AvaloniaApplication2.Views;
 
 namespace AvaloniaApplication2;
 
 public partial class TrackEditingDialogWindow : Window
 {
+    MainWindow mainWindow;
+
     public TrackEditingDialogWindow() { InitializeComponent(); }
 
-    public TrackEditingDialogWindow(MainWindowViewModel dataContext)
+    public TrackEditingDialogWindow(MainWindow mainWindow, MainWindowViewModel dataContext)
     {
-        DataContext = new MainWindowViewModel();
+        this.mainWindow = mainWindow;
+        DataContext = dataContext;
         InitializeComponent();
         Debug.WriteLine(dataContext.CarsInfo);
-        Title = "Редактор района: " + dataContext.Station + " путь: " + dataContext.TrackNumber;
+        if (dataContext.SelectedTrack != null)
+        {
+            Title = "Редактор района: " + dataContext.SelectedStation.StationName + " путь: " + dataContext.SelectedTrack.TrackNumber;
+        }
     }
 
     private void ExitButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        Close();
+        SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow((MainWindowViewModel)DataContext);
+        saveChangesDialogWindow.Closed += (sender, args) =>
+        {
+            mainWindow.UpdateSelectedTrack();
+            Close();
+        };
+        saveChangesDialogWindow.ShowDialog(this);
     }
 }

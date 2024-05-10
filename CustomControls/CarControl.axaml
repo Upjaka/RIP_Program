@@ -15,9 +15,16 @@
     <Style Selector="Rectangle#CarRectangle.Fixed.Loaded">
       <Setter Property="Fill" Value="Blue"/>
     </Style>
+    <Style Selector="Border.Selected">
+      <Setter Property="BorderThickness" Value="0,0,0,2"/>
+    </Style>
   </UserControl.Styles>
 
-  <Rectangle x:Name="CarRectangle" Classes="Empty"
+
+  <Border x:Name="BorderWrapper" BorderBrush="Yellow">
+    <Rectangle x:Name="CarRectangle" Classes="Empty"
              Width="7" Height="16"
-             Margin="0, 0, 1, 0"/>
+             Margin="0, 0, 1, 2"/>
+  </Border>
+
 </UserControl>
