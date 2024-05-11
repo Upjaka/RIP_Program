@@ -4,16 +4,22 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="clr-namespace:AvaloniaApplication2.CustomControls"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaApplication2.CustomControls.StationControl">
+             x:Class="AvaloniaApplication2.CustomControls.StationControl"
+             Focusable="False"
+             SizeChanged="StationControl_SizeChanged">
 
-  <Border x:Name="Wrapper" BorderBrush="Black" BorderThickness="1" Width="800">
-      <StackPanel Orientation="Vertical" MaxWidth="{Binding Width, RelativeSource={RelativeSource AncestorType=Border}}">
+  <Border x:Name="StationWrapper" BorderBrush="Black" BorderThickness="0">
+      <StackPanel Orientation="Vertical">
         <DockPanel x:Name="ControlPanel" Height="27">
           <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>
-          <Button FontSize="12" Margin="1" Click="CloseButton_Click" HorizontalAlignment="Right">X</Button>
+          <Button FontSize="12" Margin="1" Click="CloseButton_Click" HorizontalAlignment="Right" Focusable="False">X</Button>
         </DockPanel>
-        <Border x:Name="TracksBorder" Width="{Binding Width, ElementName=Wrapper}">
-          <ScrollViewer HorizontalScrollBarVisibility="Visible" Height="{Binding Height, ElementName=TracksBorder}">
+        <Border x:Name="TracksBorder"
+                Width="{Binding Width, ElementName=StationWrapper}">
+          <ScrollViewer HorizontalScrollBarVisibility="Visible"
+                        VerticalScrollBarVisibility="Visible"
+                        Height="{Binding Height, ElementName=TracksBorder}"
+                        Width="{Binding Width, ElementName=TracksBorder}">
             <StackPanel x:Name="TracksPanel" Orientation="Vertical"/>
           </ScrollViewer>
         </Border>

@@ -33,13 +33,8 @@ namespace AvaloniaApplication2.ViewModels
             Station = "";
             CarNumber = "";
             TrackNumber = "";
-            var carsInfo = new List<CarInfo>
-        {
-            new CarInfo("1", "1111", true, "32", false, "1, 2", ""),
-            new CarInfo("2", "1234", true, "10", false, "1,3", ""),
-            new CarInfo("3", "4321", true, "31", false, "2, 3", "")
-        };
-            CarsInfo = new ObservableCollection<CarInfo>(carsInfo);
+
+            CarsInfo = new ObservableCollection<CarInfo>();
 
             OldCarsInfo = new List<CarInfo>();
 

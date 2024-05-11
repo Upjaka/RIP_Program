@@ -1,6 +1,7 @@
 using Avalonia.Controls;
 using AvaloniaApplication2.ViewModels;
 using AvaloniaApplication2.CustomControls;
+using Avalonia.Input;
 
 namespace AvaloniaApplication2.Views
 {
@@ -31,7 +32,10 @@ namespace AvaloniaApplication2.Views
         {
             string name = (sender as MenuItem).Header.ToString();
             var stationControl = new StationControl(this, name);
-            Workplace.Children.Add(stationControl);
+            //Workplace.Children.Add(stationControl);
+
+            StationStateWindow stationWindow = new StationStateWindow(stationControl, (MainWindowViewModel)DataContext);
+            stationWindow.Show();
         }
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -67,6 +71,14 @@ namespace AvaloniaApplication2.Views
                 {
                     stationControl.UpdateTrack(viewModel.SelectedTrack);
                 }
+            }
+        }
+
+        private void Grid_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+        {
+            if (e.Key == Key.Tab)
+            {
+                
             }
         }
     }

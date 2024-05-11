@@ -3,10 +3,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaApplication2.CustomControls.TrackControl">
+             x:Class="AvaloniaApplication2.CustomControls.TrackControl"
+             Focusable="False">
   
   <UserControl.Styles>
-    <Style Selector="Border#BorderWrapper">
+    <Style Selector="Border#TrackBorderWrapper">
       <Setter Property="Background" Value="LightGray"/>
       <Setter Property="BorderBrush" Value="Black"/>
       <Setter Property="CornerRadius" Value="5"/>
@@ -20,18 +21,17 @@
     <Style Selector="Rectangle.Fixed.Loaded">
       <Setter Property="Fill" Value="Blue"/>
     </Style>
-    <Style Selector="Border#BorderWrapper:pointerover">
+    <Style Selector="Border#TrackBorderWrapper:pointerover">
       <Setter Property="Background" Value="DarkGray"/>
     </Style>
   </UserControl.Styles>
 
-  <Border x:Name="BorderWrapper"
-          PointerPressed="Track_PointerPressed">
+  <Border x:Name="TrackBorderWrapper">
     <StackPanel x:Name="Wrapper" Orientation="Vertical" Width="410" MinWidth="230">
       <StackPanel x:Name="TrackImage" Orientation="Vertical">
         <StackPanel x:Name="TrackImageTop" Orientation="Horizontal" Height="30">
           <Border BorderBrush="Black" Width="40"/>
-          <Border BorderThickness="0,0,0,2" BorderBrush="Black" Margin="0,0,0,3">
+          <Border BorderThickness="0" BorderBrush="Black" Margin="0,0,0,0">
             <Grid x:Name="TrackGrid"/>
           </Border>
           <Border BorderBrush="Black" Width="40"/>

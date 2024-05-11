@@ -8,6 +8,7 @@ namespace AvaloniaApplication2.Models
 {
     public class Car
     {
+        public bool IsSelected { get; set; }
         public string CarNumber { get; set; }
         public int SerialNumber { get; set; }
         public string Product { get; set; }
@@ -19,6 +20,8 @@ namespace AvaloniaApplication2.Models
 
         public Car(string carNumber, int serialNumber, bool isFixed, string defectCodes, bool isLoaded, string product, string cargo, DateTime arrival)
         {
+            IsSelected = false;
+
             CarNumber = carNumber;
             SerialNumber = serialNumber;
             DefectCodes = defectCodes;

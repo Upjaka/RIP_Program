@@ -6,14 +6,14 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.StationStateWindow"
         Title="Неизвестный район"
-        Width="460" Height="150">
-  
-  <Window.Styles>
-    <StyleInclude Source="/Styles/StationState_Styles.axaml" />
-  </Window.Styles>
+        Width="800" Height="800"
+        WindowStartupLocation="CenterScreen"
 
-  <StackPanel x:Name="Wrapper" Orientation="Vertical" Margin="0" Background="LightGray">
-    <controls:StationControl/>
-  </StackPanel>
+        SizeChanged="Window_SizeChanged"
+        Focusable="False">
+
+  <Border x:Name="StationBorderWrapper" BorderBrush="Black" BorderThickness="0">
+    <StackPanel x:Name="StationPanel" Orientation="Vertical" Margin="0" Background="LightGray"/>
+  </Border>
 
 </Window>

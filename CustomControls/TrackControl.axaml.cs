@@ -1,17 +1,21 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using AvaloniaApplication2.Models;
 using AvaloniaApplication2.ViewModels;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
+    private bool IsSelected { get; set; } = false;
     public Track Track { get; }
+    private List<CarControl> focusedCars;
     private StationControl parent;
     public static int CAR_WIDTH = 8;
     public static int TURNOUT_WIDTH = 40;
@@ -23,11 +27,17 @@ public partial class TrackControl : UserControl
 
     public TrackControl(Track track, StationControl parentStation)
     {
+        focusedCars = new List<CarControl>();
+
         Track = track;
         parent = parentStation;
 
 
         InitializeComponent();
+
+        this.AddHandler(KeyDownEvent, TrackControl_KeyDown, RoutingStrategies.Tunnel);
+
+        this.AddHandler(PointerPressedEvent, TrackControl_PointerPressed_Tunnel, RoutingStrategies.Tunnel);
 
         TrackNumberTextBlock.Text = track.TrackNumber.ToString();
         CarsCountTextBlock.Text = track.Cars.Count.ToString();
@@ -43,48 +53,58 @@ public partial class TrackControl : UserControl
             };
 
             TrackGrid.ColumnDefinitions.Add(cd);
-        }
 
-        foreach (var car in track.Cars)
-        {
-            TrackGrid.Children.Add(new CarControl(car)
+            if (i < track.Cars.Count)
             {
-                [Grid.RowProperty] = 0,
-                [Grid.ColumnProperty] = car.SerialNumber - 1,
-                VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
-                Margin = new Thickness(0, 0, 0, 2)
-            });
+                TrackGrid.Children.Add(new CarControl(track.Cars[i])
+                {
+                    [Grid.RowProperty] = 0,
+                    [Grid.ColumnProperty] = i,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
+                    Margin = new Thickness(0, 0, 0, 2)
+                });
+            }
+            else
+            {
+                TrackGrid.Children.Add(new CarControl()
+                {
+                    [Grid.RowProperty] = 0,
+                    [Grid.ColumnProperty] = i,
+                    VerticalAlignment = Avalonia.Layout.VerticalAlignment.Bottom,
+                    Margin = new Thickness(0, 0, 0, 2)
+                });
+            }
         }
     }
 
-    private void Track_MouseLeftButtonDown(object sender, PointerPressedEventArgs e)
+    private void TrackControl_PointerPressed_Tunnel(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
-        if (sender is StackPanel stackPanel)
+        if (!IsSelected)
         {
-            // Изменяем свойства рамки
-            //stackPanel.BorderThickness = new Thickness(1);
-            //stackPanel.BorderBrush = Brushes.Red;
+            e.Handled = true;
         }
-    }
-
-    private void Track_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
-    {
-        MakeSelected();
+        Select();
         if (DataContext != null)
         {
-            parent.SelectTrack(Track);
+            parent.SelectTrack(this);
             Debug.WriteLine("Selected track: " + Track.ToString());
         }
     }
 
-    public void MakeSelected()
+    public void Select()
     {
-        BorderWrapper.BorderThickness = new Thickness(1);
+        IsSelected = true;
+        TrackBorderWrapper.BorderThickness = new Thickness(1);
     }
 
-    public void MakeUnselected()
+    public void Unselect()
     {
-        BorderWrapper.BorderThickness = new Thickness(0);
+        TrackBorderWrapper.BorderThickness = new Thickness(0);
+        foreach (CarControl carControl in focusedCars)
+        {
+            carControl.IsFocused = false;
+        }
+        focusedCars.Clear();
     }
 
 
@@ -93,6 +113,43 @@ public partial class TrackControl : UserControl
         foreach (CarControl carControl in TrackGrid.Children)
         {
             carControl.UpdateCar();
+        }
+    }
+
+    public void TrackControl_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+    {
+        if (e.Key == Key.Tab || e.Key == Key.Right)
+        {
+            if (focusedCars.Count == 0) 
+            {
+                CarControl firstCar = ((CarControl)TrackGrid.Children[0]);
+                if (!firstCar.IsEmpty)
+                {
+                    firstCar.IsFocused = true;
+                    focusedCars.Add(firstCar);
+                }
+            }
+            else
+            {
+                int nextIndex = focusedCars[0].Car.SerialNumber;
+                CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
+                if (nextCar.IsEmpty)
+                {
+                    nextCar = (CarControl)TrackGrid.Children[0];
+                }
+                focusedCars[0].IsFocused = false;
+                focusedCars.Clear();
+                focusedCars.Add(nextCar);
+                nextCar.IsFocused = true;
+            }
+            
+        }
+        if (e.Key == Key.Enter)
+        {
+            foreach (CarControl carControl in TrackGrid.Children)
+            {
+                if (carControl.IsFocused) carControl.IsSelected = !carControl.IsSelected;
+            }
         }
     }
 }

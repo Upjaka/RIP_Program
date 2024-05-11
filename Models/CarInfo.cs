@@ -10,6 +10,19 @@ namespace AvaloniaApplication2.Models
 {
     public class CarInfo : INotifyPropertyChanged
     {
+        private bool _isSelected;
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if (_isSelected != value)
+                {
+                    _isSelected = value;
+                    OnPropertyChanged(nameof(_isSelected));
+                }
+            }
+        }
         private string _carNumber;
         public string CarNumber
         {
@@ -102,26 +115,16 @@ namespace AvaloniaApplication2.Models
             }
         }
 
-        public CarInfo(string serialNumber, string carNumber, bool isFixed, string defectCodes, bool isLoaded, string product, string cargo)
-        {
-            CarNumber = carNumber;
-            SerialNumber = serialNumber;
-            IsFixed = isFixed;
-            DefectCodes = defectCodes;
-            IsLoaded = isLoaded;
-            Product = product;
-            Cargo = cargo;
-        }
-
         public CarInfo(Car car) 
         {
-            CarNumber = car.CarNumber;
-            SerialNumber = car.SerialNumber.ToString();
-            IsFixed = car.IsFixed;
-            DefectCodes = car.DefectCodes;
-            IsLoaded = car.IsLoaded;
-            Product = car.Product;
-            Cargo = car.Cargo;
+            _isSelected = car.IsSelected;
+            _carNumber = car.CarNumber;
+            _serialNumber = car.SerialNumber.ToString();
+            _isFixed = car.IsFixed;
+            _defectCodes = car.DefectCodes;
+            _isLoaded = car.IsLoaded;
+            _product = car.Product;
+            _cargo = car.Cargo;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

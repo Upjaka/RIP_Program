@@ -3,7 +3,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaApplication2.CustomControls.CarControl">
+             x:Class="AvaloniaApplication2.CustomControls.CarControl"
+             Focusable="False">
 
   <UserControl.Styles>
     <Style Selector="Rectangle#CarRectangle.Empty">
@@ -15,16 +16,25 @@
     <Style Selector="Rectangle#CarRectangle.Fixed.Loaded">
       <Setter Property="Fill" Value="Blue"/>
     </Style>
-    <Style Selector="Border.Selected">
-      <Setter Property="BorderThickness" Value="0,0,0,2"/>
+    <Style Selector="Border#CarBorderWrapper.Focused">
+      <Setter Property="Background" Value="White"/>
+    </Style>
+    <Style Selector="Border#CarBorderWrapper">
+      <Setter Property="BorderBrush" Value="Black"/>
+    </Style>
+    <Style Selector="Border#CarBorderWrapper.Selected">
+      <Setter Property="BorderBrush" Value="Yellow"/>
     </Style>
   </UserControl.Styles>
 
 
-  <Border x:Name="BorderWrapper" BorderBrush="Yellow">
-    <Rectangle x:Name="CarRectangle" Classes="Empty"
-             Width="7" Height="16"
-             Margin="0, 0, 1, 2"/>
+  <Border x:Name="CarBorderWrapper" BorderThickness="0, 0, 0, 2">
+    <StackPanel x:Name="CarWrapper" Width="10" Height="18">
+      <Rectangle x:Name="CarRectangle" Classes="Empty"
+             Width="6" Height="12"
+             Margin="0, 4, 0, 0"/>
+    </StackPanel>
+
   </Border>
 
 </UserControl>
