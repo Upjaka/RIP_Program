@@ -13,7 +13,7 @@ public partial class StationControl : UserControl
 {
     private MainWindow parent;
     private TrackControl? selectedTrack;
-    public Station station { get; }
+    public Station Station { get; }
 
     public StationControl()
     {
@@ -34,8 +34,8 @@ public partial class StationControl : UserControl
         var dataContext = (MainWindowViewModel)mainWindow.DataContext;
         DataContext = dataContext;
 
-        station = dataContext.GetStationByName(stationName);
-        foreach (Track track in station.Tracks) 
+        Station = dataContext.GetStationByName(stationName);
+        foreach (Track track in Station.Tracks) 
         {
             var trackControl = new TrackControl(track, this);
             trackControl.Margin = new Thickness(10, 5, 0, 5);
@@ -65,8 +65,6 @@ public partial class StationControl : UserControl
 
     private void SelectTrack(Track track) 
     {
-        ((MainWindowViewModel)DataContext).SelectedStation = station;
-
         ((MainWindowViewModel)DataContext).SelectedTrack = track;
 
         foreach (TrackControl otherTrackControl in TracksPanel.Children) 
@@ -80,13 +78,7 @@ public partial class StationControl : UserControl
 
     public void UpdateTrack(Track track)
     {
-        foreach (TrackControl trackControl in TracksPanel.Children)
-        {
-            if (trackControl.Track == track)
-            {
-                trackControl.UpdateTrack();
-            }
-        }
+        selectedTrack.UpdateTrack();
     }
 
     private void StationControl_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)

@@ -70,6 +70,7 @@ public partial class CarControl : UserControl
     public void UpdateCar()
     {
         CarRectangle.Classes.RemoveAll(["Fixed", "Loaded", "Empty"]);
+        CarBorderWrapper.Classes.Remove("Selected");
         CarRectangle.Classes.Add("Empty");
 
         AssignStyles();
@@ -91,6 +92,10 @@ public partial class CarControl : UserControl
         {
             CarRectangle.Classes.Add("Loaded");
             CarRectangle.Classes.Remove("Empty");
+        }
+        if (Car.IsSelected)
+        {
+            CarBorderWrapper.Classes.Add("Selected");
         }
     }
 

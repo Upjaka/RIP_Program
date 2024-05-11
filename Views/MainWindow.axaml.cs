@@ -2,16 +2,19 @@ using Avalonia.Controls;
 using AvaloniaApplication2.ViewModels;
 using AvaloniaApplication2.CustomControls;
 using Avalonia.Input;
+using System.Collections.Generic;
 
 namespace AvaloniaApplication2.Views
 {
     public partial class MainWindow : Window
     {
         public string receivedButtonContent { get; set; }
+        private List<StationStateWindow> stationWindows;
 
         public MainWindow()
         {
             InitializeComponent();
+            stationWindows = new List<StationStateWindow>();
         }
 
         public void UpdateButtonContent(string content)
@@ -35,7 +38,25 @@ namespace AvaloniaApplication2.Views
             //Workplace.Children.Add(stationControl);
 
             StationStateWindow stationWindow = new StationStateWindow(stationControl, (MainWindowViewModel)DataContext);
-            stationWindow.Show();
+
+            StationStateWindow? openedStationWindow = null;
+
+            foreach (StationStateWindow stationStateWindow in stationWindows)
+            {
+                if (stationStateWindow.StaionControl.Station.StationName == name)
+                {
+                    openedStationWindow = stationStateWindow;
+                }
+            }
+            if (openedStationWindow != null)
+            {
+                openedStationWindow.Activate();
+            }
+            else
+            {
+                stationWindows.Add(stationWindow);
+                stationWindow.Show();
+            }
         }
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -65,16 +86,16 @@ namespace AvaloniaApplication2.Views
         public void UpdateSelectedTrack()
         {
             MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
-            foreach (StationControl stationControl in Workplace.Children)
+            foreach (StationStateWindow stationWindow in stationWindows)
             {
-                if (stationControl.StationName.Text == viewModel.SelectedStation.StationName)
+                if (stationWindow.StaionControl.Station.StationName == viewModel.SelectedStation.StationName)
                 {
-                    stationControl.UpdateTrack(viewModel.SelectedTrack);
+                    stationWindow.StaionControl.UpdateTrack(viewModel.SelectedTrack);
                 }
             }
         }
 
-        private void Grid_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+        private void Grid_KeyDown(object? sender, KeyEventArgs e)
         {
             if (e.Key == Key.Tab)
             {

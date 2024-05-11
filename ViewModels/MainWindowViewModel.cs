@@ -84,6 +84,7 @@ namespace AvaloniaApplication2.ViewModels
                         car.DefectCodes = carInfo.DefectCodes;
                         car.Product = carInfo.Product;
                         car.Cargo = carInfo.Cargo;
+                        car.IsSelected = carInfo.IsSelected;
                     }
                 }
             }

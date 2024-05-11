@@ -10,17 +10,17 @@ namespace AvaloniaApplication2;
 
 public partial class StationStateWindow : Window
 {
-    private StationControl _staionControl;
+    public StationControl StaionControl;
     public StationStateWindow(StationControl stationControl, MainWindowViewModel dataContext)
     {
-        _staionControl = stationControl;
+        StaionControl = stationControl;
         InitializeComponent();
         DataContext = dataContext;
         StationPanel.Children.Add(stationControl);
 
-        Title = stationControl.station.StationName;
+        Title = stationControl.Station.StationName;
 
-        HotKeyManager.SetHotKey(_staionControl, new KeyGesture(Key.Tab));
+        HotKeyManager.SetHotKey(StaionControl, new KeyGesture(Key.Tab));
 
         this.AddHandler(KeyDownEvent, Window_KeyDown, RoutingStrategies.Tunnel);
         //StationBorderWrapper.AddHandler(KeyDownEvent, Border_KeyDown, RoutingStrategies.Tunnel);
@@ -28,12 +28,17 @@ public partial class StationStateWindow : Window
 
     protected void Window_KeyDown(object? sender, KeyEventArgs e)
     {
-        _staionControl.StationControl_KeyDown(this, e);
+        StaionControl.StationControl_KeyDown(this, e);
     }
 
     private void Window_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)
     {
-        _staionControl.Width = Width;
-        _staionControl.Height = Height;
+        StaionControl.Width = Width;
+        StaionControl.Height = Height;
+    }
+
+    private void StationWindow_Activated(object? sender, System.EventArgs e)
+    {
+        ((MainWindowViewModel)DataContext).SelectedStation = StaionControl.Station;
     }
 }

@@ -119,9 +119,9 @@ public partial class TrackControl : UserControl
 
     public void UpdateTrack()
     {
-        foreach (CarControl carControl in TrackGrid.Children)
+        for (int i = 0; i < Track.Cars.Count; i++)
         {
-            carControl.UpdateCar();
+            ((CarControl)TrackGrid.Children[i]).UpdateCar();
         }
     }
 

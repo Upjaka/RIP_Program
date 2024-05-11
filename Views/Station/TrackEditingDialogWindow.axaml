@@ -21,7 +21,7 @@
         <DataGrid x:Name="TrackGrid" ItemsSource="{Binding CarsInfo}"
                   AutoGenerateColumns="False" Height="500" IsReadOnly="False">
           <DataGrid.Columns>
-            <DataGridCheckBoxColumn Header="Отм."/>
+            <DataGridCheckBoxColumn Header="Отм." Binding="{Binding IsSelected}"/>
             <DataGridTextColumn Header="№п/п" IsReadOnly="True" Binding="{Binding SerialNumber}"/>
             <DataGridTextColumn Header="№вагона" IsReadOnly="True" Binding="{Binding CarNumber}"/>
             <DataGridCheckBoxColumn Header="Испр." Binding="{Binding IsFixed}"/>
