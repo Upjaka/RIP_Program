@@ -13,7 +13,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
-    private bool IsSelected { get; set; } = false;
+    public bool IsSelected { get; set; } = false;
     public Track Track { get; }
     private List<CarControl> focusedCars;
     private StationControl parent;
@@ -37,7 +37,7 @@ public partial class TrackControl : UserControl
 
         this.AddHandler(KeyDownEvent, TrackControl_KeyDown, RoutingStrategies.Tunnel);
 
-        this.AddHandler(PointerPressedEvent, TrackControl_PointerPressed_Tunnel, RoutingStrategies.Tunnel);
+        this.AddHandler(PointerPressedEvent, TrackControl_PointerPressed, RoutingStrategies.Bubble);
 
         TrackNumberTextBlock.Text = track.TrackNumber.ToString();
         CarsCountTextBlock.Text = track.Cars.Count.ToString();
@@ -56,7 +56,7 @@ public partial class TrackControl : UserControl
 
             if (i < track.Cars.Count)
             {
-                TrackGrid.Children.Add(new CarControl(track.Cars[i])
+                TrackGrid.Children.Add(new CarControl(track.Cars[i], this)
                 {
                     [Grid.RowProperty] = 0,
                     [Grid.ColumnProperty] = i,
@@ -77,34 +77,43 @@ public partial class TrackControl : UserControl
         }
     }
 
-    private void TrackControl_PointerPressed_Tunnel(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    public void TrackControl_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
-        if (!IsSelected)
+        if (sender is CarControl)
         {
-            e.Handled = true;
+            if (!IsSelected)
+            {
+                Select(((CarControl)sender).Car.SerialNumber - 1);
+            }
+            else
+            {
+                UnfocusAllCars();
+                FocusNthCar(((CarControl)sender).Car.SerialNumber - 1);
+            }
         }
-        Select();
-        if (DataContext != null)
+        else
         {
-            parent.SelectTrack(this);
-            Debug.WriteLine("Selected track: " + Track.ToString());
+            if (!IsSelected)
+            {
+                Select();
+            }
         }
+        parent.StationControl_PointerPressed(this, e);
     }
 
-    public void Select()
+    public void Select(int focusedCarNumber = 0)
     {
         IsSelected = true;
         TrackBorderWrapper.BorderThickness = new Thickness(1);
+        FocusNthCar(focusedCarNumber);
     }
 
-    public void Unselect()
+    public int Unselect()
     {
         TrackBorderWrapper.BorderThickness = new Thickness(0);
-        foreach (CarControl carControl in focusedCars)
-        {
-            carControl.IsFocused = false;
-        }
-        focusedCars.Clear();
+        int lastFocusedCarIndex = (focusedCars.Count == 0) ? 0 : focusedCars[focusedCars.Count - 1].Car.SerialNumber - 1;
+        UnfocusAllCars();
+        return lastFocusedCarIndex;
     }
 
 
@@ -118,38 +127,143 @@ public partial class TrackControl : UserControl
 
     public void TrackControl_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
     {
-        if (e.Key == Key.Tab || e.Key == Key.Right)
+        switch (e.Key)
         {
-            if (focusedCars.Count == 0) 
-            {
-                CarControl firstCar = ((CarControl)TrackGrid.Children[0]);
-                if (!firstCar.IsEmpty)
+            case Key.Tab:
+                if (focusedCars.Count == 0)
                 {
-                    firstCar.IsFocused = true;
-                    focusedCars.Add(firstCar);
+                    FocusNthCar(0);
                 }
+                else
+                {
+                    if (e.KeyModifiers == KeyModifiers.Shift)
+                    {
+                        FocusPreviousCar();
+                    }
+                    else
+                    {
+                        if (e.KeyModifiers == KeyModifiers.None)
+                        {
+                            FocusNextCar();
+                        }
+                    }
+                }
+                break;
+
+            case Key.Enter:
+                SelectAllCars();
+                break;
+
+            case Key.Right:
+                if (e.KeyModifiers == KeyModifiers.Shift)
+                {
+                    FocusNextCar(true);
+                }
+                else
+                {
+                    if (e.KeyModifiers == KeyModifiers.None)
+                    {
+                        FocusNextCar();
+                    }
+                }
+                break;
+
+            case Key.Left:
+                if (e.KeyModifiers == KeyModifiers.Shift)
+                {
+                    FocusPreviousCar(true);
+                }
+                else
+                {
+                    if (e.KeyModifiers == KeyModifiers.None)
+                    {
+                        FocusPreviousCar();
+                    }
+                }
+                break;
+        }
+    }
+
+    private void FocusNthCar(int n)
+    {
+        if (Track.Cars.Count > 0)
+        {
+            CarControl focusedCar = (n < Track.Cars.Count) ? (CarControl)TrackGrid.Children[n] : (CarControl)TrackGrid.Children[Track.Cars.Count - 1];
+            focusedCar.IsFocused = true;
+            focusedCars.Add(focusedCar);
+        }
+    }
+
+    private void UnfocusAllCars()
+    {
+        foreach (CarControl carControl in focusedCars)
+        {
+            carControl.IsFocused = false;
+        }
+        focusedCars.Clear();
+    }
+
+    private void FocusNextCar(bool savePreviusFocused = false)
+    {
+        int nextIndex = focusedCars[focusedCars.Count - 1].Car.SerialNumber % Track.Cars.Count;
+        if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber > focusedCars[1].Car.SerialNumber)
+        {
+            nextIndex = focusedCars[0].Car.SerialNumber % Track.Cars.Count;
+        }
+        CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
+        if (!savePreviusFocused) 
+        {
+            UnfocusAllCars();
+            FocusNthCar(nextIndex);
+        }
+        else
+        {
+            if (nextCar.IsFocused)
+            {
+                CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex - 1 + Track.Cars.Count) % Track.Cars.Count];
+                currentCar.IsFocused = false;
+                focusedCars.Remove(currentCar);
             }
             else
             {
-                int nextIndex = focusedCars[0].Car.SerialNumber;
-                CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
-                if (nextCar.IsEmpty)
-                {
-                    nextCar = (CarControl)TrackGrid.Children[0];
-                }
-                focusedCars[0].IsFocused = false;
-                focusedCars.Clear();
-                focusedCars.Add(nextCar);
-                nextCar.IsFocused = true;
+                FocusNthCar(nextIndex);
             }
-            
         }
-        if (e.Key == Key.Enter)
+    }
+
+    private void FocusPreviousCar(bool savePreviusFocused = false)
+    {
+        int nextIndex = (focusedCars[focusedCars.Count - 1].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
+        if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber < focusedCars[1].Car.SerialNumber)
         {
-            foreach (CarControl carControl in TrackGrid.Children)
+            nextIndex = (focusedCars[0].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
+        }
+        CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
+        if (!savePreviusFocused)
+        {
+            UnfocusAllCars();
+            FocusNthCar(nextIndex); 
+        }
+        else
+        {
+            if (nextCar.IsFocused)
             {
-                if (carControl.IsFocused) carControl.IsSelected = !carControl.IsSelected;
+                CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex + 1) % Track.Cars.Count];
+                currentCar.IsFocused = false;
+                focusedCars.Remove(currentCar);
             }
+            else
+            {
+                FocusNthCar(nextIndex);
+            }
+        }
+    }
+
+    private void SelectAllCars()
+    {
+        foreach (CarControl carControl in focusedCars)
+        {
+            carControl.IsSelected = !carControl.IsSelected;
         }
     }
 }

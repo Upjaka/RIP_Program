@@ -44,25 +44,34 @@ public partial class StationControl : UserControl
             TracksPanel.Children.Add(trackControl);
         }
 
-        this.AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
+        AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
     }
 
-    private void CloseButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    public void StationControl_PointerPressed(object? sender, PointerPressedEventArgs e)
+    {
+        if (sender is TrackControl)
+        {
+            selectedTrack = (TrackControl)sender;
+            SelectTrack(((TrackControl)sender).Track);
+        }
+        e.Handled = true;
+    }
+
+    private void CloseButton_Click(object? sender, RoutedEventArgs e)
     {
         parent.CloseStationControl(this);
     }
 
-    public void SelectTrack(TrackControl trackControl) 
+    private void SelectTrack(Track track) 
     {
         ((MainWindowViewModel)DataContext).SelectedStation = station;
 
-        ((MainWindowViewModel)DataContext).SelectedTrack = trackControl.Track;
-
-        selectedTrack = trackControl;
+        ((MainWindowViewModel)DataContext).SelectedTrack = track;
 
         foreach (TrackControl otherTrackControl in TracksPanel.Children) 
         {
-            if (otherTrackControl != trackControl) 
+            if (otherTrackControl.Track != track) 
             {
                 otherTrackControl.Unselect();
             }
@@ -96,33 +105,85 @@ public partial class StationControl : UserControl
 
     public void StationControl_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
     {
-        if (e.Key == Key.Tab || e.Key == Key.Enter)
+        switch (e.Key)
         {
-            if (selectedTrack != null)
-            {
-                selectedTrack.TrackControl_KeyDown(this, e);
-            }
-            else
-            {
-                if (TracksPanel.Children.Count > 0)
+            case Key.Tab:
+                if (selectedTrack != null)
                 {
-                    selectedTrack = (TrackControl)TracksPanel.Children[0];
-                    selectedTrack.Select();
+                    selectedTrack.TrackControl_KeyDown(this, e);
                 }
-            }
+                else
+                {
+                    SelectFirstTrack();
+                }
+                break;
+
+            case Key.Enter:
+            case Key.Right:
+            case Key.Left:
+                if (selectedTrack != null)
+                {
+                    selectedTrack.TrackControl_KeyDown(this, e);
+                }
+                break;
+
+            case Key.Down:
+                if (selectedTrack == null) 
+                {
+                    SelectFirstTrack();
+                }
+                else
+                {
+                    SelectNextTrack();
+                }
+                break;
+
+            case Key.Up:
+                if (selectedTrack == null)
+                {
+                    SelectLastTrack();
+                }
+                else
+                {
+                    SelectPreviousTrack();
+                }
+                break;
         }
     }
 
-    public void SelectNextTrack()
+    private void SelectFirstTrack()
     {
-        for (int i = 0; i < TracksPanel.Children.Count; i++)
+        if (TracksPanel.Children.Count > 0)
         {
-            if ((TrackControl)TracksPanel.Children[i] == selectedTrack)
-            {
-                selectedTrack.Unselect();
-                selectedTrack = (TrackControl)TracksPanel.Children[(i + 1) % TracksPanel.Children.Count];
-                selectedTrack.Select();
-            }
+            selectedTrack = (TrackControl)TracksPanel.Children[0];
+            selectedTrack.Select();
         }
+    }
+
+    private void SelectLastTrack()
+    {
+        if (TracksPanel.Children.Count > 0)
+        {
+            selectedTrack = (TrackControl)TracksPanel.Children[TracksPanel.Children.Count - 1];
+            selectedTrack.Select();
+        }
+    }
+
+    private void SelectNextTrack()
+    {
+        int index = TracksPanel.Children.IndexOf(selectedTrack);
+
+        int lastFocusedCarIndex = selectedTrack.Unselect();
+        selectedTrack = (TrackControl)TracksPanel.Children[(index + 1) % TracksPanel.Children.Count];
+        selectedTrack.Select(lastFocusedCarIndex);
+    }
+
+    private void SelectPreviousTrack()
+    {
+        int index = TracksPanel.Children.IndexOf(selectedTrack);
+
+        int lastFocusedCarIndex = selectedTrack.Unselect();
+        selectedTrack = (TrackControl)TracksPanel.Children[(index - 1 + TracksPanel.Children.Count) % TracksPanel.Children.Count];
+        selectedTrack.Select(lastFocusedCarIndex);
     }
 }

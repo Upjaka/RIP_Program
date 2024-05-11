@@ -28,11 +28,7 @@ public partial class StationStateWindow : Window
 
     protected void Window_KeyDown(object? sender, KeyEventArgs e)
     {
-        if (e.Key == Key.Tab || e.Key == Key.Enter)
-        {
-            _staionControl.StationControl_KeyDown(this, e);
-            //_staionControl.HandleKeyDown(e);
-        }
+        _staionControl.StationControl_KeyDown(this, e);
     }
 
     private void Window_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)

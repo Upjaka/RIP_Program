@@ -9,6 +9,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class CarControl : UserControl
 {
+    private TrackControl parentControl;
     public bool IsEmpty { get; }
     public Car Car { get; set; }
     public bool IsSelected 
@@ -54,13 +55,14 @@ public partial class CarControl : UserControl
         IsEmpty = true;
     }
 
-    public CarControl(Car car)
+    public CarControl(Car car, TrackControl parent)
     {
+        parentControl = parent;
         Car = car;
         IsEmpty = false;
         InitializeComponent();
 
-        this.AddHandler(PointerPressedEvent, CarCotrol_PointerPressed_Tunnel, RoutingStrategies.Tunnel);
+        AddHandler(PointerPressedEvent, CarCotrol_PointerPressed, RoutingStrategies.Bubble);
 
         AssignStyles();
     }
@@ -73,12 +75,9 @@ public partial class CarControl : UserControl
         AssignStyles();
     }
 
-    private void CarCotrol_PointerPressed_Tunnel(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    private void CarCotrol_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
     {
-        if (!IsFocused)
-        {
-            IsFocused = true;
-        }
+        parentControl.TrackControl_PointerPressed(this, e);
     }
 
     private void AssignStyles()
