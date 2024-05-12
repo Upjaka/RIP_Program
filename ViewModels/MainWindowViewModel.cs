@@ -11,6 +11,9 @@ namespace AvaloniaApplication2.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
+        private static readonly string connectionToDefectCodesDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\DefectCodes.accdb;";
+        private static readonly string connectionToStationsDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
+
         public string Greetings => "Welcome to Avalonia!";
         public string Loaded => "Груж.";
         public string NotLoaded => "Незагруж.";
@@ -26,7 +29,8 @@ namespace AvaloniaApplication2.ViewModels
         public List<Station> Stations { get; } = new List<Station>();
         public Track ?SelectedTrack { get; set; } = null;
         public Station ?SelectedStation { get; set; } = null;
-    
+        private ChangeList localChanges;
+
         public MainWindowViewModel()
         {
             CarId = 1;
@@ -39,6 +43,8 @@ namespace AvaloniaApplication2.ViewModels
             OldCarsInfo = new List<CarInfo>();
 
             DefectCodes = new ObservableCollection<DefectCode>();
+
+            localChanges = new ChangeList();
 
             ConnectToDefectCodesDatabase();
 
@@ -74,19 +80,64 @@ namespace AvaloniaApplication2.ViewModels
             for (int i = 0; i < CarsInfo.Count; i++)
             {
                 CarInfo carInfo = CarsInfo[i];
-                if (carInfo != OldCarsInfo[i])
+                if (!carInfo.Equals(OldCarsInfo[i]))
                 {
                     Car? car = SelectedTrack.GetCar(Convert.ToInt32(CarsInfo[i].SerialNumber));
                     if (car != null)
                     {
+                        Car oldCar = car.Clone();
                         car.IsFixed = carInfo.IsFixed;
                         car.IsLoaded = carInfo.IsLoaded;
                         car.DefectCodes = carInfo.DefectCodes;
                         car.Product = carInfo.Product;
                         car.Cargo = carInfo.Cargo;
                         car.IsSelected = carInfo.IsSelected;
+                        localChanges.Add(new LocalChange(oldCar, car.Clone()));
                     }
                 }
+            }
+        }
+
+        public bool SaveChangesToDataBase()
+        {
+            if (localChanges.Count > 0)
+            {
+                using (OleDbConnection connection = new OleDbConnection(connectionToStationsDbString))
+                {
+                    try
+                    {
+                        connection.Open();
+
+                        foreach (var updateRequestString in localChanges.GetSQLRequests())
+                        {
+                            using (OleDbCommand command = new OleDbCommand(updateRequestString, connection))
+                            {
+                                // Выполнение запроса
+                                int rowsAffected = command.ExecuteNonQuery();
+
+                                // Проверка на количество затронутых строк (обычно 1)
+                                if (rowsAffected > 0)
+                                {
+                                    Debug.WriteLine("Запись успешно добавлена в базу данных.");
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("Ошибка при добавлении записи в базу данных.");
+                                }
+                            }
+                        }
+                        return true;
+                    }
+                    catch (OleDbException ex)
+                    {
+                        Debug.WriteLine("Error connecting to the database: " + ex.Message);
+                        return false;
+                    }
+                }
+            }
+            else
+            {
+                return false;
             }
         }
 
@@ -114,9 +165,7 @@ namespace AvaloniaApplication2.ViewModels
 
         public void ConnectToDefectCodesDatabase()
         {
-            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\DefectCodes.accdb;";
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            using (OleDbConnection connection = new OleDbConnection(connectionToDefectCodesDbString))
             {
                 try
                 {
@@ -146,9 +195,7 @@ namespace AvaloniaApplication2.ViewModels
 
         public void ConnectToStationsDatabase()
         {
-            string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
-
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            using (OleDbConnection connection = new OleDbConnection(connectionToStationsDbString))
             {
                 try
                 {
@@ -203,7 +250,8 @@ namespace AvaloniaApplication2.ViewModels
                                 string defectCodes = carReader.GetString(carReader.GetOrdinal("DefectCodes"));
                                 string cargo = carReader.GetString(carReader.GetOrdinal("Cargo"));
                                 DateTime arrival = carReader.GetDateTime(carReader.GetOrdinal("Arrival"));
-                                Car car = new Car(carNumber, serialNumber, isFixed, defectCodes, isLoaded, product, cargo, arrival);
+                                int trackId = carReader.GetInt32(carReader.GetOrdinal("TrackID"));
+                                Car car = new Car(carNumber, serialNumber, isFixed, defectCodes, isLoaded, product, cargo, arrival, trackId);
                                 track.AddCar(car);
                             }
                         }
@@ -265,6 +313,60 @@ namespace AvaloniaApplication2.ViewModels
             catch (OleDbException ex)
             {
                 Debug.WriteLine("Error connecting to the database: " + ex.Message);
+            }
+        }
+
+
+        public void UpdateCarNumbers()
+        {
+            using (OleDbConnection connection = new OleDbConnection(connectionToStationsDbString))
+            {
+                try
+                {
+                    var queryString = "SELECT * FROM Cars";
+                    OleDbCommand command = new OleDbCommand(queryString, connection);
+
+                    connection.Open();
+                    OleDbDataReader reader = command.ExecuteReader();
+
+                    while (reader.Read())
+                    {
+                        int carId = reader.GetInt32(0);
+
+                        UpdateCarNumber(connection, carId, 10000 + carId);
+                    }
+                    reader.Close();
+                }
+                catch (OleDbException ex)
+                {
+                    Debug.WriteLine("Error connecting to the database: " + ex.Message);
+                }
+            }
+        }
+
+        private void UpdateCarNumber(OleDbConnection connection, int carId, int newCarNumber)
+        {
+            string updateQuery = "UPDATE Cars SET CarNumber = @NewCarNumber WHERE Код = @CarId";
+            OleDbCommand updateCommand = new OleDbCommand(updateQuery, connection);
+            updateCommand.Parameters.AddWithValue("@NewCarNumber", newCarNumber);
+            updateCommand.Parameters.AddWithValue("@CarId", carId);
+            try
+            {
+                int rowsAffected = updateCommand.ExecuteNonQuery();
+
+                // Проверка на количество затронутых строк (обычно 1)
+                if (rowsAffected > 0)
+                {
+                    Console.WriteLine("Запись успешно добавлена в базу данных.");
+                }
+                else
+                {
+                    Console.WriteLine("Ошибка при добавлении записи в базу данных.");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error updating car number: " + ex.Message);
             }
         }
     }

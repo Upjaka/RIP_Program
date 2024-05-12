@@ -102,5 +102,14 @@ namespace AvaloniaApplication2.Views
                 
             }
         }
+
+        private void SaveMenuItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.SaveChangesToDataBase())
+            {
+                StatusBarTextBlock.Text = "Сохранено";
+            }
+        }
     }
 }

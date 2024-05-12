@@ -205,56 +205,62 @@ public partial class TrackControl : UserControl
 
     private void FocusNextCar(bool savePreviusFocused = false)
     {
-        int nextIndex = focusedCars[focusedCars.Count - 1].Car.SerialNumber % Track.Cars.Count;
-        if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber > focusedCars[1].Car.SerialNumber)
+        if (Track.Cars.Count != 0)
         {
-            nextIndex = focusedCars[0].Car.SerialNumber % Track.Cars.Count;
-        }
-        CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
-        if (!savePreviusFocused) 
-        {
-            UnfocusAllCars();
-            FocusNthCar(nextIndex);
-        }
-        else
-        {
-            if (nextCar.IsFocused)
+            int nextIndex = focusedCars[focusedCars.Count - 1].Car.SerialNumber % Track.Cars.Count;
+            if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber > focusedCars[1].Car.SerialNumber)
             {
-                CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex - 1 + Track.Cars.Count) % Track.Cars.Count];
-                currentCar.IsFocused = false;
-                focusedCars.Remove(currentCar);
+                nextIndex = focusedCars[0].Car.SerialNumber % Track.Cars.Count;
+            }
+            CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
+            if (!savePreviusFocused)
+            {
+                UnfocusAllCars();
+                FocusNthCar(nextIndex);
             }
             else
             {
-                FocusNthCar(nextIndex);
+                if (nextCar.IsFocused)
+                {
+                    CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex - 1 + Track.Cars.Count) % Track.Cars.Count];
+                    currentCar.IsFocused = false;
+                    focusedCars.Remove(currentCar);
+                }
+                else
+                {
+                    FocusNthCar(nextIndex);
+                }
             }
-        }
+        }        
     }
 
     private void FocusPreviousCar(bool savePreviusFocused = false)
     {
-        int nextIndex = (focusedCars[focusedCars.Count - 1].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
-        if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber < focusedCars[1].Car.SerialNumber)
+        if (Track.Cars.Count != 0)
         {
-            nextIndex = (focusedCars[0].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
-        }
-        CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
-        if (!savePreviusFocused)
-        {
-            UnfocusAllCars();
-            FocusNthCar(nextIndex); 
-        }
-        else
-        {
-            if (nextCar.IsFocused)
+            int nextIndex = (focusedCars[focusedCars.Count - 1].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
+            if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber < focusedCars[1].Car.SerialNumber)
             {
-                CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex + 1) % Track.Cars.Count];
-                currentCar.IsFocused = false;
-                focusedCars.Remove(currentCar);
+                nextIndex = (focusedCars[0].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
+            }
+            CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
+            if (!savePreviusFocused)
+            {
+                UnfocusAllCars();
+                FocusNthCar(nextIndex);
             }
             else
             {
-                FocusNthCar(nextIndex);
+                if (nextCar.IsFocused)
+                {
+                    CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex + 1) % Track.Cars.Count];
+                    currentCar.IsFocused = false;
+                    focusedCars.Remove(currentCar);
+                }
+                else
+                {
+                    FocusNthCar(nextIndex);
+                }
             }
         }
     }

@@ -24,7 +24,7 @@
       <Menu DockPanel.Dock="Top">
         <MenuItem Header="Файл">
           <MenuItem Header="Открыть"/>
-          <MenuItem Header="Сохранить"/>
+          <MenuItem x:Name="SaveMenuItem" Header="Сохранить" Click="SaveMenuItem_Click" HotKey="Ctrl+S"/>
           <MenuItem Header="Выйти"/>
         </MenuItem>
         <MenuItem Header="Диспетчер">
@@ -66,9 +66,7 @@
 
     <Border Grid.Row="2" Classes="StatusBar">
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-        <TextBlock>
-          Статус
-        </TextBlock>
+        <TextBlock x:Name="StatusBarTextBlock" Text="Статус"/>
       </StackPanel>
     </Border>
   </Grid>
