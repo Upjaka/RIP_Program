@@ -8,7 +8,8 @@
         Width="400" Height="120" CanResize="False"
         WindowStartupLocation="CenterScreen"
         ExtendClientAreaChromeHints="NoChrome"
-        ExtendClientAreaToDecorationsHint="True">
+        ExtendClientAreaToDecorationsHint="True"
+        Focusable="True">
 
   <Border x:Name="BorderWrapper" BorderBrush="Black" BorderThickness="1">
     <StackPanel x:Name="Wrapper" Orientation="Vertical">
@@ -19,10 +20,12 @@
       <DockPanel Background="LightGray" HorizontalAlignment="Stretch" Height="48">
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                     HorizontalAlignment="Right" Height="50">
-          <Button x:Name="NoButton" Content="Нет" Click="No_Button_Click"
-                  Width="60" HorizontalContentAlignment="Center"/>
-          <Button x:Name="YesButton" Content="Да" Click="Yes_Button_Click"
+          <Button x:Name="YesButton" Content="Да"
                   Width="60" HorizontalContentAlignment="Center" Margin="20, 0, 20, 0"/>
+          <Button x:Name="NoButton" Content="Нет"
+                  Width="60" HorizontalContentAlignment="Center"/>
+          <Button x:Name="CancelButton" Content="Отмена"
+                  Width="80" HorizontalContentAlignment="Center" Margin="20, 0, 40, 0"/>
         </StackPanel>
       </DockPanel>
     </StackPanel>

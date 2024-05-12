@@ -9,7 +9,8 @@
         Title="Редактор района: ... путь: ..."
         Width="775" Height="375"
         MinWidth="770" MinHeight="300"
-        WindowStartupLocation="CenterScreen">
+        WindowStartupLocation="CenterScreen"
+        Closing="TrackEditing_Closing">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
@@ -33,6 +34,6 @@
         </DataGrid>
       </ScrollViewer>
     </Border>
-    <Button Content="Выход" Click="ExitButton_Click" Margin="10, 0, 5, 0"/>
+    <Button x:Name="ExitButton" Content="Выход" Click="ExitButton_Click" Margin="10, 0, 5, 0"/>
   </StackPanel>
 </Window>

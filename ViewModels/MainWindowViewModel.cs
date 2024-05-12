@@ -30,6 +30,10 @@ namespace AvaloniaApplication2.ViewModels
         public Track ?SelectedTrack { get; set; } = null;
         public Station ?SelectedStation { get; set; } = null;
         private ChangeList localChanges;
+        public bool HasUnsavedChanges
+        {
+            get { return localChanges.Count > 0; }
+        }
 
         public MainWindowViewModel()
         {
@@ -75,6 +79,19 @@ namespace AvaloniaApplication2.ViewModels
             }
         }
 
+        public bool HasChanges()
+        {
+            for (int i = 0; i < CarsInfo.Count; i++)
+            {
+                CarInfo carInfo = CarsInfo[i];
+                if (!carInfo.Equals(OldCarsInfo[i]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void ConfirmChanges()
         {
             for (int i = 0; i < CarsInfo.Count; i++)
@@ -96,6 +113,8 @@ namespace AvaloniaApplication2.ViewModels
                     }
                 }
             }
+            CarsInfo.Clear();
+            OldCarsInfo.Clear();
         }
 
         public bool SaveChangesToDataBase()
@@ -126,6 +145,7 @@ namespace AvaloniaApplication2.ViewModels
                                 }
                             }
                         }
+                        localChanges.Clear();
                         return true;
                     }
                     catch (OleDbException ex)

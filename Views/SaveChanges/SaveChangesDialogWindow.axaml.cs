@@ -1,7 +1,9 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Input;
 using Avalonia.Markup.Xaml;
 using AvaloniaApplication2.ViewModels;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace AvaloniaApplication2;
 
@@ -18,22 +20,5 @@ public partial class SaveChangesDialogWindow : Window
     {
         viewModel = dataContext;
         InitializeComponent();
-    }
-
-    private void No_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        viewModel.CancelChanges();
-        CloseWindow();
-    }
-
-    private void Yes_Button_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
-    {
-        viewModel.ConfirmChanges();
-        CloseWindow();
-    }
-
-    private void CloseWindow()
-    {
-        Close();
     }
 }

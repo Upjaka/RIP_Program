@@ -111,5 +111,41 @@ namespace AvaloniaApplication2.Views
                 StatusBarTextBlock.Text = "Сохранено";
             }
         }
+
+        private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
+        {
+            if (((MainWindowViewModel)DataContext).HasUnsavedChanges)
+            {
+                e.Cancel = true;
+
+                SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow((MainWindowViewModel)DataContext);
+                saveChangesDialogWindow.YesButton.Click += (s, e) =>
+                {
+                    ((MainWindowViewModel)DataContext).SaveChangesToDataBase();
+                    saveChangesDialogWindow.Close();
+                    Close();
+                };
+                saveChangesDialogWindow.NoButton.Click += (s, e) =>
+                {
+                    saveChangesDialogWindow.Close();
+
+                    Close();
+                };
+                saveChangesDialogWindow.CancelButton.Click += (s, e) =>
+                {
+                    saveChangesDialogWindow.Close();
+                };
+                await saveChangesDialogWindow.ShowDialog<bool>(this);
+            }
+            CloseAllStationWindows();
+        }
+
+        private void CloseAllStationWindows()
+        {
+            foreach (StationStateWindow window in stationWindows)
+            {
+                window.Close();
+            }
+        }
     }
 }

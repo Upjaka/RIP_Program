@@ -27,14 +27,62 @@ public partial class TrackEditingDialogWindow : Window
         }
     }
 
-    private void ExitButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void ExitButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow((MainWindowViewModel)DataContext);
-        saveChangesDialogWindow.Closed += (sender, args) =>
+        MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+        
+        if (viewModel.HasChanges())
         {
-            mainWindow.UpdateSelectedTrack();
-            Close();
-        };
-        saveChangesDialogWindow.ShowDialog(this);
+            SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow((MainWindowViewModel)DataContext);
+            saveChangesDialogWindow.YesButton.Click += (s, e) =>
+            {
+                ((MainWindowViewModel)DataContext).ConfirmChanges();
+                saveChangesDialogWindow.Close();
+                mainWindow.UpdateSelectedTrack();
+                Close();
+            };
+            saveChangesDialogWindow.NoButton.Click += (s, e) =>
+            {
+                ((MainWindowViewModel)DataContext).CancelChanges();
+                saveChangesDialogWindow.Close();
+                mainWindow.UpdateSelectedTrack();
+                Close();
+            };
+            saveChangesDialogWindow.CancelButton.Click += (s, e) =>
+            {
+                saveChangesDialogWindow.Close();
+            };
+            await saveChangesDialogWindow.ShowDialog<bool>(this);
+        }
+    }
+
+    private async void TrackEditing_Closing(object? sender, Avalonia.Controls.WindowClosingEventArgs args)
+    {
+        MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+
+        if (viewModel.HasChanges())
+        {
+            args.Cancel = true;
+
+            SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow((MainWindowViewModel)DataContext);
+            saveChangesDialogWindow.YesButton.Click += (s, e) =>
+            {
+                ((MainWindowViewModel)DataContext).ConfirmChanges();
+                saveChangesDialogWindow.Close();
+                mainWindow.UpdateSelectedTrack();
+                Close();
+            };
+            saveChangesDialogWindow.NoButton.Click += (s, e) =>
+            {
+                ((MainWindowViewModel)DataContext).CancelChanges();
+                saveChangesDialogWindow.Close();
+                Close();
+            };
+            saveChangesDialogWindow.CancelButton.Click += (s, e) =>
+            {
+                saveChangesDialogWindow.Close();
+            };
+            await saveChangesDialogWindow.ShowDialog<bool>(this);
+        }
     }
 }

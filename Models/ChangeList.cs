@@ -28,6 +28,7 @@ namespace AvaloniaApplication2.Models
                 if (localChange.HasSameCar(change))
                 {
                     localChanges.Remove(localChange);
+                    break;
                 }
             }
             localChanges.Add(change);
@@ -41,6 +42,11 @@ namespace AvaloniaApplication2.Models
                 result.Add(change.GetSQL());
             }
             return result;
+        }
+
+        public void Clear()
+        {
+            localChanges.Clear();
         }
     }
 }
