@@ -10,7 +10,7 @@ namespace AvaloniaApplication2.CustomControls;
 public partial class CarControl : UserControl
 {
     private TrackControl parentControl;
-    public bool IsEmpty { get; }
+    public bool IsEmpty { get { return Car == null; } }
     public Car Car { get; set; }
     public bool IsSelected 
     {
@@ -52,14 +52,12 @@ public partial class CarControl : UserControl
     {
         InitializeComponent();
         CarRectangle.IsVisible = false;
-        IsEmpty = true;
     }
 
     public CarControl(Car car, TrackControl parent)
     {
         parentControl = parent;
         Car = car;
-        IsEmpty = false;
         InitializeComponent();
 
         AddHandler(PointerPressedEvent, CarCotrol_PointerPressed, RoutingStrategies.Bubble);
@@ -67,8 +65,15 @@ public partial class CarControl : UserControl
         AssignStyles();
     }
 
-    public void UpdateCar()
+    public void UpdateCar(Car car)
     {
+        if (Car == null)
+        {
+            Car = car;
+        }
+
+        CarRectangle.IsVisible = !IsEmpty;
+
         CarRectangle.Classes.RemoveAll(["Fixed", "Loaded", "Empty"]);
         CarBorderWrapper.Classes.Remove("Selected");
         CarRectangle.Classes.Add("Empty");

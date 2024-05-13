@@ -23,15 +23,21 @@ namespace AvaloniaApplication2.Models
 
         public void Add(LocalChange change)
         {
-            foreach (var localChange in localChanges)
+            if (change.IsInsert)
             {
-                if (localChange.HasSameCar(change))
-                {
-                    localChanges.Remove(localChange);
-                    break;
-                }
+                localChanges.Add(change);
             }
-            localChanges.Add(change);
+            else
+            {
+                foreach (var localChange in localChanges)
+                {
+                    if (localChange.HasSameCar(change))
+                    {
+                        localChange.SetNewCar(change);
+                        break;
+                    }
+                }
+            }            
         }
 
         public List<string> GetSQLRequests()

@@ -24,19 +24,19 @@
     <DockPanel Grid.Row="0" VerticalAlignment="Top" Classes="NavMenu">
       <Menu DockPanel.Dock="Top">
         <MenuItem Header="Файл">
-          <MenuItem Header="Открыть"/>
+          <MenuItem Header="Открыть" IsEnabled="False"/>
           <MenuItem x:Name="SaveMenuItem" Header="Сохранить" Click="SaveMenuItem_Click" HotKey="Ctrl+S"/>
           <MenuItem Header="Выйти"/>
         </MenuItem>
         <MenuItem Header="Диспетчер">
-          <MenuItem Header="Архив движения"/>
-          <MenuItem Header="Приход в район" Click="NewComing_Click"/>
-          <MenuItem Header="Редактор-путь" Click="TrackEdit_Click"/>
-          <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click"/>
-          <MenuItem Header="Паспорртные данные"/>
-          <MenuItem Header="Натурный лист"/>
-          <MenuItem Header="Натурный лист №2"/>
-          <MenuItem Header="Натурный лист №3"/>
+          <MenuItem Header="Архив движения" IsEnabled="False"/>
+          <MenuItem x:Name="NewComing_MenuItem" Header="Приход в район" Click="NewComing_Click" IsEnabled="False"/>
+          <MenuItem x:Name="TrackEdit_MenuItem" Header="Редактор-путь" Click="TrackEdit_Click" IsEnabled="False"/>
+          <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click" IsEnabled="False"/>
+          <MenuItem Header="Паспорртные данные" IsEnabled="False"/>
+          <MenuItem Header="Натурный лист" IsEnabled="False"/>
+          <MenuItem Header="Натурный лист №2" IsEnabled="False"/>
+          <MenuItem Header="Натурный лист №3" IsEnabled="False"/>
           <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>
         </MenuItem>
         <MenuItem Header="Район">
@@ -51,8 +51,8 @@
           <!--  -->
         </MenuItem>
         <MenuItem Header="Справка">
-          <MenuItem Header="Просмотр справки"/>
-          <MenuItem Header="О программе"/>
+          <MenuItem Header="Просмотр справки" IsEnabled="False"/>
+          <MenuItem Header="О программе" IsEnabled="False"/>
         </MenuItem>
       </Menu>
     </DockPanel>

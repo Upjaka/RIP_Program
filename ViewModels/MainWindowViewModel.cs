@@ -14,11 +14,14 @@ namespace AvaloniaApplication2.ViewModels
         private static readonly string connectionToDefectCodesDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\DefectCodes.accdb;";
         private static readonly string connectionToStationsDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
 
+        private ChangeList localChanges;
+
         public string Greetings => "Welcome to Avalonia!";
         public string Loaded => "Груж.";
         public string NotLoaded => "Незагруж.";
         public string Station { get; set; }
         public string TrackNumber { get; set; }
+        public Track NewComingTrack { get; set; }
         public bool IsCarLoaded { get; set; }
         public string CarNumber { get; set; }
         public int CarId { get; set; }
@@ -29,7 +32,8 @@ namespace AvaloniaApplication2.ViewModels
         public List<Station> Stations { get; } = new List<Station>();
         public Track ?SelectedTrack { get; set; } = null;
         public Station ?SelectedStation { get; set; } = null;
-        private ChangeList localChanges;
+        
+
         public bool HasUnsavedChanges
         {
             get { return localChanges.Count > 0; }
@@ -90,6 +94,47 @@ namespace AvaloniaApplication2.ViewModels
                 }
             }
             return false;
+        }
+
+        public bool IsCarNumberCorrect(int number)
+        {
+            foreach (var station in Stations)
+            {
+                foreach (var track in station.Tracks)
+                {
+                    foreach (var car in track.Cars)
+                    {
+                        if (Convert.ToInt32(car.CarNumber) == number)
+                        {
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
+
+        public void AddNewCar(List<Car> cars)
+        {
+            Track? selectedTrack = null;
+
+            foreach (var track in SelectedStation.Tracks)
+            {
+                if (track.TrackId == cars[0].TrackId)
+                {
+                    selectedTrack = track;
+                }
+            }
+
+            if (selectedTrack != null)
+            {
+                foreach (var car in cars)
+                {
+                    selectedTrack.AddCar(car);
+                    LocalChange change = new LocalChange(car);
+                    localChanges.Add(change);
+                }
+            }            
         }
 
         public void ConfirmChanges()

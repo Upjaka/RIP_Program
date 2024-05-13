@@ -56,7 +56,7 @@ public partial class TrackControl : UserControl
 
             if (i < track.Cars.Count)
             {
-                TrackGrid.Children.Add(new CarControl(track.Cars[i], this)
+                TrackGrid.Children.Add(new CarControl(track.GetCar(i + 1), this)
                 {
                     [Grid.RowProperty] = 0,
                     [Grid.ColumnProperty] = i,
@@ -119,9 +119,9 @@ public partial class TrackControl : UserControl
 
     public void UpdateTrack()
     {
-        for (int i = 0; i < Track.Cars.Count; i++)
+        foreach (Car car in Track.Cars)
         {
-            ((CarControl)TrackGrid.Children[i]).UpdateCar();
+            ((CarControl)TrackGrid.Children[car.SerialNumber - 1]).UpdateCar(car);
         }
     }
 

@@ -3,24 +3,18 @@ using AvaloniaApplication2.ViewModels;
 using AvaloniaApplication2.CustomControls;
 using Avalonia.Input;
 using System.Collections.Generic;
+using AvaloniaApplication2.Models;
 
 namespace AvaloniaApplication2.Views
 {
     public partial class MainWindow : Window
     {
-        public string receivedButtonContent { get; set; }
         private List<StationStateWindow> stationWindows;
 
         public MainWindow()
         {
             InitializeComponent();
             stationWindows = new List<StationStateWindow>();
-        }
-
-        public void UpdateButtonContent(string content)
-        {
-            // Assuming there is a button named "receivedButton"
-            receivedButtonContent = content;
         }
 
         private async void NewComing_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -55,8 +49,13 @@ namespace AvaloniaApplication2.Views
             else
             {
                 stationWindows.Add(stationWindow);
+                stationWindow.Closed += (s, e) =>
+                {
+                    CheckStations();
+                };
                 stationWindow.Show();
             }
+            CheckStations();
         }
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -83,23 +82,15 @@ namespace AvaloniaApplication2.Views
             Workplace.Children.Remove(stationControl);
         }
 
-        public void UpdateSelectedTrack()
+        public void UpdateSelectedTrack(int trackNumber)
         {
             MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
             foreach (StationStateWindow stationWindow in stationWindows)
             {
                 if (stationWindow.StaionControl.Station.StationName == viewModel.SelectedStation.StationName)
                 {
-                    stationWindow.StaionControl.UpdateTrack(viewModel.SelectedTrack);
+                    stationWindow.StaionControl.UpdateTrack(trackNumber);
                 }
-            }
-        }
-
-        private void Grid_KeyDown(object? sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Tab)
-            {
-                
             }
         }
 
@@ -145,6 +136,15 @@ namespace AvaloniaApplication2.Views
             foreach (StationStateWindow window in stationWindows)
             {
                 window.Close();
+            }
+        }
+
+        public void CheckStations()
+        {
+            if (stationWindows.Count > 0)
+            {
+                NewComing_MenuItem.IsEnabled = true;
+                TrackEdit_MenuItem.IsEnabled = true;
             }
         }
     }

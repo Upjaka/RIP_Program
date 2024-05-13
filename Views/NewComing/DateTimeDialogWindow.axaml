@@ -21,8 +21,8 @@
       </Grid>
     </Border>
     <Grid HorizontalAlignment="Stretch" RowDefinitions="auto" ColumnDefinitions="*, *" Margin="10, 0, 10, 0">
-      <Button Grid.Row="0" Grid.Column="0" Content="ОК" HorizontalAlignment="Center" Click="OkButton_Click"/>
-      <Button Grid.Row="0" Grid.Column="1" Content="Отмена" HorizontalAlignment="Center" Click="CancelButton_Click"/>
+      <Button x:Name="OkButton" Grid.Row="0" Grid.Column="0" Content="ОК" HorizontalAlignment="Center"/>
+      <Button x:Name="CancelButton" Grid.Row="0" Grid.Column="1" Content="Отмена" HorizontalAlignment="Center"/>
     </Grid>
   </StackPanel>
 </Window>

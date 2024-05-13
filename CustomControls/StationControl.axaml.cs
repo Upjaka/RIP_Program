@@ -76,9 +76,15 @@ public partial class StationControl : UserControl
         }
     }
 
-    public void UpdateTrack(Track track)
+    public void UpdateTrack(int trackNumber)
     {
-        selectedTrack.UpdateTrack();
+        foreach (TrackControl trackControl in TracksPanel.Children)
+        {
+            if (trackControl.Track.TrackNumber == trackNumber)
+            {
+                trackControl.UpdateTrack();
+            }
+        }
     }
 
     private void StationControl_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)

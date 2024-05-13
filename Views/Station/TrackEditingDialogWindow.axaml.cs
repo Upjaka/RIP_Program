@@ -38,14 +38,14 @@ public partial class TrackEditingDialogWindow : Window
             {
                 ((MainWindowViewModel)DataContext).ConfirmChanges();
                 saveChangesDialogWindow.Close();
-                mainWindow.UpdateSelectedTrack();
+                mainWindow.UpdateSelectedTrack(viewModel.SelectedTrack.TrackId);
                 Close();
             };
             saveChangesDialogWindow.NoButton.Click += (s, e) =>
             {
                 ((MainWindowViewModel)DataContext).CancelChanges();
                 saveChangesDialogWindow.Close();
-                mainWindow.UpdateSelectedTrack();
+                mainWindow.UpdateSelectedTrack(viewModel.SelectedTrack.TrackId);
                 Close();
             };
             saveChangesDialogWindow.CancelButton.Click += (s, e) =>
@@ -64,17 +64,17 @@ public partial class TrackEditingDialogWindow : Window
         {
             args.Cancel = true;
 
-            SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow((MainWindowViewModel)DataContext);
+            SaveChangesDialogWindow saveChangesDialogWindow = new SaveChangesDialogWindow(viewModel);
             saveChangesDialogWindow.YesButton.Click += (s, e) =>
             {
-                ((MainWindowViewModel)DataContext).ConfirmChanges();
+                viewModel.ConfirmChanges();
                 saveChangesDialogWindow.Close();
-                mainWindow.UpdateSelectedTrack();
+                mainWindow.UpdateSelectedTrack(viewModel.SelectedTrack.TrackId);
                 Close();
             };
             saveChangesDialogWindow.NoButton.Click += (s, e) =>
             {
-                ((MainWindowViewModel)DataContext).CancelChanges();
+                viewModel.CancelChanges();
                 saveChangesDialogWindow.Close();
                 Close();
             };

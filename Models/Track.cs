@@ -11,7 +11,7 @@ namespace AvaloniaApplication2.Models
         public int TrackId { get; set; }
         public int TrackNumber { get; set; }
         public int Capacity { get; set; }
-        public List<Car> Cars { get; set; } = new List<Car>();
+        public LinkedList<Car> Cars { get; set; } = new LinkedList<Car>();
 
         public Track(int trackId, int trackNumber, int capacity) 
         {
@@ -34,12 +34,12 @@ namespace AvaloniaApplication2.Models
 
         public void AddCar(Car car)
         {
-            Cars.Add(car);
+            Cars.AddLast(car);
         }
 
         public void AddAllCars(List<Car> cars) 
         {
-            Cars.AddRange(cars);
+            foreach (var car in cars) Cars.AddLast(car);
         }
 
         public void RemoveCar(Car car)

@@ -24,7 +24,13 @@ namespace AvaloniaApplication2.Models
 
         public void AddAllTrack(List<Track> tracks) { Tracks.AddRange(tracks); }
 
-        public Track GetTrackById(int id) { return Tracks[id]; }
+        public Track? GetTrackByNumber(int n) {
+            foreach (Track track in Tracks)
+            {
+                if (track.TrackNumber == n) return track;
+            }
+            return null;
+        }
 
         public override string ToString()
         {

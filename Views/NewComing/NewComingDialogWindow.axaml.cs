@@ -12,54 +12,156 @@ namespace AvaloniaApplication2;
 public partial class NewComingDialogWindow : Window
 {
     private MainWindow mainWindow;
-    private const int DOUBLETAP_INTERVAL = 300;
-    private Stopwatch _stopwatch = new Stopwatch();
 
     public NewComingDialogWindow(MainWindow mainWindow)
     {
         InitializeComponent();
         this.mainWindow = mainWindow;
-    }
+        DataContext = mainWindow.DataContext;
+        AddTracksToTracksPanel();
 
-    private void Track_DoubleTapped(object sender, PointerPressedEventArgs e)
-    {
-        if (e.ClickCount == 2)
-        {
-            if (sender is TextBlock textBlock)
-            {
-                string buttonContent = textBlock.Text.ToString();
-
-                if (mainWindow != null)
-                {
-                    mainWindow.UpdateButtonContent(buttonContent);
-                    MainWindowViewModel viewModel = DataContext as MainWindowViewModel;
-                    if (viewModel != null)
-                    {
-                        viewModel.TrackNumber = buttonContent;
-                    }
-                }
-            }
-            CloseWindow();
-        }
+        KeyDown += NewComing_KeyDown;
     }
 
     private void SaveTrackButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
-        CloseWindow();
-    }
-
-    private void CloseWindow()
-    {
-        var newComing_AddCarDialogWindow = new AddNewCarDialogWindow(mainWindow, (MainWindowViewModel)this.DataContext);
-        newComing_AddCarDialogWindow.ShowDialog(mainWindow);
+        SelectTrack();
         Close();
     }
-
-    /**
-    // Метод для вызова события при закрытии окна с передачей данных
-    private void OnDialogClosed(TrackComing data)
+    
+    private void AddTracksToTracksPanel()
     {
-        DialogClosed?.Invoke(this, data);
+        MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+
+        foreach (var track in viewModel.SelectedStation.Tracks)
+        {
+            Border trackBorder = new Border() 
+            { 
+                Name = "TrackBorder" + track.TrackNumber,
+                Classes = { "TrackNumberBorder" }
+            };
+            TextBlock trackNumberTextBlock = new TextBlock()
+            {
+                Text = track.TrackNumber.ToString(),
+                Classes = { "TrackNumberTextBlock" },
+                Margin = new Thickness(3, 0, 0, 0)
+            };
+
+            trackBorder.Child = trackNumberTextBlock;            
+            TrackNumbersPanel.Children.Add(trackBorder);
+        }
     }
-    */
+
+    private void Track_DoubleTapped(object sender, PointerPressedEventArgs e)
+    {
+        TextBlock textBlock = ((Border)sender).Child as TextBlock;
+        ((MainWindowViewModel)DataContext).TrackNumber = textBlock.Text;
+        
+        foreach (Border trackBorder in TrackNumbersPanel.Children)
+        {
+            Debug.WriteLine(trackBorder.Classes);
+            trackBorder.Classes.Remove("Selected");
+        }
+        ((Border)sender).Classes.Add("Selected");
+
+        if (e.ClickCount == 2)
+        {
+            SelectTrack();
+            Close();
+        }
+    }
+
+    private void NewComing_KeyDown(object sender, KeyEventArgs e)
+    {
+        switch (e.Key)
+        {
+            case Key.Enter:
+                SelectTrack();
+                Close();
+                break;
+            case Key.Tab:
+                if (e.KeyModifiers == KeyModifiers.Shift)
+                {
+                    SelectPreviousTrack();
+                }
+                else
+                {
+                    SelectNextTrack();
+                }
+                break;
+
+            case Key.Down:
+                if (e.KeyModifiers == KeyModifiers.None)
+                {
+                    SelectNextTrack();
+                }
+                break;
+
+            case Key.Up:
+                if (e.KeyModifiers == KeyModifiers.None)
+                {
+                    SelectPreviousTrack();
+                }
+                break;
+        }
+    }
+
+    public void SelectNextTrack()
+    {
+        Controls tracks = TrackNumbersPanel.Children;
+        bool selected = false;
+
+        for (int i = 0; i < TrackNumbersPanel.Children.Count; i++)
+        {
+            if (((Border)tracks[i]).Classes.Contains("Selected"))
+            {
+                ((Border)tracks[i]).Classes.Remove("Selected");
+                ((Border)tracks[(i + 1) % tracks.Count]).Classes.Add("Selected");
+                selected = true;
+                break;
+            }
+        }
+        if (!selected)
+        {
+            ((Border)tracks[0]).Classes.Add("Selected");
+        }
+    }
+
+    public void SelectPreviousTrack()
+    {
+        Controls tracks = TrackNumbersPanel.Children;
+        bool selected = false;
+
+        for (int i = tracks.Count - 1; i >= 0; i--)
+        {
+            if (((Border)tracks[i]).Classes.Contains("Selected"))
+            {
+                ((Border)tracks[i]).Classes.Remove("Selected");
+                ((Border)tracks[(i - 1 + tracks.Count) % tracks.Count]).Classes.Add("Selected");
+                selected = true;
+                break;
+            }
+        }
+        if (!selected)
+        {
+            ((Border)tracks[tracks.Count - 1]).Classes.Add("Selected");
+        }
+    }
+
+    private void SelectTrack()
+    {
+        MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
+        Controls tracks = TrackNumbersPanel.Children;
+
+        foreach (Border trackBorder in TrackNumbersPanel.Children)
+        {
+            if (trackBorder.Classes.Contains("Selected"))
+            {
+                viewModel.NewComingTrack = viewModel.SelectedStation.GetTrackByNumber(Convert.ToInt32(((TextBlock)trackBorder.Child).Text));
+            }
+        }
+
+        AddNewCarDialogWindow addNewCarWindow = new AddNewCarDialogWindow();
+        addNewCarWindow.ShowDialog(mainWindow);
+    }
 }
