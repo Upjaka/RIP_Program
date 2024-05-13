@@ -47,12 +47,14 @@ public partial class NewComingDialogWindow : Window
                 Margin = new Thickness(3, 0, 0, 0)
             };
 
+            trackBorder.PointerPressed += TrackBorder_PointerPressed;
+
             trackBorder.Child = trackNumberTextBlock;            
             TrackNumbersPanel.Children.Add(trackBorder);
         }
     }
 
-    private void Track_DoubleTapped(object sender, PointerPressedEventArgs e)
+    private void TrackBorder_PointerPressed(object sender, PointerPressedEventArgs e)
     {
         TextBlock textBlock = ((Border)sender).Child as TextBlock;
         ((MainWindowViewModel)DataContext).TrackNumber = textBlock.Text;
