@@ -54,9 +54,13 @@ public partial class TrackEditingDialogWindow : Window
             };
             await saveChangesDialogWindow.ShowDialog<bool>(this);
         }
+        else
+        {
+            Close();
+        }
     }
 
-    private async void TrackEditing_Closing(object? sender, Avalonia.Controls.WindowClosingEventArgs args)
+    private async void TrackEditing_Closing(object? sender, WindowClosingEventArgs args)
     {
         MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
 

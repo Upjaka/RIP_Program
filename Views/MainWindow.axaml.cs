@@ -114,13 +114,12 @@ namespace AvaloniaApplication2.Views
                 {
                     ((MainWindowViewModel)DataContext).SaveChangesToDataBase();
                     saveChangesDialogWindow.Close();
+                    CloseAllStationWindows();
                     Close();
                 };
                 saveChangesDialogWindow.NoButton.Click += (s, e) =>
                 {
                     saveChangesDialogWindow.Close();
-
-                    Close();
                 };
                 saveChangesDialogWindow.CancelButton.Click += (s, e) =>
                 {
@@ -128,7 +127,6 @@ namespace AvaloniaApplication2.Views
                 };
                 await saveChangesDialogWindow.ShowDialog<bool>(this);
             }
-            CloseAllStationWindows();
         }
 
         private void CloseAllStationWindows()

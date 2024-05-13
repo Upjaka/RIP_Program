@@ -37,6 +37,7 @@ namespace AvaloniaApplication2.Models
                         break;
                     }
                 }
+                localChanges.Add(change);
             }            
         }
 
