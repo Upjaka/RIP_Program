@@ -110,7 +110,7 @@ public partial class AddNewCarDialogWindow : Window
             }
             viewModel.AddNewCar(newCarsList);
 
-            ((MainWindow)Owner).UpdateSelectedTrack(viewModel.NewComingTrack.TrackNumber);
+            ((MainWindow)Owner).UpdateTrack(viewModel.NewComingTrack);
             dateTimeDialog.Close();
             Close();
         };

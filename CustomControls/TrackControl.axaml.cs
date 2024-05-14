@@ -114,6 +114,7 @@ public partial class TrackControl : UserControl
         IsSelected = true;
         TrackBorderWrapper.BorderThickness = new Thickness(1);
         FocusNthCar(focusedCarNumber);
+        (DataContext as MainWindowViewModel).SelectedTrack = Track;
     }
 
     public int Unselect()
@@ -121,6 +122,7 @@ public partial class TrackControl : UserControl
         TrackBorderWrapper.BorderThickness = new Thickness(0);
         int lastFocusedCarIndex = (focusedCars.Count == 0) ? 0 : focusedCars[focusedCars.Count - 1].Car.SerialNumber - 1;
         UnfocusAllCars();
+        (DataContext as MainWindowViewModel).SelectedTrack = null;
         return lastFocusedCarIndex;
     }
 
@@ -131,9 +133,21 @@ public partial class TrackControl : UserControl
         {
             ((CarControl)TrackGrid.Children[car.SerialNumber - 1]).UpdateCar(car);
         }
+        for (int i = Track.Cars.Count; i < TrackGrid.Children.Count; i++)
+        {
+            ((CarControl)TrackGrid.Children[i]).UpdateCar(null);
+        }
+        focusedCars.Clear();
+        foreach (CarControl carControl in TrackGrid.Children)
+        {
+            if (carControl.IsFocused)
+            {
+                focusedCars.Add(carControl);
+            }
+        }
     }
 
-    public void TrackControl_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+    public void TrackControl_KeyDown(object? sender, KeyEventArgs e)
     {
         switch (e.Key)
         {
@@ -293,7 +307,7 @@ public partial class TrackControl : UserControl
 
     private void MoveCarsMenuItem_Click(object? sender, RoutedEventArgs e)
     {
-        ParentWindow.MoveCars();
+        ParentWindow.MoveCars_Clicked();
     }
 
     private void DevelopTrackMenuItem_Click(object? sender, RoutedEventArgs e)

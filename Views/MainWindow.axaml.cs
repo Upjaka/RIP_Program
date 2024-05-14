@@ -83,7 +83,7 @@ namespace AvaloniaApplication2.Views
 
             foreach (StationStateWindow stationStateWindow in stationWindows)
             {
-                if (stationStateWindow.StaionControl.Station.StationName == name)
+                if (stationStateWindow.StationControl.Station.StationName == name)
                 {
                     openedStationWindow = stationStateWindow;
                 }
@@ -133,9 +133,20 @@ namespace AvaloniaApplication2.Views
             MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
             foreach (StationStateWindow stationWindow in stationWindows)
             {
-                if (stationWindow.StaionControl.Station.StationName == viewModel.SelectedStation.StationName)
+                if (stationWindow.StationControl.Station.StationName == viewModel.SelectedStation.StationName)
                 {
-                    stationWindow.StaionControl.UpdateTrack(trackNumber);
+                    stationWindow.StationControl.UpdateTrack(trackNumber);
+                }
+            }
+        }
+
+        public void UpdateTrack(Track track)
+        {
+            foreach (StationStateWindow stationWindow in stationWindows)
+            {
+                if (stationWindow.Station.StationId == track.StationId)
+                {
+                    stationWindow.UpdateTrack(track);
                 }
             }
         }
@@ -166,6 +177,8 @@ namespace AvaloniaApplication2.Views
                 saveChangesDialogWindow.NoButton.Click += (s, e) =>
                 {
                     saveChangesDialogWindow.Close();
+                    viewModel.ClearChanges();
+                    Close();
                 };
                 saveChangesDialogWindow.CancelButton.Click += (s, e) =>
                 {

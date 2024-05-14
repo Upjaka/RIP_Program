@@ -14,6 +14,7 @@ public partial class StationControl : UserControl
     public StationStateWindow ParentWindow { get; }
 
     private TrackControl? selectedTrack;
+    public TrackControl? SelectedTrack { get { return selectedTrack; } }
     public Station Station { get; }
 
     public StationControl()
@@ -168,6 +169,7 @@ public partial class StationControl : UserControl
         {
             selectedTrack = (TrackControl)TracksPanel.Children[TracksPanel.Children.Count - 1];
             selectedTrack.Select();
+
         }
     }
 

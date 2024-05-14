@@ -5,89 +5,54 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.MoveCarsDialogWindow"
         Title="Перем. из: ..."
-        Width="325" Height="300" CanResize="False">
+        Width="350" Height="300" CanResize="False"
+        Focusable="True">
+
+  <Window.Styles>
+    <Style Selector="Border.StationBorder">
+      <Setter Property="Background" Value="White"/>
+    </Style>
+    <Style Selector="Border.StationBorder:pointerover">
+      <Setter Property="Background" Value="LightBlue"/>
+    </Style>
+    <Style Selector="Border.StationBorder.Selected">
+      <Setter Property="Background" Value="LightBlue"/>
+    </Style>
+
+    <Style Selector="Border.TrackNumberBorder">
+      <Setter Property="Background" Value="White"/>
+    </Style>
+    <Style Selector="Border.TrackNumberBorder:pointerover">
+      <Setter Property="Background" Value="LightBlue"/>
+    </Style>
+    <Style Selector="Border.TrackNumberBorder.Selected">
+      <Setter Property="Background" Value="LightBlue"/>
+    </Style>
+  </Window.Styles>
   
   <StackPanel x:Name="Wrapper" Orientation="Vertical" Background="LightGray">
-    <StackPanel x:Name="Destination" Orientation="Horizontal" Margin="10">
-      <StackPanel x:Name="ToSation" Orientation="Vertical">
+    <StackPanel x:Name="DestinationPanel" Orientation="Horizontal" Margin="10">
+      <StackPanel x:Name="ToSationPanel" Orientation="Vertical">
         <TextBlock Text="В район:"/>
-        <ScrollViewer Background="White" Margin="10, 0, 0, 0" Width="150" Height="160">
-          <Grid x:Name="Stations" Margin="5">
-            <Grid.ColumnDefinitions>
-              <ColumnDefinition Width="*"/>
-              <ColumnDefinition Width="5*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="0" Grid.Row="0" Grid.Column="0"/>
-            <TextBlock Text="Тобольск" Grid.Row="0" Grid.Column="1"/>
-            <TextBlock Text="1" Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="Денисовка" Grid.Row="1" Grid.Column="1"/>
-            <TextBlock Text="2" Grid.Row="2" Grid.Column="0"/>
-            <TextBlock Text="ТСБ Северная" Grid.Row="2" Grid.Column="1"/>
-            <TextBlock Text="3" Grid.Row="3" Grid.Column="0"/>
-            <TextBlock Text="ТСБ Южная" Grid.Row="3" Grid.Column="1"/>
-            <TextBlock Text="4" Grid.Row="4" Grid.Column="0"/>
-            <TextBlock Text="Южная СНЭ" Grid.Row="4" Grid.Column="1"/>
-            <TextBlock Text="5" Grid.Row="5" Grid.Column="0"/>
-            <TextBlock Text="База оборуд." Grid.Row="5" Grid.Column="1"/>
-            <TextBlock Text="6" Grid.Row="6" Grid.Column="0"/>
-            <TextBlock Text="Стройбаза" Grid.Row="6" Grid.Column="1"/>
-            <TextBlock Text="7" Grid.Row="7" Grid.Column="0"/>
-            <TextBlock Text="ТЭЦ" Grid.Row="7" Grid.Column="1"/>
-            <TextBlock Text="8" Grid.Row="8" Grid.Column="0"/>
-            <TextBlock Text="РИП пути 1-8" Grid.Row="8" Grid.Column="1"/>
-            <TextBlock Text="9" Grid.Row="9" Grid.Column="0"/>
-            <TextBlock Text="РИП пути 9-20" Grid.Row="9" Grid.Column="1"/>
-          </Grid>
+        <ScrollViewer Background="White" Margin="10, 0, 0, 0" Width="170" Height="160" Focusable="True" TabIndex="1">
+          <StackPanel x:Name="StationsListPanel" Orientation="Vertical"/>
         </ScrollViewer>
       </StackPanel>
       <StackPanel x:Name="ToTrack" Orientation="Vertical" Margin="60, 0, 0, 0">
         <TextBlock Text="На путь:"/>
-        <ScrollViewer Background="White"  Margin="5, 0, 0, 0" Width="42" Height="160">
-          <Grid x:Name="Tracks" ColumnDefinitions="*" Margin="5">
-            <Grid.RowDefinitions>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-              <RowDefinition Height="auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock Text="1" Grid.Row="0" Grid.Column="0"/>
-            <TextBlock Text="2" Grid.Row="1" Grid.Column="0"/>
-            <TextBlock Text="3" Grid.Row="2" Grid.Column="0"/>
-            <TextBlock Text="4" Grid.Row="3" Grid.Column="0"/>
-            <TextBlock Text="5" Grid.Row="4" Grid.Column="0"/>
-            <TextBlock Text="6" Grid.Row="5" Grid.Column="0"/>
-            <TextBlock Text="7" Grid.Row="6" Grid.Column="0"/>
-            <TextBlock Text="8" Grid.Row="7" Grid.Column="0"/>
-            <TextBlock Text="22" Grid.Row="8" Grid.Column="0"/>
-          </Grid>
+        <ScrollViewer Background="White"  Margin="5, 0, 0, 0" Width="42" Height="160" Focusable="True" TabIndex="2">
+          <StackPanel x:Name="TracksListPanel" Orientation="Vertical"/>
         </ScrollViewer>
       </StackPanel>
     </StackPanel>
     <StackPanel x:Name="TrackSide" Orientation="Horizontal" Margin="10, 10, 5, 5">
-      <TextBlock Text="Сторона подачи на путь" VerticalAlignment="Center"/>
-      <CheckBox Content="четная" IsChecked="True" Margin="10, 0, 0, 0"/>
+      <TextBlock Text="Сторона подачи на путь:" VerticalAlignment="Center"/>
+      <CheckBox x:Name="MovingSideCheckBox" Content="четная" IsChecked="True" Margin="10, 0, 0, 0" Focusable="True" TabIndex="3"/>
     </StackPanel>
     <Grid x:Name="Buttons" ColumnDefinitions="*, *, *" Margin="10, 10, 0, 0">
-      <Button Grid.Column="0" Content="Взгляд"/>
-      <Button Grid.Column="1" Content="ОК" Click="OkButton_Click" Margin="15, 0, 0, 0"/>
-      <Button Grid.Column="2" Content="Отменить" Click="CancelButton_Click"/>
+      <Button Grid.Column="0" Content="Взгляд" Focusable="True" TabIndex="4"/>
+      <Button Grid.Column="1" Content="ОК" Focusable="True" TabIndex="5" Click="OkButton_Click" Margin="15, 0, 0, 0"/>
+      <Button Grid.Column="2" Content="Отменить" Focusable="True" TabIndex="6" Click="CancelButton_Click"/>
     </Grid>
   </StackPanel>
 </Window>

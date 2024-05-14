@@ -14,7 +14,7 @@ namespace AvaloniaApplication2;
 public partial class StationStateWindow : Window
 {
     public Station Station { get; }
-    public StationControl StaionControl;
+    public StationControl StationControl;
 
     public StationStateWindow(Station station, MainWindowViewModel dataContext)
     {
@@ -22,7 +22,7 @@ public partial class StationStateWindow : Window
         Station = station;
 
         StationControl stationControl = new StationControl(this, Station);
-        StaionControl = stationControl;
+        StationControl = stationControl;
 
         InitializeComponent();
 
@@ -30,31 +30,43 @@ public partial class StationStateWindow : Window
 
         Title = Station.StationName;
 
-        HotKeyManager.SetHotKey(StaionControl, new KeyGesture(Key.Tab));
+        HotKeyManager.SetHotKey(StationControl, new KeyGesture(Key.Tab));
 
         AddHandler(KeyDownEvent, StationWindow_KeyDown, RoutingStrategies.Tunnel);
     }
 
     protected void StationWindow_KeyDown(object? sender, KeyEventArgs e)
     {
-        StaionControl.StationControl_KeyDown(this, e);
+        StationControl.StationControl_KeyDown(this, e);
     }
 
     private void StationWindow_SizeChanged(object? sender, SizeChangedEventArgs e)
     {
-        StaionControl.Width = Width;
-        StaionControl.Height = Height;
+        StationControl.Width = Width;
+        StationControl.Height = Height;
     }
 
     private void StationWindow_Activated(object? sender, EventArgs e)
     {
-        ((MainWindowViewModel)DataContext).SelectedStation = StaionControl.Station;
+        ((MainWindowViewModel)DataContext).SelectedStation = StationControl.Station;
     }
 
-    public void MoveCars()
+    public void MoveCars_Clicked()
     {
         MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow();
 
         moveCarsDialogWindow.ShowDialog(this);
+    }
+
+    public void UpdateTrack(Track selectedTrack)
+    {
+        if (selectedTrack.StationId == Station.StationId)
+        {
+            StationControl.UpdateTrack(selectedTrack.TrackNumber);
+        }
+        else
+        {
+            (DataContext as MainWindowViewModel).MainWindow.UpdateTrack(selectedTrack);
+        }
     }
 }

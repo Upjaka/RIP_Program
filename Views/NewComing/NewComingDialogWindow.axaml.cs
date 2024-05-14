@@ -153,7 +153,6 @@ public partial class NewComingDialogWindow : Window
     private void SelectTrack()
     {
         MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
-        Controls tracks = TrackNumbersPanel.Children;
 
         foreach (Border trackBorder in TrackNumbersPanel.Children)
         {

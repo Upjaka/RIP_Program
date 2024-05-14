@@ -34,7 +34,8 @@ namespace AvaloniaApplication2.ViewModels
         public List<Station> Stations { get; } = new List<Station>();
         public Track ?SelectedTrack { get; set; } = null;
         public Station ?SelectedStation { get; set; } = null;
-        
+        public List<Car> movingCarsList {  get; set; }
+
 
         public bool HasUnsavedChanges
         {
@@ -132,7 +133,7 @@ namespace AvaloniaApplication2.ViewModels
             {
                 foreach (var car in cars)
                 {
-                    selectedTrack.AddCar(car);
+                    selectedTrack.AddLast(car);
                     LocalChange change = new LocalChange(car);
                     localChanges.Add(change);
                 }
@@ -162,6 +163,11 @@ namespace AvaloniaApplication2.ViewModels
             }
             CarsInfo.Clear();
             OldCarsInfo.Clear();
+        }
+
+        public void ClearChanges()
+        {
+            localChanges.Clear();
         }
 
         public bool SaveChangesToDataBase()
@@ -230,6 +236,25 @@ namespace AvaloniaApplication2.ViewModels
             return 0;
         }
 
+        public void MoveCars(Track destinationTrack, bool IsFirst = false)
+        {
+            List<Car> selectedCars = SelectedTrack.GetSelectedCars();
+
+            if (destinationTrack.Cars.Count + selectedCars.Count <= destinationTrack.Capacity)
+            {
+                SelectedTrack.RemoveAllCars(selectedCars);
+
+                if (!IsFirst)
+                {
+                    destinationTrack.AddLast(selectedCars);
+                }
+                else
+                {
+                    destinationTrack.AddFirst(selectedCars);
+                }
+            }         
+        }
+
         public void ConnectToDefectCodesDatabase()
         {
             using (OleDbConnection connection = new OleDbConnection(connectionToDefectCodesDbString))
@@ -294,7 +319,8 @@ namespace AvaloniaApplication2.ViewModels
                             int trackId = trackReader.GetInt32(trackReader.GetOrdinal("TrackID_"));
                             int trackNumber = trackReader.GetInt32(trackReader.GetOrdinal("TrackNumber"));
                             int capacity = trackReader.GetInt32(trackReader.GetOrdinal("Capacity"));
-                            Track track = new Track(trackId, trackNumber, capacity);
+                            int stationId = trackReader.GetInt32(trackReader.GetOrdinal("StationId"));
+                            Track track = new Track(trackId, trackNumber, capacity, stationId);
                             station.AddTrack(track);
                         }
                         trackReader.Close();
@@ -319,7 +345,7 @@ namespace AvaloniaApplication2.ViewModels
                                 DateTime arrival = carReader.GetDateTime(carReader.GetOrdinal("Arrival"));
                                 int trackId = carReader.GetInt32(carReader.GetOrdinal("TrackID"));
                                 Car car = new Car(carNumber, serialNumber, isFixed, defectCodes, isLoaded, product, cargo, arrival, trackId);
-                                track.AddCar(car);
+                                track.AddLast(car);
                             }
                         }
                     }
