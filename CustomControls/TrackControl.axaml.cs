@@ -6,6 +6,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using AvaloniaApplication2.Models;
 using AvaloniaApplication2.ViewModels;
+using AvaloniaApplication2.Views;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -13,10 +14,12 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
+    private StationStateWindow ParentWindow;
+    private StationControl ParentControl;
+
     public bool IsSelected { get; set; } = false;
     public Track Track { get; }
     private List<CarControl> focusedCars;
-    private StationControl parent;
     public static int CAR_WIDTH = 8;
     public static int TURNOUT_WIDTH = 40;
 
@@ -30,14 +33,16 @@ public partial class TrackControl : UserControl
         focusedCars = new List<CarControl>();
 
         Track = track;
-        parent = parentStation;
+        ParentWindow = parentStation.ParentWindow;
+        ParentControl = parentStation;
 
+        DataContext = ParentWindow.DataContext as MainWindowViewModel;
 
         InitializeComponent();
 
-        this.AddHandler(KeyDownEvent, TrackControl_KeyDown, RoutingStrategies.Tunnel);
+        AddHandler(KeyDownEvent, TrackControl_KeyDown, RoutingStrategies.Tunnel);
 
-        this.AddHandler(PointerPressedEvent, TrackControl_PointerPressed, RoutingStrategies.Bubble);
+        AddHandler(PointerPressedEvent, TrackControl_PointerPressed, RoutingStrategies.Bubble);
 
         TrackNumberTextBlock.Text = track.TrackNumber.ToString();
         CarsCountTextBlock.Text = track.Cars.Count.ToString();
@@ -77,28 +82,31 @@ public partial class TrackControl : UserControl
         }
     }
 
-    public void TrackControl_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    public void TrackControl_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (sender is CarControl)
+        if (e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
         {
-            if (!IsSelected)
+            if (sender is CarControl)
             {
-                Select(((CarControl)sender).Car.SerialNumber - 1);
+                if (!IsSelected)
+                {
+                    Select(((CarControl)sender).Car.SerialNumber - 1);
+                }
+                else
+                {
+                    UnfocusAllCars();
+                    FocusNthCar(((CarControl)sender).Car.SerialNumber - 1);
+                }
             }
             else
             {
-                UnfocusAllCars();
-                FocusNthCar(((CarControl)sender).Car.SerialNumber - 1);
+                if (!IsSelected)
+                {
+                    Select();
+                }
             }
+            ParentControl.StationControl_PointerPressed(this, e);
         }
-        else
-        {
-            if (!IsSelected)
-            {
-                Select();
-            }
-        }
-        parent.StationControl_PointerPressed(this, e);
     }
 
     public void Select(int focusedCarNumber = 0)
@@ -271,5 +279,30 @@ public partial class TrackControl : UserControl
         {
             carControl.IsSelected = !carControl.IsSelected;
         }
+    }
+
+    private void NewComingMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void TrackEditMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void MoveCarsMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+        ParentWindow.MoveCars();
+    }
+
+    private void DevelopTrackMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+
+    }
+
+    private void TrackContextMenu_Opened(object? sender, RoutedEventArgs e)
+    {
+        MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
     }
 }

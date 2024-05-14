@@ -74,11 +74,14 @@ public partial class CarControl : UserControl
 
         CarRectangle.IsVisible = !IsEmpty;
 
-        CarRectangle.Classes.RemoveAll(["Fixed", "Loaded", "Empty"]);
-        CarBorderWrapper.Classes.Remove("Selected");
-        CarRectangle.Classes.Add("Empty");
+        if (Car != null)
+        {
+            CarRectangle.Classes.RemoveAll(["Fixed", "Loaded", "Empty"]);
+            CarBorderWrapper.Classes.Remove("Selected");
+            CarRectangle.Classes.Add("Empty");
 
-        AssignStyles();
+            AssignStyles();
+        }
     }
 
     private void CarCotrol_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)

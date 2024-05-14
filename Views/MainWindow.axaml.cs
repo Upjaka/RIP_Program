@@ -4,23 +4,70 @@ using AvaloniaApplication2.CustomControls;
 using Avalonia.Input;
 using System.Collections.Generic;
 using AvaloniaApplication2.Models;
+using System.Xml.Linq;
 
 namespace AvaloniaApplication2.Views
 {
     public partial class MainWindow : Window
     {
+        private MainWindowViewModel viewModel;
         private List<StationStateWindow> stationWindows;
 
         public MainWindow()
         {
             InitializeComponent();
             stationWindows = new List<StationStateWindow>();
+
+            Opened += (s, e) =>
+            {
+                viewModel = (MainWindowViewModel)DataContext;
+
+                viewModel.MainWindow = this;
+
+                foreach (Station station in viewModel.Stations)
+                {
+                    MenuItem stationMenuItem = new MenuItem();
+
+                    stationMenuItem.Header = station.StationName;
+                    stationMenuItem.Click += (s, e) =>
+                    {
+                        StationStateWindow stationWindow = new StationStateWindow(station, (MainWindowViewModel)DataContext);
+
+                        StationStateWindow? openedStationWindow = null;
+
+                        foreach (StationStateWindow stationStateWindow in stationWindows)
+                        {
+                            if (stationStateWindow.Station == station)
+                            {
+                                openedStationWindow = stationStateWindow;
+                            }
+                        }
+                        if (openedStationWindow != null)
+                        {
+                            openedStationWindow.Activate();
+                        }
+                        else
+                        {
+                            stationWindows.Add(stationWindow);
+                            stationWindow.Closed += (s, e) =>
+                            {
+                                stationWindows.Remove(stationWindow);
+                                CheckStations();
+                            };
+                            stationWindow.Show();
+                        }
+                        CheckStations();
+                    };
+
+                    StationsList_MenuItem.Items.Add(stationMenuItem);
+                }
+            };            
         }
 
         private async void NewComing_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             var newComingDialogWindow = new NewComingDialogWindow(this);
-            newComingDialogWindow.DataContext = this.DataContext;
+            newComingDialogWindow.DataContext = DataContext;
 
             await newComingDialogWindow.ShowDialog(this);
         }
@@ -28,10 +75,9 @@ namespace AvaloniaApplication2.Views
         private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
             string name = (sender as MenuItem).Header.ToString();
-            var stationControl = new StationControl(this, name);
             //Workplace.Children.Add(stationControl);
 
-            StationStateWindow stationWindow = new StationStateWindow(stationControl, (MainWindowViewModel)DataContext);
+            StationStateWindow stationWindow = new StationStateWindow(viewModel.GetStationByName(name), (MainWindowViewModel)DataContext);
 
             StationStateWindow? openedStationWindow = null;
 

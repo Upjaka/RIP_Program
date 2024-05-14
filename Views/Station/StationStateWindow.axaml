@@ -8,7 +8,7 @@
         Title="Неизвестный район"
         Width="800" Height="800"
         WindowStartupLocation="CenterScreen"
-        SizeChanged="Window_SizeChanged"
+        SizeChanged="StationWindow_SizeChanged"
         Activated="StationWindow_Activated"
         Focusable="False">
 

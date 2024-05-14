@@ -11,7 +11,8 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class StationControl : UserControl
 {
-    private MainWindow parent;
+    public StationStateWindow ParentWindow { get; }
+
     private TrackControl? selectedTrack;
     public Station Station { get; }
 
@@ -20,21 +21,24 @@ public partial class StationControl : UserControl
         InitializeComponent();
     }
 
-    public StationControl(MainWindow mainWindow, string stationName) 
+    public StationControl(StationStateWindow parentWindow, Station station) 
     {
+        ParentWindow = parentWindow;
+        Station = station;
+
+        DataContext = ParentWindow.DataContext as MainWindowViewModel;
+
         InitializeComponent();
 
-        parent = mainWindow;
-        StationName.Text = stationName;
+        StationName.Text = Station.StationName;
 
         ControlPanel.IsVisible = false;
-        StationWrapper.Height = mainWindow.FindControl<WrapPanel>("Workplace").Bounds.Height;
-        TracksBorder.Height = StationWrapper.Height;
+        //StationWrapper.Height = mainWindow.FindControl<WrapPanel>("Workplace").Bounds.Height;
+        //TracksBorder.Height = StationWrapper.Height;
 
-        var dataContext = (MainWindowViewModel)mainWindow.DataContext;
+        var dataContext = (MainWindowViewModel)ParentWindow.DataContext;
         DataContext = dataContext;
 
-        Station = dataContext.GetStationByName(stationName);
         foreach (Track track in Station.Tracks) 
         {
             var trackControl = new TrackControl(track, this);
@@ -60,7 +64,7 @@ public partial class StationControl : UserControl
 
     private void CloseButton_Click(object? sender, RoutedEventArgs e)
     {
-        parent.CloseStationControl(this);
+        ParentWindow.Close();
     }
 
     private void SelectTrack(Track track) 

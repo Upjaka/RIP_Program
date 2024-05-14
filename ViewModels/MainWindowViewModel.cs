@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.Dynamic;
 using AvaloniaApplication2.Models;
 using System.Diagnostics;
+using AvaloniaApplication2.Views;
 
 namespace AvaloniaApplication2.ViewModels
 {
@@ -19,6 +20,7 @@ namespace AvaloniaApplication2.ViewModels
         public string Greetings => "Welcome to Avalonia!";
         public string Loaded => "Груж.";
         public string NotLoaded => "Незагруж.";
+        public MainWindow MainWindow { get; set; }
         public string Station { get; set; }
         public string TrackNumber { get; set; }
         public Track NewComingTrack { get; set; }

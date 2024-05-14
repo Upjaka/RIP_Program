@@ -39,15 +39,11 @@
           <MenuItem Header="Натурный лист №3" IsEnabled="False"/>
           <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>
         </MenuItem>
-        <MenuItem Header="Район">
+        <MenuItem x:Name="StationsList_MenuItem" Header="Район">
           <MenuItem Header="Поиск вагона"/>
           <Separator/>
-          <MenuItem Header="РИП пути 1-8" Click="OpenStation_Click"/>
-          <MenuItem Header="РИП пути 9-20" Click="OpenStation_Click"/>
-          <MenuItem Header="Тобольск" Click="OpenStation_Click"/>
-          <MenuItem Header="Денисовка" Click="OpenStation_Click"/>
         </MenuItem>
-        <MenuItem Header="Окна">
+        <MenuItem x:Name="Windows_MenuItem" Header="Окна">
           <!--  -->
         </MenuItem>
         <MenuItem Header="Справка">
