@@ -57,8 +57,8 @@
             <TextBlock x:Name="TrackNumberTextBlock" Text="0"/>
           </StackPanel>
           <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal">
-            <TextBlock Text="Отметка:"/>
-            <TextBlock x:Name="MarkedCarsCountTextBlock" Text="0"/>
+            <TextBlock Text="Отм.:"/>
+            <TextBlock x:Name="SelectedCarsCountTextBlock" Text="0"/>
           </StackPanel>
           <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal">
             <TextBlock Text="&lt;"/>

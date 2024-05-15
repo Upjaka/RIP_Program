@@ -5,6 +5,7 @@ using Avalonia.Input;
 using System.Collections.Generic;
 using AvaloniaApplication2.Models;
 using System.Xml.Linq;
+using System.Threading.Tasks;
 
 namespace AvaloniaApplication2.Views
 {
@@ -66,10 +67,7 @@ namespace AvaloniaApplication2.Views
 
         private async void NewComing_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var newComingDialogWindow = new NewComingDialogWindow(this);
-            newComingDialogWindow.DataContext = DataContext;
-
-            await newComingDialogWindow.ShowDialog(this);
+            OpenNewComingWindow();
         }
 
         private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -106,9 +104,7 @@ namespace AvaloniaApplication2.Views
 
         private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            ((MainWindowViewModel)DataContext).UpdateCarsInfo();
-            var trackEditing = new TrackEditingDialogWindow(this, (MainWindowViewModel)DataContext);
-            trackEditing.ShowDialog(this);
+            OpenTrackEditWindow();
         }
 
         private void ChangeTrack_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
@@ -203,6 +199,21 @@ namespace AvaloniaApplication2.Views
                 NewComing_MenuItem.IsEnabled = true;
                 TrackEdit_MenuItem.IsEnabled = true;
             }
+        }
+
+        public void OpenTrackEditWindow()
+        {
+            ((MainWindowViewModel)DataContext).UpdateCarsInfo();
+            var trackEditing = new TrackEditingDialogWindow(this, (MainWindowViewModel)DataContext);
+            trackEditing.ShowDialog(this);
+        }
+
+        public void OpenNewComingWindow()
+        {
+            var newComingDialogWindow = new NewComingDialogWindow(this);
+            newComingDialogWindow.DataContext = DataContext;
+
+            newComingDialogWindow.ShowDialog(this);
         }
     }
 }

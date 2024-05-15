@@ -37,6 +37,7 @@ namespace AvaloniaApplication2.Models
         public void AddLast(Car car)
         {
             Cars.AddLast(car);
+            car.TrackId = TrackId;
         }
 
         public void AddLast(List<Car> cars) 
@@ -51,6 +52,7 @@ namespace AvaloniaApplication2.Models
             foreach (Car car in cars)
             {
                 car.SerialNumber = serialNumber++;
+                car.TrackId = TrackId;
             }
             foreach (Car car in Cars)
             {

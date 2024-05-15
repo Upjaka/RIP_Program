@@ -7,6 +7,7 @@ using System.Dynamic;
 using AvaloniaApplication2.Models;
 using System.Diagnostics;
 using AvaloniaApplication2.Views;
+using DynamicData;
 
 namespace AvaloniaApplication2.ViewModels
 {
@@ -60,6 +61,11 @@ namespace AvaloniaApplication2.ViewModels
             ConnectToDefectCodesDatabase();
 
             ConnectToStationsDatabase();
+        }
+
+        private void OnCarChanged(object sender, CarChangedEventArgs e)
+        {
+            localChanges.Add(new LocalChange(e.OldCar, e.NewCar));
         }
 
         public void UpdateCarsInfo() 
@@ -133,6 +139,7 @@ namespace AvaloniaApplication2.ViewModels
             {
                 foreach (var car in cars)
                 {
+                    car.CarChanged += OnCarChanged;
                     selectedTrack.AddLast(car);
                     LocalChange change = new LocalChange(car);
                     localChanges.Add(change);
@@ -239,6 +246,9 @@ namespace AvaloniaApplication2.ViewModels
         public void MoveCars(Track destinationTrack, bool IsFirst = false)
         {
             List<Car> selectedCars = SelectedTrack.GetSelectedCars();
+            List<Car> oldSelectedCars = new List<Car>();
+            foreach (Car car in selectedCars) oldSelectedCars.Add(car.Clone());
+
 
             if (destinationTrack.Cars.Count + selectedCars.Count <= destinationTrack.Capacity)
             {
@@ -252,7 +262,11 @@ namespace AvaloniaApplication2.ViewModels
                 {
                     destinationTrack.AddFirst(selectedCars);
                 }
-            }         
+            }
+            for (int i = 0; i < selectedCars.Count; i++)
+            {
+                localChanges.Add(new LocalChange(oldSelectedCars[i], selectedCars[i]));
+            }
         }
 
         public void ConnectToDefectCodesDatabase()
@@ -345,6 +359,7 @@ namespace AvaloniaApplication2.ViewModels
                                 DateTime arrival = carReader.GetDateTime(carReader.GetOrdinal("Arrival"));
                                 int trackId = carReader.GetInt32(carReader.GetOrdinal("TrackID"));
                                 Car car = new Car(carNumber, serialNumber, isFixed, defectCodes, isLoaded, product, cargo, arrival, trackId);
+                                car.CarChanged += OnCarChanged;
                                 track.AddLast(car);
                             }
                         }

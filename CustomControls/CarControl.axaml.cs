@@ -14,7 +14,7 @@ public partial class CarControl : UserControl
     public Car Car { get; set; }
     public bool IsSelected 
     {
-        get { return Car.IsSelected; }
+        get { return (Car == null) ? false : Car.IsSelected; }
         set {
             Car.IsSelected = value;
             if (IsSelected)

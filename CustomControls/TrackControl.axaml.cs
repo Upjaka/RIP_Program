@@ -122,15 +122,22 @@ public partial class TrackControl : UserControl
         TrackBorderWrapper.BorderThickness = new Thickness(0);
         int lastFocusedCarIndex = (focusedCars.Count == 0) ? 0 : focusedCars[focusedCars.Count - 1].Car.SerialNumber - 1;
         UnfocusAllCars();
-        (DataContext as MainWindowViewModel).SelectedTrack = null;
+        if ((DataContext as MainWindowViewModel).SelectedTrack == Track)
+        {
+            (DataContext as MainWindowViewModel).SelectedTrack = null;
+        }
+            
         return lastFocusedCarIndex;
     }
 
 
     public void UpdateTrack()
     {
+        int selectedCount = 0;
+
         foreach (Car car in Track.Cars)
         {
+            if (car.IsSelected) selectedCount++;
             ((CarControl)TrackGrid.Children[car.SerialNumber - 1]).UpdateCar(car);
         }
         for (int i = Track.Cars.Count; i < TrackGrid.Children.Count; i++)
@@ -145,6 +152,9 @@ public partial class TrackControl : UserControl
                 focusedCars.Add(carControl);
             }
         }
+
+        SelectedCarsCountTextBlock.Text = selectedCount.ToString();
+        CarsCountTextBlock.Text = Track.Cars.Count.ToString();
     }
 
     public void TrackControl_KeyDown(object? sender, KeyEventArgs e)
@@ -291,18 +301,25 @@ public partial class TrackControl : UserControl
     {
         foreach (CarControl carControl in focusedCars)
         {
-            carControl.IsSelected = !carControl.IsSelected;
+            carControl.IsSelected = true;
         }
+
+        int selectedCount = 0;
+        foreach (CarControl carControl in TrackGrid.Children)
+        {
+            if (carControl.IsSelected) selectedCount++;
+        }
+        SelectedCarsCountTextBlock.Text = selectedCount.ToString();
     }
 
     private void NewComingMenuItem_Click(object? sender, RoutedEventArgs e)
     {
-
+        (DataContext as MainWindowViewModel).MainWindow.OpenNewComingWindow();
     }
 
     private void TrackEditMenuItem_Click(object? sender, RoutedEventArgs e)
     {
-
+        (DataContext as MainWindowViewModel).MainWindow.OpenTrackEditWindow();
     }
 
     private void MoveCarsMenuItem_Click(object? sender, RoutedEventArgs e)

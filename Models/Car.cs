@@ -1,23 +1,115 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace AvaloniaApplication2.Models
 {
-    public class Car
+    public class Car : INotifyPropertyChanged
     {
         public bool IsSelected { get; set; }
-        public string CarNumber { get; set; }
-        public int SerialNumber { get; set; }
-        public string Product { get; set; }
-        public string DefectCodes { get; set; }
-        public string Cargo { get; set; }
-        public bool IsFixed { get; set; }
-        public bool IsLoaded { get; set; }
+        public string CarNumber { get; }
+        private int _serialNumber;
+        public int SerialNumber
+        {
+            get => _serialNumber;
+            set
+            {
+                if (_serialNumber != value)
+                {
+                    Car oldCar = Clone();
+                    _serialNumber = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
+        private string _product;
+        public string Product
+        {
+            get => _product;
+            set
+            {
+                if (_product != value)
+                {
+                    Car oldCar = Clone();
+                    _product = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
+        private string _defectCodes;
+        public string DefectCodes
+        {
+            get => _defectCodes;
+            set
+            {
+                if (_defectCodes != value)
+                {
+                    Car oldCar = Clone();
+                    _defectCodes = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
+        private string _cargo;
+        public string Cargo
+        {
+            get => _cargo;
+            set
+            {
+                if (_cargo != value)
+                {
+                    Car oldCar = Clone();
+                    _cargo = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
+        private bool _isFixed;
+        public bool IsFixed
+        {
+            get => _isFixed;
+            set
+            {
+                if (_isFixed != value)
+                {
+                    Car oldCar = Clone();
+                    _isFixed = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
+        private bool _isLoaded;
+        public bool IsLoaded
+        {
+            get => _isLoaded;
+            set
+            {
+                if (_isLoaded != value)
+                {
+                    Car oldCar = Clone();
+                    _isLoaded = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
         public DateTime Arrival { get; set; }
-        public int TrackId { get; set; }
+        private int _trackId;
+        public int TrackId
+        {
+            get => _trackId;
+            set
+            {
+                if (_trackId != value)
+                {
+                    Car oldCar = Clone();
+                    _trackId = value;
+                    OnCarChanged(oldCar, this);
+                }
+            }
+        }
 
         public Car(string carNumber, int serialNumber, bool isFixed, string defectCodes, bool isLoaded, string product, string cargo, DateTime arrival, int trackId)
         {
@@ -73,6 +165,31 @@ namespace AvaloniaApplication2.Models
                 Arrival,
                 TrackId
                 );
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        public event EventHandler<CarChangedEventArgs> CarChanged;
+
+        protected void OnPropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        protected void OnCarChanged(Car oldCar, Car newCar)
+        {
+            CarChanged?.Invoke(this, new CarChangedEventArgs(oldCar, newCar));
+        }
+    }
+
+    public class CarChangedEventArgs : EventArgs
+    {
+        public Car OldCar { get; }
+        public Car NewCar { get; }
+
+        public CarChangedEventArgs(Car oldCar, Car newCar)
+        {
+            OldCar = oldCar;
+            NewCar = newCar;
         }
     }
 }
