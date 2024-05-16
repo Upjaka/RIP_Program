@@ -1,11 +1,12 @@
 using Avalonia.Controls;
 using AvaloniaApplication2.ViewModels;
 using AvaloniaApplication2.CustomControls;
-using Avalonia.Input;
+using Avalonia.Interactivity;
 using System.Collections.Generic;
 using AvaloniaApplication2.Models;
-using System.Xml.Linq;
-using System.Threading.Tasks;
+using System.Diagnostics;
+
+
 
 namespace AvaloniaApplication2.Views
 {
@@ -13,9 +14,12 @@ namespace AvaloniaApplication2.Views
     {
         private MainWindowViewModel viewModel;
         private List<StationStateWindow> stationWindows;
+        private PDFCreator PDFCreator { get; set; }
 
         public MainWindow()
         {
+            PDFCreator = new PDFCreator();
+
             InitializeComponent();
             stationWindows = new List<StationStateWindow>();
 
@@ -65,12 +69,12 @@ namespace AvaloniaApplication2.Views
             };            
         }
 
-        private async void NewComing_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private async void NewComing_Click(object? sender, RoutedEventArgs e)
         {
             OpenNewComingWindow();
         }
 
-        private void OpenStation_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void OpenStation_Click(object? sender, RoutedEventArgs e)
         {
             string name = (sender as MenuItem).Header.ToString();
             //Workplace.Children.Add(stationControl);
@@ -102,18 +106,18 @@ namespace AvaloniaApplication2.Views
             CheckStations();
         }
 
-        private void TrackEdit_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void TrackEdit_Click(object? sender, RoutedEventArgs e)
         {
             OpenTrackEditWindow();
         }
 
-        private void ChangeTrack_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void ChangeTrack_Click(object? sender, RoutedEventArgs e)
         {
             var changeTrackWindow = new ChangeTrackDialogWindow((MainWindowViewModel)DataContext);
             changeTrackWindow.ShowDialog(this);
         }
 
-        private void DefectCodes_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void DefectCodes_Click(object? sender, RoutedEventArgs e)
         {
             var defectCodesWindow = new DefectCodesDialogWindow((MainWindowViewModel)DataContext);
             defectCodesWindow.ShowDialog(this);
@@ -147,7 +151,7 @@ namespace AvaloniaApplication2.Views
             }
         }
 
-        private void SaveMenuItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+        private void SaveMenuItem_Click(object? sender, RoutedEventArgs e)
         {
             SaveChanges();
         }
@@ -221,6 +225,16 @@ namespace AvaloniaApplication2.Views
             {
                 StatusBarTextBlock.Text = "Сохранено";
             }
+        }
+
+        private void ReportMenuItem_Click(object? sender, RoutedEventArgs e)
+        {
+            ShowFieldSheet();
+        }
+
+        public void ShowFieldSheet()
+        {
+            PDFCreator.Create(viewModel.SelectedStation, viewModel.SelectedTrack);
         }
     }
 }

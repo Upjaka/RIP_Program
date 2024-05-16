@@ -34,7 +34,7 @@
           <MenuItem x:Name="TrackEdit_MenuItem" Header="Редактор-путь" Click="TrackEdit_Click" IsEnabled="False"/>
           <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click" IsEnabled="False"/>
           <MenuItem Header="Паспорртные данные" IsEnabled="False"/>
-          <MenuItem Header="Натурный лист" IsEnabled="False"/>
+          <MenuItem Header="Натурный лист" Click="ReportMenuItem_Click"/>
           <MenuItem Header="Натурный лист №2" IsEnabled="False"/>
           <MenuItem Header="Натурный лист №3" IsEnabled="False"/>
           <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>

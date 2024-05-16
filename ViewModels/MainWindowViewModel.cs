@@ -362,6 +362,8 @@ namespace AvaloniaApplication2.ViewModels
                                 car.CarChanged += OnCarChanged;
                                 track.AddLast(car);
                             }
+
+                            track.Sort();
                         }
                     }
 

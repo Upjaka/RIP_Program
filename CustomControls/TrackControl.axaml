@@ -34,6 +34,7 @@
         <MenuItem x:Name="TrackEditMenuItem" Header="Редактор-путь" Click="TrackEditMenuItem_Click"/>
         <MenuItem x:Name="MoveCarsMenuItem" Header="Переместить" Click="MoveCarsMenuItem_Click"/>
         <MenuItem x:Name="DevelopTrackMenuItem" Header="Раскрыть путь" IsEnabled="False" Click="DevelopTrackMenuItem_Click"/>
+        <MenuItem x:Name="FieldSheetMenuItem" Header="Натурный лист" IsEnabled="False" Click="FieldSheetMenuItem_Click"/>
       </ContextMenu>
     </Border.ContextMenu>
       <StackPanel x:Name="Wrapper" Orientation="Vertical" Width="410" MinWidth="230">

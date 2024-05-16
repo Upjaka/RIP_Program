@@ -14,6 +14,12 @@ namespace AvaloniaApplication2.Models
         public LinkedList<Car> Cars { get; set; } = new LinkedList<Car>();
         public int StationId { get; set; }
 
+        private Comparison<Car> customComparison = (x, y) =>
+        {
+            int result = x.SerialNumber.CompareTo(y.SerialNumber);
+            return result;
+        };
+
         public Track(int trackId, int trackNumber, int capacity, int stationId) 
         {
             TrackId = trackId;
@@ -107,6 +113,18 @@ namespace AvaloniaApplication2.Models
                 }
             }
             return result;
+        }
+
+        public void Sort()
+        {
+            var list = new List<Car>(Cars);
+
+            list.Sort(customComparison);
+            Cars.Clear();
+            foreach (var car in list)
+            {
+                Cars.AddLast(car);
+            }
         }
 
         public override string ToString()

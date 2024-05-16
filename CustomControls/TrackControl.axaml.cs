@@ -312,6 +312,12 @@ public partial class TrackControl : UserControl
         SelectedCarsCountTextBlock.Text = selectedCount.ToString();
     }
 
+    private void TrackContextMenu_Opened(object? sender, RoutedEventArgs e)
+    {
+        MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
+        FieldSheetMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
+    }
+
     private void NewComingMenuItem_Click(object? sender, RoutedEventArgs e)
     {
         (DataContext as MainWindowViewModel).MainWindow.OpenNewComingWindow();
@@ -332,13 +338,13 @@ public partial class TrackControl : UserControl
 
     }
 
-    private void TrackContextMenu_Opened(object? sender, RoutedEventArgs e)
-    {
-        MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
-    }
-
     private void SaveMenuItem_Click(object? sender, RoutedEventArgs e)
     {
         (DataContext as MainWindowViewModel).MainWindow.SaveChanges();
+    }
+
+    private void FieldSheetMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+        (DataContext as MainWindowViewModel).MainWindow.ShowFieldSheet();
     }
 }
