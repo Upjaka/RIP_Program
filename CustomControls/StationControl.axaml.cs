@@ -79,6 +79,7 @@ public partial class StationControl : UserControl
                 otherTrackControl.Unselect();
             }
         }
+        selectedTrack.Select();
     }
 
     public void UpdateTrack(int trackNumber)
