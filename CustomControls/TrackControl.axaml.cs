@@ -336,4 +336,9 @@ public partial class TrackControl : UserControl
     {
         MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
     }
+
+    private void SaveMenuItem_Click(object? sender, RoutedEventArgs e)
+    {
+        (DataContext as MainWindowViewModel).MainWindow.SaveChanges();
+    }
 }

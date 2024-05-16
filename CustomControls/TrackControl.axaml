@@ -29,6 +29,7 @@
   <Border x:Name="TrackBorderWrapper">
     <Border.ContextMenu>
       <ContextMenu x:Name="TrackContextMenu" Opened="TrackContextMenu_Opened">
+        <MenuItem x:Name="SaveMenuItem" Header="Сохранить" Click="SaveMenuItem_Click"/>
         <MenuItem x:Name="NewComingMenuItem" Header="Приход в район" Click="NewComingMenuItem_Click"/>
         <MenuItem x:Name="TrackEditMenuItem" Header="Редактор-путь" Click="TrackEditMenuItem_Click"/>
         <MenuItem x:Name="MoveCarsMenuItem" Header="Переместить" Click="MoveCarsMenuItem_Click"/>

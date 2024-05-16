@@ -45,8 +45,8 @@ namespace AvaloniaApplication2.Models
 
                 queryBuilder.Append($"'{newCar.CarNumber}', ");
                 queryBuilder.Append($"'{newCar.SerialNumber}', ");
-                queryBuilder.Append($"'{newCar.DefectCodes}', ");
                 queryBuilder.Append($"{(newCar.IsFixed ? 1 : 0)}, ");
+                queryBuilder.Append($"'{newCar.DefectCodes}', ");
                 queryBuilder.Append($"{(newCar.IsLoaded ? 1 : 0)}, ");
                 queryBuilder.Append($"'{newCar.Product}', ");
                 queryBuilder.Append($"'{newCar.Cargo}', ");

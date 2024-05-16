@@ -36,8 +36,8 @@ namespace AvaloniaApplication2.Models
                 }
             }
         }
-        private string _serialNumber;
-        public string SerialNumber
+        private int _serialNumber;
+        public int SerialNumber
         {
             get { return _serialNumber; }
             set
@@ -119,7 +119,7 @@ namespace AvaloniaApplication2.Models
         {
             _isSelected = car.IsSelected;
             _carNumber = car.CarNumber;
-            _serialNumber = car.SerialNumber.ToString();
+            _serialNumber = car.SerialNumber;
             _isFixed = car.IsFixed;
             _defectCodes = car.DefectCodes;
             _isLoaded = car.IsLoaded;

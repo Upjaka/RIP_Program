@@ -149,11 +149,7 @@ namespace AvaloniaApplication2.Views
 
         private void SaveMenuItem_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
         {
-            var viewModel = (MainWindowViewModel)DataContext;
-            if (viewModel.SaveChangesToDataBase())
-            {
-                StatusBarTextBlock.Text = "Сохранено";
-            }
+            SaveChanges();
         }
 
         private async void MainWindow_Closing(object? sender, WindowClosingEventArgs e)
@@ -167,7 +163,6 @@ namespace AvaloniaApplication2.Views
                 {
                     ((MainWindowViewModel)DataContext).SaveChangesToDataBase();
                     saveChangesDialogWindow.Close();
-                    CloseAllStationWindows();
                     Close();
                 };
                 saveChangesDialogWindow.NoButton.Click += (s, e) =>
@@ -182,11 +177,14 @@ namespace AvaloniaApplication2.Views
                 };
                 await saveChangesDialogWindow.ShowDialog<bool>(this);
             }
+            CloseAllStationWindows();
         }
 
         private void CloseAllStationWindows()
         {
-            foreach (StationStateWindow window in stationWindows)
+            List<StationStateWindow> stationWindowsCopy = new List<StationStateWindow>(stationWindows);
+
+            foreach (var window in stationWindowsCopy)
             {
                 window.Close();
             }
@@ -214,6 +212,15 @@ namespace AvaloniaApplication2.Views
             newComingDialogWindow.DataContext = DataContext;
 
             newComingDialogWindow.ShowDialog(this);
+        }
+
+        public void SaveChanges()
+        {
+            var viewModel = (MainWindowViewModel)DataContext;
+            if (viewModel.SaveChangesToDataBase())
+            {
+                StatusBarTextBlock.Text = "Сохранено";
+            }
         }
     }
 }
