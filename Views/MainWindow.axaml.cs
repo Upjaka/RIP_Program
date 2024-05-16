@@ -5,6 +5,7 @@ using Avalonia.Interactivity;
 using System.Collections.Generic;
 using AvaloniaApplication2.Models;
 using System.Diagnostics;
+using System;
 
 
 
@@ -235,6 +236,21 @@ namespace AvaloniaApplication2.Views
         public void ShowFieldSheet()
         {
             PDFCreator.Create(viewModel.SelectedStation, viewModel.SelectedTrack);
+
+            try
+            {
+                Process process = new Process();
+                process.StartInfo = new ProcessStartInfo
+                {
+                    FileName = PDFCreator.TEMP_FILE_NAME,
+                    UseShellExecute = true
+                };
+                process.Start();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Не удалось открыть PDF-файл: " + ex.Message);
+            }
         }
     }
 }

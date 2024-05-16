@@ -25,7 +25,8 @@ namespace AvaloniaApplication2.Models
 {
     public class PDFCreator
     {
-        private static readonly string TEMP_FILE_NAME = "natur_list.pdf";
+        public static readonly string TEMP_FILE_NAME = "natur_list.pdf";
+        private static string projectDir;
         private static PdfFont FONT;
         private static readonly float[] COLUMN_WIDTHS = { 1, 3, 2, 3, 3, 3, 1, 3 };
         private static readonly string[] COLUMN_NAMES = { "№п\\п", "№ ВЦ", "Рег №", "Завод", "ВОиГИ", "Депо", "Прод", "Брак" };
@@ -33,7 +34,7 @@ namespace AvaloniaApplication2.Models
         public PDFCreator() 
         {
             string currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            string projectDir = Directory.GetParent(currentDir).FullName;
+            projectDir = Directory.GetParent(currentDir).FullName;
             projectDir = Directory.GetParent(projectDir).FullName;
             projectDir = Directory.GetParent(projectDir).FullName;
 
