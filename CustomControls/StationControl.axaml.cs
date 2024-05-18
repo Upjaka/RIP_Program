@@ -55,10 +55,10 @@ public partial class StationControl : UserControl
 
     public void StationControl_PointerPressed(object? sender, PointerPressedEventArgs e)
     {
-        if (sender is TrackControl)
+        if (sender is TrackControl trackControl)
         {
-            selectedTrack = (TrackControl)sender;
-            SelectTrack(((TrackControl)sender).Track);
+            selectedTrack = trackControl;
+            UnselectOtherTracks(trackControl.Track);
         }
         e.Handled = true;
     }
@@ -68,10 +68,8 @@ public partial class StationControl : UserControl
         ParentWindow.Close();
     }
 
-    private void SelectTrack(Track track) 
+    private void UnselectOtherTracks(Track track) 
     {
-        ((MainWindowViewModel)DataContext).SelectedTrack = track;
-
         foreach (TrackControl otherTrackControl in TracksPanel.Children) 
         {
             if (otherTrackControl.Track != track) 
@@ -79,7 +77,6 @@ public partial class StationControl : UserControl
                 otherTrackControl.Unselect();
             }
         }
-        selectedTrack.Select();
     }
 
     public void UpdateTrack(int trackNumber)
@@ -160,7 +157,7 @@ public partial class StationControl : UserControl
         if (TracksPanel.Children.Count > 0)
         {
             selectedTrack = (TrackControl)TracksPanel.Children[0];
-            selectedTrack.Select();
+            selectedTrack.Select(0);
         }
     }
 
@@ -169,7 +166,7 @@ public partial class StationControl : UserControl
         if (TracksPanel.Children.Count > 0)
         {
             selectedTrack = (TrackControl)TracksPanel.Children[TracksPanel.Children.Count - 1];
-            selectedTrack.Select();
+            selectedTrack.Select(0);
 
         }
     }

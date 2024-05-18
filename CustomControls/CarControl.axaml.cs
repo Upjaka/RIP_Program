@@ -4,14 +4,18 @@ using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using AvaloniaApplication2.Models;
+using iText.Layout.Borders;
+using System;
+using System.Diagnostics;
 
 namespace AvaloniaApplication2.CustomControls;
 
 public partial class CarControl : UserControl
 {
+
     private TrackControl ParentControl;
     public bool IsEmpty { get { return Car == null; } }
-    public Car Car { get; set; }
+    public Car? Car { get; set; }
     public bool IsSelected 
     {
         get { return (Car == null) ? false : Car.IsSelected; }
@@ -50,6 +54,7 @@ public partial class CarControl : UserControl
 
     public CarControl()
     {
+        Car = null;
         InitializeComponent();
         CarRectangle.IsVisible = false;
     }
@@ -60,7 +65,8 @@ public partial class CarControl : UserControl
         Car = car;
         InitializeComponent();
 
-        AddHandler(PointerPressedEvent, CarCotrol_PointerPressed, RoutingStrategies.Bubble);
+        AddHandler(PointerPressedEvent, CarControl_PointerPressed, RoutingStrategies.Bubble);
+        AddHandler(PointerReleasedEvent, CarControl_PointerReleased, RoutingStrategies.Bubble);
 
         AssignStyles();
     }
@@ -73,11 +79,17 @@ public partial class CarControl : UserControl
             CarRectangle.IsVisible = false;
             CarBorderWrapper.Classes.RemoveAll(["Selected", "Focused"]);
             CarRectangle.Classes.Add("Empty");
+            RemoveHandler(PointerPressedEvent, CarControl_PointerPressed);
         }
         else
         {
             if (Car != car)
             {
+                if (Car == null)
+                {
+                    AddHandler(PointerPressedEvent, CarControl_PointerPressed, RoutingStrategies.Bubble);
+                }
+
                 Car = car;
                 CarBorderWrapper.Classes.Remove("Focused");
             }
@@ -93,11 +105,6 @@ public partial class CarControl : UserControl
                 AssignStyles();
             }
         }
-    }
-
-    private void CarCotrol_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
-    {
-        ParentControl.TrackControl_PointerPressed(this, e);
     }
 
     private void AssignStyles()
@@ -123,5 +130,15 @@ public partial class CarControl : UserControl
         Car.IsSelected = false;
 
         CarBorderWrapper.Classes.Remove("Selected");
+    }
+
+    private void CarControl_PointerPressed(object? sender, Avalonia.Input.PointerPressedEventArgs e)
+    {
+        ParentControl.TrackControl_PointerPressed(this, e);
+    }
+
+    private void CarControl_PointerReleased(object? sender, Avalonia.Input.PointerReleasedEventArgs e)
+    {
+        ParentControl.TrackControl_PointerReleased(this, e);
     }
 }

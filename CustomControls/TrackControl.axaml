@@ -4,7 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaApplication2.CustomControls.TrackControl"
-             Focusable="False">
+             Focusable="False"
+             Height="52" Width="784">
   
   <UserControl.Styles>
     <Style Selector="Border#TrackBorderWrapper">
@@ -37,7 +38,8 @@
         <MenuItem x:Name="FieldSheetMenuItem" Header="Натурный лист" IsEnabled="False" Click="FieldSheetMenuItem_Click"/>
       </ContextMenu>
     </Border.ContextMenu>
-      <StackPanel x:Name="Wrapper" Orientation="Vertical" Width="410" MinWidth="230">
+    <Canvas x:Name="TrackCanvas">
+      <StackPanel x:Name="TrackWrapper" Orientation="Vertical" Width="410" MinWidth="230" Canvas.Left="0" Canvas.Top="0">
         <StackPanel x:Name="TrackImage" Orientation="Vertical">
           <StackPanel x:Name="TrackImageTop" Orientation="Horizontal" Height="30">
             <Border BorderBrush="Black" Width="40"/>
@@ -68,5 +70,10 @@
           </StackPanel>
         </StackPanel>
       </StackPanel>
+
+      <Rectangle x:Name="SelectingRect" Canvas.Left="0" Canvas.Top="0"
+                 Width="0" Height="0"
+                 Fill="LightBlue" Opacity="0.5"/>
+    </Canvas>
     </Border>
 </UserControl>

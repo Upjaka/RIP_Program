@@ -1,14 +1,19 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
 using Avalonia.Media;
+using Avalonia.VisualTree;
 using AvaloniaApplication2.Models;
 using AvaloniaApplication2.ViewModels;
 using AvaloniaApplication2.Views;
+using iText.StyledXmlParser.Jsoup.Nodes;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace AvaloniaApplication2.CustomControls;
 
@@ -17,7 +22,10 @@ public partial class TrackControl : UserControl
     private StationStateWindow ParentWindow;
     private StationControl ParentControl;
 
-    public bool IsSelected { get; set; } = false;
+    private static bool _isDrugging = false;
+    private Point _pressedPoint;
+
+    public bool IsSelected { get { return (DataContext as MainWindowViewModel).SelectedTrack == Track; } }
     public Track Track { get; }
     private List<CarControl> focusedCars;
     public static int CAR_WIDTH = 8;
@@ -44,11 +52,15 @@ public partial class TrackControl : UserControl
 
         AddHandler(PointerPressedEvent, TrackControl_PointerPressed, RoutingStrategies.Bubble);
 
+        AddHandler(PointerMovedEvent, TrackControl_PointerMoved);
+
+        AddHandler(PointerReleasedEvent, TrackControl_PointerReleased, RoutingStrategies.Bubble);
+
         TrackNumberTextBlock.Text = track.TrackNumber.ToString();
         CarsCountTextBlock.Text = track.Cars.Count.ToString();
 
         var width = TURNOUT_WIDTH * 2 + CAR_WIDTH * track.Capacity;
-        Wrapper.Width = width;
+        TrackWrapper.Width = width;
         BottomLine.EndPoint = new Point(width - 20, 1);
 
         for (var i=0; i<track.Capacity; i++)
@@ -86,34 +98,80 @@ public partial class TrackControl : UserControl
     {
         if (e.GetCurrentPoint(null).Properties.IsLeftButtonPressed)
         {
-            if (sender is CarControl)
+            _isDrugging = true;
+            _pressedPoint = e.GetCurrentPoint(TrackWrapper).Position;
+            SelectingRect[Canvas.TopProperty] = _pressedPoint.Y;
+            SelectingRect[Canvas.LeftProperty] = _pressedPoint.X;
+
+            if (!IsSelected)
             {
-                if (!IsSelected)
-                {
-                    Select(((CarControl)sender).Car.SerialNumber - 1);
-                }
-                else
-                {
-                    UnfocusAllCars();
-                    FocusNthCar(((CarControl)sender).Car.SerialNumber - 1);
-                }
-            }
-            else
-            {
-                if (!IsSelected)
-                {
-                    Select();
-                }
+                Select();
             }
             ParentControl.StationControl_PointerPressed(this, e);
         }
     }
 
-    public void Select(int focusedCarNumber = 0)
+    private void TrackControl_PointerMoved(object? sender, PointerEventArgs e)
     {
-        IsSelected = true;
+        if (_isDrugging)
+        {
+            var currentPoint = e.GetCurrentPoint(TrackWrapper).Position;
+
+            double x = Math.Min(currentPoint.X, _pressedPoint.X);
+            double y = Math.Min(currentPoint.Y, _pressedPoint.Y);
+
+            double width = Math.Abs(currentPoint.X - _pressedPoint.X);
+            double height = Math.Abs(currentPoint.Y - _pressedPoint.Y);
+
+            SelectingRect.Width = width;
+            SelectingRect.Height = height;
+
+            Canvas.SetLeft(SelectingRect, x);
+            Canvas.SetTop(SelectingRect, y);
+        }
+    }
+
+    public void TrackControl_PointerReleased(object? sender, PointerReleasedEventArgs e)
+    {
+        if (e.InitialPressMouseButton == MouseButton.Left)
+        {
+            UnfocusAllCars();
+
+            var point = e.GetCurrentPoint(TrackWrapper).Position;
+
+            double left = Math.Min(point.X, _pressedPoint.X);
+            double top = Math.Min(point.Y, _pressedPoint.Y);
+
+            var rect = new Rect(left, top, SelectingRect.Width, SelectingRect.Height);
+
+            var transform = TrackGrid.TransformToVisual(TrackWrapper);           
+
+            foreach (CarControl carControl in TrackGrid.Children)
+            {
+                if (!carControl.IsEmpty)
+                {
+                    var carPosition = transform.Value.Transform(new Point(carControl.Bounds.X, carControl.Bounds.Y));
+                    var carRect = new Rect(carPosition, carControl.Bounds.Size);
+
+                    if (rect.Intersects(carRect))
+                    {
+                        focusedCars.Add(carControl);
+                        carControl.IsFocused = true;
+                    }
+                }
+                
+            }
+
+            _isDrugging = false;
+            SelectingRect.Width = 0;
+            SelectingRect.Height = 0;
+        }
+    }
+
+    public void Select(int focusedCarNumber = -1)
+    {
         TrackBorderWrapper.BorderThickness = new Thickness(1);
-        FocusNthCar(focusedCarNumber);
+        if (focusedCarNumber != -1) FocusNthCar(focusedCarNumber);
         (DataContext as MainWindowViewModel).SelectedTrack = Track;
     }
 
