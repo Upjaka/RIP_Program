@@ -36,6 +36,7 @@ namespace AvaloniaApplication2.ViewModels
         public Track ?SelectedTrack { get; set; } = null;
         public Station ?SelectedStation { get; set; } = null;
         public List<Car> movingCarsList {  get; set; }
+        public ObservableCollection<NewCar> NewCars { get; set; }
 
 
         public bool HasUnsavedChanges
@@ -49,6 +50,8 @@ namespace AvaloniaApplication2.ViewModels
             Station = "";
             CarNumber = "";
             TrackNumber = "";
+            
+            NewCars = new ObservableCollection<NewCar>();
 
             CarsInfo = new ObservableCollection<CarInfo>();
 
@@ -105,45 +108,58 @@ namespace AvaloniaApplication2.ViewModels
             return false;
         }
 
-        public bool IsCarNumberCorrect(int number)
+        public int IsCarNumberCorrect(string number)
         {
-            foreach (var station in Stations)
+            if (number.Length != 8) return 1;
+
+            bool isNumber = int.TryParse(number, out _);
+
+            if (isNumber)
             {
-                foreach (var track in station.Tracks)
+                var controlCode = 0;
+
+                for (int i = 0; i < 7; i++)
                 {
-                    foreach (var car in track.Cars)
+                    var code = Convert.ToInt32(number[i].ToString()) * (2 - i % 2);
+
+                    controlCode += (code < 10) ? code : code % 10 + code / 10;
+                }
+
+                if (10 - controlCode % 10 != Convert.ToInt32(number) % 10) return 1;
+
+                foreach (var station in Stations)
+                {
+                    foreach (var track in station.Tracks)
                     {
-                        if (Convert.ToInt32(car.CarNumber) == number)
+                        foreach (var car in track.Cars)
                         {
-                            return false;
+                            if (car.CarNumber == number)
+                            {
+                                return 2;
+                            }
                         }
                     }
                 }
+                return 0;
             }
-            return true;
+            else
+            {
+                return 1;
+            }            
         }
 
-        public void AddNewCar(List<Car> cars)
+        public void AddNewCar(List<Car> cars, bool inBeginning)
         {
-            Track? selectedTrack = null;
+            int startIndex = NewComingTrack.Cars.Count;
 
-            foreach (var track in SelectedStation.Tracks)
+            foreach (var car in cars)
             {
-                if (track.TrackId == cars[0].TrackId)
-                {
-                    selectedTrack = track;
-                }
-            }
-
-            if (selectedTrack != null)
-            {
-                foreach (var car in cars)
-                {
-                    car.CarChanged += OnCarChanged;
-                    selectedTrack.AddLast(car);
-                    LocalChange change = new LocalChange(car);
-                    localChanges.Add(change);
-                }
+                if (!inBeginning) car.SerialNumber += startIndex;
+                car.CarChanged += OnCarChanged;
+                if (!inBeginning) NewComingTrack.AddLast(car);
+                else NewComingTrack.AddFirst(new List<Car>([car]));
+                LocalChange change = new LocalChange(car);
+                localChanges.Add(change);
             }            
         }
 

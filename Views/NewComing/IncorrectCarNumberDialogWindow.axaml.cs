@@ -11,10 +11,10 @@ public partial class IncorrectCarNumberDialogWindow : Window
         InitializeComponent();
     }
 
-    public IncorrectCarNumberDialogWindow(string carNumber)
+    public IncorrectCarNumberDialogWindow(string carNumber, bool isNumberExists = false)
     {
         InitializeComponent();
-        InfoPanelTextBlock.Text = $"Номер вагона '{ carNumber }' не проходит контроль";
+        InfoPanelTextBlock.Text = (isNumberExists) ? $"Вагон с нмоером '{carNumber}' уже существует" : $"Номер вагона '{ carNumber }' не проходит контроль";
     }
 
     private void YesButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
