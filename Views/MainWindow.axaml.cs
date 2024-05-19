@@ -24,7 +24,7 @@ namespace AvaloniaApplication2.Views
             InitializeComponent();
             stationWindows = new List<StationStateWindow>();
 
-            Opened += (s, e) =>
+            Opened += async (s, e) =>
             {
                 viewModel = (MainWindowViewModel)DataContext;
 
@@ -67,7 +67,18 @@ namespace AvaloniaApplication2.Views
 
                     StationsList_MenuItem.Items.Add(stationMenuItem);
                 }
+                LoginWindow loginWindow = new LoginWindow();
+                await loginWindow.ShowDialog<bool>(this);
+                if (!viewModel.IsLoggedIn)
+                {
+                    Close();
+                }
             };            
+        }
+
+        private void LoginWindow_Closing(object? sender, WindowClosingEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         private async void NewComing_Click(object? sender, RoutedEventArgs e)

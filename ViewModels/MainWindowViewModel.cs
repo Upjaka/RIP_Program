@@ -21,6 +21,7 @@ namespace AvaloniaApplication2.ViewModels
         public string Greetings => "Welcome to Avalonia!";
         public string Loaded => "Груж.";
         public string NotLoaded => "Незагруж.";
+        public bool IsLoggedIn {  get; set; }
         public MainWindow MainWindow { get; set; }
         public string Station { get; set; }
         public string TrackNumber { get; set; }
