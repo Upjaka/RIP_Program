@@ -7,7 +7,7 @@
              Focusable="False">
 
   <UserControl.Styles>
-    <Style Selector="Rectangle#CarRectangle.Empty">
+    <Style Selector="Rectangle#CarRectangle">
       <Setter Property="Fill" Value="Red"/>
     </Style>
     <Style Selector="Rectangle#CarRectangle.Fixed">

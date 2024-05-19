@@ -18,7 +18,7 @@ public partial class CarControl : UserControl
     public Car? Car { get; set; }
     public bool IsSelected 
     {
-        get { return (Car == null) ? false : Car.IsSelected; }
+        get { return (IsEmpty) ? false : Car.IsSelected; }
         set {
             Car.IsSelected = value;
             if (IsSelected)
@@ -52,9 +52,10 @@ public partial class CarControl : UserControl
         }
     }
 
-    public CarControl()
+    public CarControl(TrackControl parent)
     {
         Car = null;
+        ParentControl = parent;
         InitializeComponent();
         CarRectangle.IsVisible = false;
     }
@@ -71,53 +72,46 @@ public partial class CarControl : UserControl
         AssignStyles();
     }
 
-    public void UpdateCar(Car car)
+    public void UpdateCar(TrackControl parent, Car car = null)
     {
-        if (car == null)
+        ParentControl = parent;
+
+        if (car != null)
         {
-            Car = null;
-            CarRectangle.IsVisible = false;
-            CarBorderWrapper.Classes.RemoveAll(["Selected", "Focused"]);
-            CarRectangle.Classes.Add("Empty");
-            RemoveHandler(PointerPressedEvent, CarControl_PointerPressed);
+            if (Car == null)
+            {
+                CarRectangle.IsVisible = true;
+                AddHandler(PointerPressedEvent, CarControl_PointerPressed, RoutingStrategies.Bubble);
+                AddHandler(PointerReleasedEvent, CarControl_PointerReleased, RoutingStrategies.Bubble);
+            }
+            Car = car;
+            AssignStyles();
         }
         else
         {
-            if (Car != car)
-            {
-                if (Car == null)
-                {
-                    AddHandler(PointerPressedEvent, CarControl_PointerPressed, RoutingStrategies.Bubble);
-                }
+            Car = null;
+            CarRectangle.IsVisible = false;
+            RemoveStyles();
+        }      
+    }
 
-                Car = car;
-                CarBorderWrapper.Classes.Remove("Focused");
-            }
-
-            CarRectangle.IsVisible = !IsEmpty;
-
-            if (Car != null)
-            {
-                CarRectangle.Classes.RemoveAll(["Fixed", "Loaded", "Empty"]);
-                CarBorderWrapper.Classes.Remove("Selected");
-                CarRectangle.Classes.Add("Empty");
-
-                AssignStyles();
-            }
-        }
+    private void RemoveStyles()
+    {
+        CarRectangle.Classes.RemoveAll(["Fixed", "Loaded"]);
+        CarBorderWrapper.Classes.Remove("Selected");
     }
 
     private void AssignStyles()
     {
+        RemoveStyles();
+
         if (Car.IsFixed)
         {
             CarRectangle.Classes.Add("Fixed");
-            CarRectangle.Classes.Remove("Empty");
         }
         if (Car.IsLoaded)
         {
             CarRectangle.Classes.Add("Loaded");
-            CarRectangle.Classes.Remove("Empty");
         }
         if (Car.IsSelected)
         {

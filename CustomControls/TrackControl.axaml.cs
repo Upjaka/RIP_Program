@@ -83,7 +83,7 @@ public partial class TrackControl : UserControl
             }
             else
             {
-                TrackGrid.Children.Add(new CarControl()
+                TrackGrid.Children.Add(new CarControl(this)
                 {
                     [Grid.RowProperty] = 0,
                     [Grid.ColumnProperty] = i,
@@ -195,11 +195,11 @@ public partial class TrackControl : UserControl
         foreach (Car car in Track.Cars)
         {
             if (car.IsSelected) selectedCount++;
-            ((CarControl)TrackGrid.Children[car.SerialNumber - 1]).UpdateCar(car);
+            ((CarControl)TrackGrid.Children[car.SerialNumber - 1]).UpdateCar(this, car);
         }
         for (int i = Track.Cars.Count; i < TrackGrid.Children.Count; i++)
         {
-            ((CarControl)TrackGrid.Children[i]).UpdateCar(null);
+            ((CarControl)TrackGrid.Children[i]).UpdateCar(this);
         }
         focusedCars.Clear();
         foreach (CarControl carControl in TrackGrid.Children)
@@ -365,7 +365,7 @@ public partial class TrackControl : UserControl
     {
         foreach (CarControl carControl in focusedCars)
         {
-            carControl.IsSelected = true;
+            carControl.IsSelected = !carControl.IsSelected;
         }
 
         int selectedCount = 0;
