@@ -155,8 +155,7 @@ public partial class TrackControl : UserControl
 
                     if (rect.Intersects(carRect))
                     {
-                        focusedCars.Add(carControl);
-                        carControl.IsFocused = true;
+                        FocusCarControl(carControl);
                     }
                 }
                 
@@ -274,13 +273,19 @@ public partial class TrackControl : UserControl
         }
     }
 
+    private void FocusCarControl(CarControl carControl)
+    {
+        focusedCars.Add(carControl);
+        carControl.IsFocused = true;
+        ParentControl.LastFocusedCar = carControl.Car;
+    }
+
     private void FocusNthCar(int n)
     {
         if (Track.Cars.Count > 0)
         {
             CarControl focusedCar = (n < Track.Cars.Count) ? (CarControl)TrackGrid.Children[n] : (CarControl)TrackGrid.Children[Track.Cars.Count - 1];
-            focusedCar.IsFocused = true;
-            focusedCars.Add(focusedCar);
+            FocusCarControl(focusedCar);
         }
     }
 
@@ -291,6 +296,7 @@ public partial class TrackControl : UserControl
             carControl.IsFocused = false;
         }
         focusedCars.Clear();
+        ParentControl.LastFocusedCar = null;
     }
 
     private void FocusNextCar(bool savePreviusFocused = false)

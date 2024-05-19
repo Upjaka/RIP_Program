@@ -34,7 +34,6 @@ public partial class AddNewCarDialogWindow : Window
         {
             viewModel = (MainWindowViewModel)Owner.DataContext;
             DataContext = viewModel;
-            viewModel.NewCars.Add(new NewCar());
             Title = $"Приход в район {viewModel.SelectedStation.StationName} на путь {viewModel.TrackNumber}";
         };
 

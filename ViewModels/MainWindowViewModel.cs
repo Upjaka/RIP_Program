@@ -36,7 +36,7 @@ namespace AvaloniaApplication2.ViewModels
         public Track ?SelectedTrack { get; set; } = null;
         public Station ?SelectedStation { get; set; } = null;
         public List<Car> movingCarsList {  get; set; }
-        public ObservableCollection<NewCar> NewCars { get; set; }
+        public Car LastFocusedCar { get; set; }
 
 
         public bool HasUnsavedChanges
@@ -49,9 +49,7 @@ namespace AvaloniaApplication2.ViewModels
             CarId = 1;
             Station = "";
             CarNumber = "";
-            TrackNumber = "";
-            
-            NewCars = new ObservableCollection<NewCar>();
+            TrackNumber = "";       
 
             CarsInfo = new ObservableCollection<CarInfo>();
 

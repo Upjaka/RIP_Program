@@ -6,6 +6,7 @@ using AvaloniaApplication2.Models;
 using AvaloniaApplication2.ViewModels;
 using Avalonia.Input;
 using Avalonia.Interactivity;
+using System;
 
 namespace AvaloniaApplication2.CustomControls;
 
@@ -16,6 +17,24 @@ public partial class StationControl : UserControl
     private TrackControl? selectedTrack;
     public TrackControl? SelectedTrack { get { return selectedTrack; } }
     public Station Station { get; }
+
+    private Car _lastFocusedCar;
+    public Car LastFocusedCar
+    {
+        get => _lastFocusedCar;
+        set
+        {
+            _lastFocusedCar = value;
+            CarSerialNumberTextBlock.Text = (value == null) ? "" : _lastFocusedCar.SerialNumber.ToString();
+            CarNumberTextBlock.Text = (value == null) ? "" : _lastFocusedCar.CarNumber;
+            CarCargoTextBlock.Text = (value == null) ? "" : _lastFocusedCar.Cargo;
+            CarDefectTextBlock.Text = (value == null) ? "" : _lastFocusedCar.DefectCodes;
+            CarProductTextBlock.Text = (value == null) ? "" : _lastFocusedCar.Product;
+            CarArrivalTextBlock.Text = (value == null) ? "" : _lastFocusedCar.Arrival.ToString("dd/MM/yy");
+            CarDowntimeTextBlock.Text = (value == null) ? "" : (DateTime.Now - _lastFocusedCar.Arrival).Days.ToString() + " дн";
+        }
+    }
+
 
     public StationControl()
     {
@@ -187,5 +206,16 @@ public partial class StationControl : UserControl
         int lastFocusedCarIndex = selectedTrack.Unselect();
         selectedTrack = (TrackControl)TracksPanel.Children[(index - 1 + TracksPanel.Children.Count) % TracksPanel.Children.Count];
         selectedTrack.Select(lastFocusedCarIndex);
+    }
+
+    private void ScrollViewer_PointerWheelChanged(object? sender, PointerWheelEventArgs e)
+    {
+        if (sender is ScrollViewer scrollViewer)
+        {
+            if (CarInfoGrid.Bounds.Width > scrollViewer.Bounds.Width)
+            {
+                scrollViewer.Offset = new Vector(scrollViewer.Offset.X - e.Delta.Y * 20, scrollViewer.Offset.Y);
+            }
+        }        
     }
 }

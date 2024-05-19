@@ -8,12 +8,69 @@
              Focusable="False"
              SizeChanged="StationControl_SizeChanged">
 
+  <UserControl.Styles>
+    <Style Selector="TextBlock.CarInfo">
+      <Setter Property="FontSize" Value="12"/>
+    </Style>
+    <Style Selector="TextBlock.CarInfo">
+      <Setter Property="Margin" Value="2, 0, 1, 0"/>
+    </Style>
+    <Style Selector="TextBlock#CarSerialNumberTextBlock">
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style Selector="TextBlock#CarNumberTextBlock">
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+    <Style Selector="TextBlock#CarUnknownTextBlock">
+      <Setter Property="FontWeight" Value="Bold"/>
+    </Style>
+  </UserControl.Styles>
+
   <Border x:Name="StationWrapper" BorderBrush="Black" BorderThickness="0">
       <StackPanel Orientation="Vertical">
         <DockPanel x:Name="ControlPanel" Height="27">
           <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>
           <Button FontSize="12" Margin="1" Click="CloseButton_Click" HorizontalAlignment="Right" Focusable="False">X</Button>
         </DockPanel>
+        <StackPanel x:Name="CarInfoPanel" Orientation="Vertical">
+          <ScrollViewer x:Name="CarInfoScrollViewer" HorizontalScrollBarVisibility="Auto"
+                        Width="{Binding Width, ElementName=StationWrapper}" Height="33"
+                        PointerWheelChanged="ScrollViewer_PointerWheelChanged">
+            <Grid x:Name="CarInfoGrid" Width="750" Margin="5, 2, 5, 2" HorizontalAlignment="Left"
+                  ColumnDefinitions="2*, 6*, 2*, 10*, 11*, 10*, 10*, 9*, 7*" RowDefinitions="auto">
+              <TextBlock x:Name="CarSerialNumberTextBlock" Classes="CarInfo"
+                         Grid.Row="0" Grid.Column="0"/>
+              <TextBlock x:Name="CarNumberTextBlock" Classes="CarInfo"
+                         Grid.Row="0" Grid.Column="1"/>
+              <TextBlock x:Name="CarUnknownTextBlock" Classes="CarInfo" Text="П"
+                         Grid.Row="0" Grid.Column="2"/>
+              <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="3">
+                <TextBlock Classes="CarInfo" Text="Продукт: "/>
+                <TextBlock x:Name="CarProductTextBlock" Classes="CarInfo"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="4">
+                <TextBlock Classes="CarInfo" Text="Брак: "/>
+                <TextBlock x:Name="CarDefectTextBlock" Classes="CarInfo"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="5">
+                <TextBlock Classes="CarInfo" Text="Груз: "/>
+                <TextBlock x:Name="CarCargoTextBlock" Classes="CarInfo"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="6">
+                <TextBlock Classes="CarInfo" Text="Приход: "/>
+                <TextBlock x:Name="CarArrivalTextBlock" Classes="CarInfo"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="7">
+                <TextBlock Classes="CarInfo" Text="Простой: "/>
+                <TextBlock x:Name="CarDowntimeTextBlock" Classes="CarInfo"/>
+              </StackPanel>
+              <StackPanel Orientation="Horizontal" Grid.Row="0" Grid.Column="8">
+                <TextBlock Classes="CarInfo" Text="Подача: "/>
+                <TextBlock Classes="CarInfo" Text="//"/>
+              </StackPanel>
+            </Grid>  
+          </ScrollViewer>
+        </StackPanel>
         <Border x:Name="TracksBorder"
                 Width="{Binding Width, ElementName=StationWrapper}">
           <ScrollViewer HorizontalScrollBarVisibility="Visible"
