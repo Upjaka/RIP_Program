@@ -154,10 +154,17 @@ public partial class MoveCarsDialogWindow : Window
     {
         if (SelectedStation != null && SelectedTrack != null)
         {
-            viewModel.MoveCars(SelectedTrack, MovingSideCheckBox.IsChecked ?? true);
-            (Owner as StationStateWindow).UpdateTrack(SelectedTrack);
-            (Owner as StationStateWindow).UpdateTrack(viewModel.SelectedTrack);
-            Close();
+
+            if (!viewModel.MoveCars(SelectedTrack, MovingSideCheckBox.IsChecked ?? true))
+            {
+                LackOfSpaceOnTrackDialogWindow lackOfSpaceOnTrackWindow = new LackOfSpaceOnTrackDialogWindow();
+                lackOfSpaceOnTrackWindow.ShowDialog(this);
+            } else
+            {
+                (Owner as StationStateWindow).UpdateTrack(SelectedTrack);
+                (Owner as StationStateWindow).UpdateTrack(viewModel.SelectedTrack);
+                Close();
+            }
         }
     }
 }

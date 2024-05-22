@@ -258,15 +258,15 @@ namespace AvaloniaApplication2.ViewModels
             return 0;
         }
 
-        public void MoveCars(Track destinationTrack, bool IsFirst = false)
+        public bool MoveCars(Track destinationTrack, bool IsFirst = false)
         {
             List<Car> selectedCars = SelectedTrack.GetSelectedCars();
-            List<Car> oldSelectedCars = new List<Car>();
-            foreach (Car car in selectedCars) oldSelectedCars.Add(car.Clone());
-
 
             if (destinationTrack.Cars.Count + selectedCars.Count <= destinationTrack.Capacity)
             {
+                List<Car> oldSelectedCars = new List<Car>();
+                foreach (Car car in selectedCars) oldSelectedCars.Add(car.Clone());
+
                 SelectedTrack.RemoveAllCars(selectedCars);
 
                 if (!IsFirst)
@@ -277,11 +277,14 @@ namespace AvaloniaApplication2.ViewModels
                 {
                     destinationTrack.AddFirst(selectedCars);
                 }
+
+                for (int i = 0; i < selectedCars.Count; i++)
+                {
+                    localChanges.Add(new LocalChange(oldSelectedCars[i], selectedCars[i]));
+                }
+                return true;
             }
-            for (int i = 0; i < selectedCars.Count; i++)
-            {
-                localChanges.Add(new LocalChange(oldSelectedCars[i], selectedCars[i]));
-            }
+            else return false;
         }
 
         public void ConnectToDefectCodesDatabase()

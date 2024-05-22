@@ -97,6 +97,7 @@ public partial class CarControl : UserControl
 
     private void RemoveStyles()
     {
+        IsFocused = false;
         CarRectangle.Classes.RemoveAll(["Fixed", "Loaded"]);
         CarBorderWrapper.Classes.Remove("Selected");
     }
