@@ -21,7 +21,7 @@
         <StackPanel DockPanel.Dock="Right" Orientation="Horizontal"
                     HorizontalAlignment="Right" Height="50">
           <Button x:Name="OkButton" Content="Ок"
-                  Width="60" HorizontalContentAlignment="Center" Margin="20, 0, 20, 0"/>
+                  Width="60" HorizontalContentAlignment="Center" Margin="20, 0, 20, 0" Click="OkButton_Click"/>
         </StackPanel>
       </DockPanel>
     </StackPanel>

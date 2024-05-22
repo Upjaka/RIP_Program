@@ -124,7 +124,7 @@ namespace AvaloniaApplication2.ViewModels
                     controlCode += (code < 10) ? code : code % 10 + code / 10;
                 }
 
-                if (10 - controlCode % 10 != Convert.ToInt32(number) % 10) return 1;
+                if ((10 - controlCode % 10) % 10 != Convert.ToInt32(number) % 10) return 1;
 
                 foreach (var station in Stations)
                 {
@@ -298,10 +298,10 @@ namespace AvaloniaApplication2.ViewModels
 
                     while (reader.Read())
                     {
-                        string code = reader.GetString(1);
-                        string fullName = reader.GetString(2);
-                        string shortName = reader.GetString(4);
-                        bool isPouring = reader.GetBoolean(3);
+                        string code = reader.GetString(reader.GetOrdinal("Code"));
+                        string fullName = reader.GetString(reader.GetOrdinal("FullName"));
+                        string shortName = reader.GetString(reader.GetOrdinal("ShortName"));
+                        bool isPouring = reader.GetBoolean(reader.GetOrdinal("Pouring"));
 
                         DefectCodes.Add(new DefectCode(code, fullName, shortName, isPouring));
                     }
@@ -345,7 +345,7 @@ namespace AvaloniaApplication2.ViewModels
 
                         while (trackReader.Read())
                         {
-                            int trackId = trackReader.GetInt32(trackReader.GetOrdinal("TrackID_"));
+                            int trackId = trackReader.GetInt32(trackReader.GetOrdinal("TrackID"));
                             int trackNumber = trackReader.GetInt32(trackReader.GetOrdinal("TrackNumber"));
                             int capacity = trackReader.GetInt32(trackReader.GetOrdinal("Capacity"));
                             int stationId = trackReader.GetInt32(trackReader.GetOrdinal("StationId"));

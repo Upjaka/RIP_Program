@@ -73,7 +73,7 @@ namespace AvaloniaApplication2.Views
                 {
                     Close();
                 }
-            };            
+            };
         }
 
         private void LoginWindow_Closing(object? sender, WindowClosingEventArgs e)

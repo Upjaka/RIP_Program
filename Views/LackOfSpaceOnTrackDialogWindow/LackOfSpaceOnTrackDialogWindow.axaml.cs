@@ -10,4 +10,9 @@ public partial class LackOfSpaceOnTrackDialogWindow : Window
     {
         InitializeComponent();
     }
+
+    private void OkButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    {
+        Close();
+    }
 }

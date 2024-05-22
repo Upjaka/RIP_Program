@@ -51,12 +51,13 @@ public partial class AddNewCarDialogWindow : Window
     {
         DateTimeDialogWindow dateTimeDialog = new DateTimeDialogWindow();
 
-        dateTimeDialog.OkButton.Click += (s, e) =>
+        dateTimeDialog.OkButton.Click += async (s, e) =>
         {
             DateTime selectedDate = dateTimeDialog.DatePicker.SelectedDate.HasValue ? dateTimeDialog.DatePicker.SelectedDate.Value.Date : DateTime.MinValue;
             TimeSpan selectedTime = dateTimeDialog.TimePicker.SelectedTime ?? TimeSpan.Zero;
             comingDateTime = selectedDate + selectedTime;
 
+            newCarsList.Clear();
 
             foreach (var textBox in carGridRows.Keys)
             {
@@ -68,11 +69,21 @@ public partial class AddNewCarDialogWindow : Window
                     newCarsList.Add(car);
                 }
             } 
-            viewModel.AddNewCar(newCarsList, InsertItBeginning.IsChecked ?? false);
 
-            (Owner as MainWindow).UpdateTrack(viewModel.NewComingTrack);
-            dateTimeDialog.Close();
-            Close();
+            if (newCarsList.Count <= viewModel.NewComingTrack.Capacity - viewModel.NewComingTrack.Cars.Count)
+            {
+                viewModel.AddNewCar(newCarsList, InsertItBeginning.IsChecked ?? false);
+
+                (Owner as MainWindow).UpdateTrack(viewModel.NewComingTrack);
+                dateTimeDialog.Close();
+                Close();
+            }
+            else
+            {
+                LackOfSpaceOnTrackDialogWindow lackOfSpaceOnTrackDialogWindow = new LackOfSpaceOnTrackDialogWindow();
+
+                await lackOfSpaceOnTrackDialogWindow.ShowDialog<bool>(this);
+            }
         };
 
         dateTimeDialog.CancelButton.Click += (s, e) =>
@@ -140,6 +151,7 @@ public partial class AddNewCarDialogWindow : Window
                     {
                         CarGrid.Children.Remove(textBox);
                         foreach (var control in carGridRows[textBox]) CarGrid.Children.Remove(control);
+                        carGridRows.Remove(textBox);
                     }
                     if (row > rowIndex)
                     {
@@ -175,8 +187,7 @@ public partial class AddNewCarDialogWindow : Window
                 if (CheckUserInput(textBox))
                 {
                     AddEmptyRowToCarGrid();
-
-                }
+                }                
                 e.Handled = true;
             }
             if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
@@ -184,20 +195,34 @@ public partial class AddNewCarDialogWindow : Window
                 var clipboard = GetTopLevel(this)?.Clipboard;
                 var clipboardString = await clipboard.GetTextAsync();
 
+                int selectionStart = Math.Min(textBox.SelectionStart, textBox.SelectionEnd);
+                int selectionLength = Math.Abs(textBox.SelectionEnd - textBox.SelectionStart);
+
                 if (!string.IsNullOrEmpty(clipboardString))
                 {
                     string[] splittedString = SplitClipboardText(clipboardString);
 
-                    if (splittedString.Length == 1)
+                    if (!string.IsNullOrEmpty(textBox.Text))
                     {
-                        textBox.Text += splittedString[0];
+                        textBox.Text = textBox.Text.Remove(selectionStart, selectionLength);
+                        textBox.Text = textBox.Text.Insert(selectionStart, splittedString[0]);
                     }
                     else
                     {
-                        int rowIndex = Grid.GetRow(textBox);
-                        if (rowIndex == CarGrid.RowDefinitions.Count - 1) PasteData(textBox, splittedString);
-                        else textBox.Text += splittedString[0];
+                        textBox.Text = splittedString[0];
                     }
+
+                    if (splittedString.Length != 1)
+                    {
+                        if (CheckUserInput(textBox))
+                        {
+                            textBox = AddEmptyRowToCarGrid();
+
+                            int rowIndex = Grid.GetRow(textBox);
+                            if (rowIndex == CarGrid.RowDefinitions.Count - 1) PasteData(textBox, splittedString.Skip(1).ToArray());
+                            else textBox.Text.Insert(selectionStart, splittedString[0]);
+                        }
+                    } 
                 }
 
                 e.Handled = true;
@@ -208,6 +233,16 @@ public partial class AddNewCarDialogWindow : Window
 
     private bool CheckUserInput(TextBox textBox)
     {
+        foreach (TextBox textBox1 in carGridRows.Keys)
+        {
+            if (textBox != textBox1 && textBox.Text == textBox1.Text)
+            {
+                IncorrectCarNumberDialogWindow carNumberDialogWindow1 = new IncorrectCarNumberDialogWindow(textBox.Text, true);
+                carNumberDialogWindow1.ShowDialog(this);
+                return false;
+            }
+        }
+
         switch (viewModel.IsCarNumberCorrect(textBox.Text))
         {
             case 0:
