@@ -13,6 +13,13 @@ namespace AvaloniaApplication2.Models
         public string ShortName { get; set; }
         public bool IsPouring { get; set; }
 
+        public DefectCode()
+        {
+            Code = string.Empty;
+            FullName = string.Empty;
+            ShortName = string.Empty;
+            IsPouring = false;
+        }
         public DefectCode(string code, string fullName, string shortName, bool isPouring)
         {
             Code = code;

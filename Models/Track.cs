@@ -20,6 +20,14 @@ namespace AvaloniaApplication2.Models
             return result;
         };
 
+        public Track()
+        {
+            TrackId = 0;
+            TrackNumber = 0;
+            Capacity = 0;
+            StationId = 0;
+        }
+
         public Track(int trackId, int trackNumber, int capacity, int stationId) 
         {
             TrackId = trackId;

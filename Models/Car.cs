@@ -107,6 +107,19 @@ namespace AvaloniaApplication2.Models
             }
         }
 
+        public Car()
+        {
+            CarNumber = String.Empty;
+            SerialNumber = 0;
+            DefectCodes = String.Empty;
+            Cargo = String.Empty;
+            Product = String.Empty;
+            Arrival = DateTime.MinValue;
+            IsFixed = false;
+            IsLoaded = false;
+            IsSelected = false;
+        }
+
         public Car(string carNumber, int serialNumber, bool isFixed, string defectCodes, bool isLoaded, string product, string cargo, DateTime arrival, int trackId)
         {
             IsSelected = false;

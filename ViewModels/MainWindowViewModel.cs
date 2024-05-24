@@ -8,6 +8,9 @@ using AvaloniaApplication2.Models;
 using System.Diagnostics;
 using AvaloniaApplication2.Views;
 using DynamicData;
+using System.Xml;
+using System.Data.SqlClient;
+using Dapper;
 
 namespace AvaloniaApplication2.ViewModels
 {
@@ -15,6 +18,8 @@ namespace AvaloniaApplication2.ViewModels
     {
         private static readonly string connectionToDefectCodesDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\DefectCodes.accdb;";
         private static readonly string connectionToStationsDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
+
+        private static readonly string connectionToSQLServerString = "Server=alesantpc\\my_mssqlserver;Database=RIP;Trusted_Connection=True;";
 
         private ChangeList localChanges;
 
@@ -192,50 +197,6 @@ namespace AvaloniaApplication2.ViewModels
             localChanges.Clear();
         }
 
-        public bool SaveChangesToDataBase()
-        {
-            if (localChanges.Count > 0)
-            {
-                using (OleDbConnection connection = new OleDbConnection(connectionToStationsDbString))
-                {
-                    try
-                    {
-                        connection.Open();
-
-                        foreach (var updateRequestString in localChanges.GetSQLRequests())
-                        {
-                            using (OleDbCommand command = new OleDbCommand(updateRequestString, connection))
-                            {
-                                // Выполнение запроса
-                                int rowsAffected = command.ExecuteNonQuery();
-
-                                // Проверка на количество затронутых строк (обычно 1)
-                                if (rowsAffected > 0)
-                                {
-                                    Debug.WriteLine("Запись успешно добавлена в базу данных.");
-                                }
-                                else
-                                {
-                                    Debug.WriteLine("Ошибка при добавлении записи в базу данных.");
-                                }
-                            }
-                        }
-                        localChanges.Clear();
-                        return true;
-                    }
-                    catch (OleDbException ex)
-                    {
-                        Debug.WriteLine("Error connecting to the database: " + ex.Message);
-                        return false;
-                    }
-                }
-            }
-            else
-            {
-                return false;
-            }
-        }
-
 
         public Station GetStationByName(string stationName)
         {
@@ -289,28 +250,17 @@ namespace AvaloniaApplication2.ViewModels
 
         public void ConnectToDefectCodesDatabase()
         {
-            using (OleDbConnection connection = new OleDbConnection(connectionToDefectCodesDbString))
+            using (var connection = new SqlConnection(connectionToSQLServerString))
             {
                 try
                 {
                     var queryString = "SELECT * FROM DefectCodes";
-                    OleDbCommand command = new OleDbCommand(queryString, connection);
-
                     connection.Open();
-                    OleDbDataReader reader = command.ExecuteReader();
+                    var defectCodes = connection.Query<DefectCode>(queryString).AsList();
 
-                    while (reader.Read())
-                    {
-                        string code = reader.GetString(reader.GetOrdinal("Code"));
-                        string fullName = reader.GetString(reader.GetOrdinal("FullName"));
-                        string shortName = reader.GetString(reader.GetOrdinal("ShortName"));
-                        bool isPouring = reader.GetBoolean(reader.GetOrdinal("Pouring"));
-
-                        DefectCodes.Add(new DefectCode(code, fullName, shortName, isPouring));
-                    }
-                    reader.Close();
+                    DefectCodes.AddRange(defectCodes);
                 }
-                catch (OleDbException ex)
+                catch (SqlException ex)
                 {
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
@@ -319,64 +269,32 @@ namespace AvaloniaApplication2.ViewModels
 
         public void ConnectToStationsDatabase()
         {
-            using (OleDbConnection connection = new OleDbConnection(connectionToStationsDbString))
+            using (var connection = new SqlConnection(connectionToSQLServerString))
             {
                 try
                 {
-                    var getAllStationsQueryString = "SELECT * FROM Stations";
-                    OleDbCommand getAllStationsСommand = new OleDbCommand(getAllStationsQueryString, connection);
-
                     connection.Open();
-                    OleDbDataReader stationReader = getAllStationsСommand.ExecuteReader();
 
-                    while (stationReader.Read())
+                    // Получаем все станции
+                    var getAllStationsQueryString = "SELECT * FROM Stations";
+                    var stations = connection.Query<Station>(getAllStationsQueryString).AsList();
+                    Stations.AddRange(stations);
+
+                    foreach (var station in Stations)
                     {
-                        int stationId = stationReader.GetInt32(stationReader.GetOrdinal("StationID"));
-                        string stationName = stationReader.GetString(stationReader.GetOrdinal("StationName"));
-                        Station station = new Station(stationId, stationName);
-                        Stations.Add(station);
-                    }
-                    stationReader.Close();
+                        // Получаем все треки для текущей станции
+                        var getTracksFromStationQueryString = "SELECT * FROM Tracks WHERE StationID = @StationId";
+                        var tracks = connection.Query<Track>(getTracksFromStationQueryString, new { StationId = station.StationId }).AsList();
+                        station.AddTracks(tracks);
 
-                    foreach (Station station in Stations)
-                    {
-                        var getTracksFromStationQueryString = "SELECT * FROM Tracks WHERE StationID = " + station.StationId;
-
-                        OleDbCommand getTracksFromStationСommand = new OleDbCommand(getTracksFromStationQueryString, connection);
-
-                        OleDbDataReader trackReader = getTracksFromStationСommand.ExecuteReader();
-
-                        while (trackReader.Read())
+                        foreach (var track in station.Tracks)
                         {
-                            int trackId = trackReader.GetInt32(trackReader.GetOrdinal("TrackID"));
-                            int trackNumber = trackReader.GetInt32(trackReader.GetOrdinal("TrackNumber"));
-                            int capacity = trackReader.GetInt32(trackReader.GetOrdinal("Capacity"));
-                            int stationId = trackReader.GetInt32(trackReader.GetOrdinal("StationId"));
-                            Track track = new Track(trackId, trackNumber, capacity, stationId);
-                            station.AddTrack(track);
-                        }
-                        trackReader.Close();
+                            // Получаем все автомобили для текущего трека
+                            var getCarsFromTrackQueryString = "SELECT * FROM Cars WHERE TrackID = @TrackId";
+                            var cars = connection.Query<Car>(getCarsFromTrackQueryString, new { TrackId = track.TrackId }).AsList();
 
-                        foreach (Track track in station.Tracks) 
-                        {
-                            var getCarsFromTrackQueryString = "SELECT * FROM Cars WHERE TrackID = " + track.TrackId;
-
-                            OleDbCommand getCarsFromTrackСommand = new OleDbCommand(getCarsFromTrackQueryString, connection);
-
-                            OleDbDataReader carReader = getCarsFromTrackСommand.ExecuteReader();
-
-                            while (carReader.Read()) 
+                            foreach (var car in cars)
                             {
-                                string carNumber = carReader.GetString(carReader.GetOrdinal("CarNumber"));
-                                int serialNumber = carReader.GetInt32(carReader.GetOrdinal("SerialNumber"));
-                                bool isFixed = carReader.GetBoolean(carReader.GetOrdinal("IsFixed"));
-                                string product = carReader.GetString(carReader.GetOrdinal("Product"));
-                                bool isLoaded = carReader.GetBoolean(carReader.GetOrdinal("IsLoaded"));
-                                string defectCodes = carReader.GetString(carReader.GetOrdinal("DefectCodes"));
-                                string cargo = carReader.GetString(carReader.GetOrdinal("Cargo"));
-                                DateTime arrival = carReader.GetDateTime(carReader.GetOrdinal("Arrival"));
-                                int trackId = carReader.GetInt32(carReader.GetOrdinal("TrackID"));
-                                Car car = new Car(carNumber, serialNumber, isFixed, defectCodes, isLoaded, product, cargo, arrival, trackId);
                                 car.CarChanged += OnCarChanged;
                                 track.AddLast(car);
                             }
@@ -385,13 +303,63 @@ namespace AvaloniaApplication2.ViewModels
                         }
                     }
 
+                    Console.WriteLine("Data loaded successfully.");
                 }
-                catch (OleDbException ex)
+                catch (SqlException ex)
                 {
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
             }
         }
+
+        public bool SaveChangesToDataBase()
+    {
+        if (localChanges.Count > 0)
+        {
+            using (var connection = new SqlConnection(connectionToSQLServerString))
+            {
+                try
+                {
+                    connection.Open();
+
+                    foreach (var updateRequestString in localChanges.GetSQLRequests())
+                    {
+                        try
+                        {
+                            // Выполнение запроса с помощью Dapper
+                            int rowsAffected = connection.Execute(updateRequestString);
+
+                            // Проверка на количество затронутых строк (обычно 1)
+                            if (rowsAffected > 0)
+                            {
+                                Debug.WriteLine("Запись успешно добавлена в базу данных.");
+                            }
+                            else
+                            {
+                                Debug.WriteLine("Ошибка при добавлении записи в базу данных.");
+                            }
+                        }
+                        catch (SqlException ex)
+                        {
+                            Debug.WriteLine("Ошибка при выполнении запроса: " + ex.Message);
+                        }
+                    }
+
+                    localChanges.Clear();
+                    return true;
+                }
+                catch (SqlException ex)
+                {
+                    Debug.WriteLine("Error connecting to the database: " + ex.Message);
+                    return false;
+                }
+            }
+        }
+        else
+        {
+            return false;
+        }
+    }
 
         public void AddCarsToDatabase()
         {
@@ -442,7 +410,7 @@ namespace AvaloniaApplication2.ViewModels
             {
                 Debug.WriteLine("Error connecting to the database: " + ex.Message);
             }
-        }
+        }     
 
 
         public void UpdateCarNumbers()
@@ -497,5 +465,7 @@ namespace AvaloniaApplication2.ViewModels
                 Console.WriteLine("Error updating car number: " + ex.Message);
             }
         }
+
+        
     }
 }

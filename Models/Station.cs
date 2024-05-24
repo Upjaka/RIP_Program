@@ -10,7 +10,13 @@ namespace AvaloniaApplication2.Models
     {
         public int StationId { get; set; }
         public string StationName { get; set; }
-        public List<Track> Tracks { get; set; } = new List<Track>();    
+        public List<Track> Tracks { get; set; } = new List<Track>();
+        
+        public Station()
+        {
+            StationId = 0;
+            StationName = string.Empty;
+        }
 
         public Station(int stationId, string stationName) 
         { 
@@ -20,9 +26,10 @@ namespace AvaloniaApplication2.Models
 
         public void AddTrack(Track track) { Tracks.Add(track); }
 
+
         public void RemoveTrack(Track track) { Tracks.Remove(track); }
 
-        public void AddAllTrack(List<Track> tracks) { Tracks.AddRange(tracks); }
+        public void AddTracks(List<Track> tracks) { Tracks.AddRange(tracks); }
 
         public Track? GetTrackByNumber(int n) {
             foreach (Track track in Tracks)
