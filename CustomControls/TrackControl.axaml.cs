@@ -44,7 +44,7 @@ public partial class TrackControl : UserControl
         ParentWindow = parentStation.ParentWindow;
         ParentControl = parentStation;
 
-        DataContext = ParentWindow.DataContext as MainWindowViewModel;
+        DataContext = parentStation.DataContext as MainWindowViewModel;
 
         InitializeComponent();
 

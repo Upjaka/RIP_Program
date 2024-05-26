@@ -30,9 +30,7 @@
 
   <Border x:Name="CarBorderWrapper" BorderThickness="0, 0, 0, 2">
     <StackPanel x:Name="CarWrapper" Width="10" Height="18">
-      <Rectangle x:Name="CarRectangle" Classes="Empty"
-             Width="6" Height="12"
-             Margin="0, 4, 0, 0"/>
+      <Image x:Name="CarImage" Width="6" Height="12" Margin="0, 4, 0, 0"/>
     </StackPanel>
 
   </Border>

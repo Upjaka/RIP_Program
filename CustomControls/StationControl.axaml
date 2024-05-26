@@ -26,18 +26,26 @@
     </Style>
   </UserControl.Styles>
 
-  <Border x:Name="StationWrapper" BorderBrush="Black" BorderThickness="0">
+  <Border x:Name="StationWrapper" BorderBrush="Black" BorderThickness="1">
       <StackPanel Orientation="Vertical">
         <DockPanel x:Name="ControlPanel" Height="27">
-          <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>
-          <Button FontSize="12" Margin="1" Click="CloseButton_Click" HorizontalAlignment="Right" Focusable="False">X</Button>
+          <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>          
+          <Button x:Name="CloseButton" FontSize="12" DockPanel.Dock="Right"
+                  Margin="1"  HorizontalAlignment="Right" Focusable="False"
+                  Click="CloseButton_Click">X</Button>
+          <Button x:Name="DetachButton" FontSize="12" DockPanel.Dock="Right"
+                  Margin="1" HorizontalAlignment="Right" Focusable="False"
+                  Click="DetachButton_Click">></Button>
+          <Button x:Name="AttachButton" FontSize="12" DockPanel.Dock="Right"
+                  Margin="1" HorizontalAlignment="Right" Focusable="False"
+                  Click="AttachButton_Click">&lt;</Button>
         </DockPanel>
         <StackPanel x:Name="CarInfoPanel" Orientation="Vertical">
           <ScrollViewer x:Name="CarInfoScrollViewer" HorizontalScrollBarVisibility="Auto"
                         Width="{Binding Width, ElementName=StationWrapper}" Height="33"
                         PointerWheelChanged="ScrollViewer_PointerWheelChanged">
             <Grid x:Name="CarInfoGrid" Width="750" Margin="5, 2, 5, 2" HorizontalAlignment="Left"
-                  ColumnDefinitions="2*, 6*, 2*, 10*, 11*, 10*, 10*, 9*, 7*" RowDefinitions="auto">
+                  ColumnDefinitions="2*, 6*, 2*, 10*, 11*, 10*, 10*, 9*, 7*" RowDefinitions="Auto">
               <TextBlock x:Name="CarSerialNumberTextBlock" Classes="CarInfo"
                          Grid.Row="0" Grid.Column="0"/>
               <TextBlock x:Name="CarNumberTextBlock" Classes="CarInfo"

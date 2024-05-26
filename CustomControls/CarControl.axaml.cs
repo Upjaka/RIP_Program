@@ -57,7 +57,7 @@ public partial class CarControl : UserControl
         Car = null;
         ParentControl = parent;
         InitializeComponent();
-        CarRectangle.IsVisible = false;
+        CarImage.IsVisible = false;
     }
 
     public CarControl(Car car, TrackControl parent)
@@ -65,6 +65,8 @@ public partial class CarControl : UserControl
         ParentControl = parent;
         Car = car;
         InitializeComponent();
+
+        CarImage.Source = CarCreator.CreateImage(Car.IsFixed, Car.IsLoaded);
 
         AddHandler(PointerPressedEvent, CarControl_PointerPressed, RoutingStrategies.Bubble);
         AddHandler(PointerReleasedEvent, CarControl_PointerReleased, RoutingStrategies.Bubble);
@@ -80,7 +82,7 @@ public partial class CarControl : UserControl
         {
             if (Car == null)
             {
-                CarRectangle.IsVisible = true;
+                CarImage.IsVisible = true;
                 AddHandler(PointerPressedEvent, CarControl_PointerPressed, RoutingStrategies.Bubble);
                 AddHandler(PointerReleasedEvent, CarControl_PointerReleased, RoutingStrategies.Bubble);
             }
@@ -90,7 +92,7 @@ public partial class CarControl : UserControl
         else
         {
             Car = null;
-            CarRectangle.IsVisible = false;
+            CarImage.IsVisible = false;
             RemoveStyles();
         }      
     }
@@ -98,21 +100,24 @@ public partial class CarControl : UserControl
     private void RemoveStyles()
     {
         IsFocused = false;
-        CarRectangle.Classes.RemoveAll(["Fixed", "Loaded"]);
+        CarImage.Classes.RemoveAll(["Fixed", "Loaded"]);
         CarBorderWrapper.Classes.Remove("Selected");
     }
 
     private void AssignStyles()
     {
+        if (Car != null)
+            CarImage.Source = CarCreator.CreateImage(Car.IsFixed, Car.IsLoaded);
+
         RemoveStyles();
 
         if (Car.IsFixed)
         {
-            CarRectangle.Classes.Add("Fixed");
+            CarImage.Classes.Add("Fixed");
         }
         if (Car.IsLoaded)
         {
-            CarRectangle.Classes.Add("Loaded");
+            CarImage.Classes.Add("Loaded");
         }
         if (Car.IsSelected)
         {

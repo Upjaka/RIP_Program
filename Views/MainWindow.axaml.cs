@@ -14,7 +14,7 @@ namespace AvaloniaApplication2.Views
     public partial class MainWindow : Window
     {
         private MainWindowViewModel viewModel;
-        private List<StationStateWindow> stationWindows;
+        public List<StationStateWindow> StationWindows;
         private PDFCreator PDFCreator { get; set; }
 
         public MainWindow()
@@ -22,7 +22,7 @@ namespace AvaloniaApplication2.Views
             PDFCreator = new PDFCreator();
 
             InitializeComponent();
-            stationWindows = new List<StationStateWindow>();
+            StationWindows = new List<StationStateWindow>();
 
             Opened += async (s, e) =>
             {
@@ -37,32 +37,13 @@ namespace AvaloniaApplication2.Views
                     stationMenuItem.Header = station.StationName;
                     stationMenuItem.Click += (s, e) =>
                     {
-                        StationStateWindow stationWindow = new StationStateWindow(station, (MainWindowViewModel)DataContext);
+                        string name = (s as MenuItem).Header.ToString();
 
-                        StationStateWindow? openedStationWindow = null;
+                        Station station = viewModel.GetStationByName(name);
 
-                        foreach (StationStateWindow stationStateWindow in stationWindows)
-                        {
-                            if (stationStateWindow.Station == station)
-                            {
-                                openedStationWindow = stationStateWindow;
-                            }
-                        }
-                        if (openedStationWindow != null)
-                        {
-                            openedStationWindow.Activate();
-                        }
-                        else
-                        {
-                            stationWindows.Add(stationWindow);
-                            stationWindow.Closed += (s, e) =>
-                            {
-                                stationWindows.Remove(stationWindow);
-                                CheckStations();
-                            };
-                            stationWindow.Show();
-                        }
-                        CheckStations();
+                        StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
+
+                        Workplace.Children.Add(stationControl);
                     };
 
                     StationsList_MenuItem.Items.Add(stationMenuItem);
@@ -72,6 +53,10 @@ namespace AvaloniaApplication2.Views
                 if (!viewModel.IsLoggedIn)
                 {
                     Close();
+                }
+                else if (!viewModel.IsOperator)
+                {
+                    Title += " (только для чтения)";
                 }
             };
         }
@@ -89,13 +74,19 @@ namespace AvaloniaApplication2.Views
         private void OpenStation_Click(object? sender, RoutedEventArgs e)
         {
             string name = (sender as MenuItem).Header.ToString();
-            //Workplace.Children.Add(stationControl);
 
+            Station station = viewModel.GetStationByName(name);
+            
+            StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
+
+            Workplace.Children.Add(stationControl);
+
+            /**
             StationStateWindow stationWindow = new StationStateWindow(viewModel.GetStationByName(name), (MainWindowViewModel)DataContext);
 
             StationStateWindow? openedStationWindow = null;
 
-            foreach (StationStateWindow stationStateWindow in stationWindows)
+            foreach (StationStateWindow stationStateWindow in StationWindows)
             {
                 if (stationStateWindow.StationControl.Station.StationName == name)
                 {
@@ -108,14 +99,36 @@ namespace AvaloniaApplication2.Views
             }
             else
             {
-                stationWindows.Add(stationWindow);
-                stationWindow.Closed += (s, e) =>
-                {
-                    CheckStations();
-                };
+                StationWindows.Add(stationWindow);
                 stationWindow.Show();
             }
-            CheckStations();
+            */
+        }
+
+        public void DetachStationControl(StationControl stationControl)
+        {
+            Workplace.Children.Remove(stationControl);
+            //stationControl.ControlPanel.IsVisible = false;
+            Station station = stationControl.Station;
+
+            StationStateWindow stationWindow = new StationStateWindow(stationControl, (MainWindowViewModel)DataContext);
+
+            stationControl.ParentWindow = stationWindow;
+
+            StationWindows.Add(stationWindow);
+            stationWindow.Show();
+        }
+
+        public void AttachStationControl(StationControl stationControl)
+        {
+            stationControl.ControlPanel.IsVisible = true;
+            stationControl.ParentWindow = null;
+            Workplace.Children.Add(stationControl);
+        }
+
+        public void CloseStationControl(StationControl stationControl)
+        {
+            Workplace.Children.Remove(stationControl);
         }
 
         private void TrackEdit_Click(object? sender, RoutedEventArgs e)
@@ -135,15 +148,10 @@ namespace AvaloniaApplication2.Views
             defectCodesWindow.ShowDialog(this);
         }
 
-        public void CloseStationControl(StationControl stationControl)
-        {
-            Workplace.Children.Remove(stationControl);
-        }
-
         public void UpdateSelectedTrack(int trackNumber)
         {
             MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
-            foreach (StationStateWindow stationWindow in stationWindows)
+            foreach (StationStateWindow stationWindow in StationWindows)
             {
                 if (stationWindow.StationControl.Station.StationName == viewModel.SelectedStation.StationName)
                 {
@@ -154,7 +162,7 @@ namespace AvaloniaApplication2.Views
 
         public void UpdateTrack(Track track)
         {
-            foreach (StationStateWindow stationWindow in stationWindows)
+            foreach (StationStateWindow stationWindow in StationWindows)
             {
                 if (stationWindow.Station.StationId == track.StationId)
                 {
@@ -198,20 +206,11 @@ namespace AvaloniaApplication2.Views
 
         private void CloseAllStationWindows()
         {
-            List<StationStateWindow> stationWindowsCopy = new List<StationStateWindow>(stationWindows);
+            List<StationStateWindow> stationWindowsCopy = new List<StationStateWindow>(StationWindows);
 
             foreach (var window in stationWindowsCopy)
             {
                 window.Close();
-            }
-        }
-
-        public void CheckStations()
-        {
-            if (stationWindows.Count > 0)
-            {
-                NewComing_MenuItem.IsEnabled = true;
-                TrackEdit_MenuItem.IsEnabled = true;
             }
         }
 
@@ -260,7 +259,64 @@ namespace AvaloniaApplication2.Views
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Не удалось открыть PDF-файл: " + ex.Message);
+                Debug.WriteLine("Не удалось открыть PDF-файл: " + ex.Message);
+            }
+        }
+
+        private void WindowsMenuItem_Click(object? sender, RoutedEventArgs e)
+        {
+            if (StationWindows.Count > 0)
+            {
+                Windows_MenuItem.Items.Clear();
+
+                foreach (StationStateWindow stationWindow in StationWindows)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Click += (s, e) =>
+                    {
+                        stationWindow.Activate();
+                    };
+                    menuItem.Header = stationWindow.StationControl.Station.StationName;
+
+                    Windows_MenuItem.Items.Add(menuItem);
+                }
+                Windows_MenuItem.UpdateLayout();
+            }
+        }
+
+        private void Windows_MenuItem_SubmenuOpened(object? sender, RoutedEventArgs e)
+        {
+            if (StationWindows.Count > 0)
+            {
+                Windows_MenuItem.Items.Clear();
+
+                foreach (StationStateWindow stationWindow in StationWindows)
+                {
+                    MenuItem menuItem = new MenuItem();
+                    menuItem.Click += (s, e) =>
+                    {
+                        stationWindow.Activate();
+                    };
+                    menuItem.Header = stationWindow.StationControl.Station.StationName;
+
+                    Windows_MenuItem.Items.Add(menuItem);
+                }
+            }
+        }
+
+        private void Dispatcher_MenuItem_SubmenuOpened(object? sender, RoutedEventArgs e)
+        {
+            if (viewModel.SelectedTrack != null)
+            {
+                NewComing_MenuItem.IsEnabled = true;
+                TrackEdit_MenuItem.IsEnabled = true;
+                FieldSheet_MenuItem.IsEnabled = true;
+            }
+            else
+            {
+                NewComing_MenuItem.IsEnabled = true;
+                TrackEdit_MenuItem.IsEnabled = true;
+                FieldSheet_MenuItem.IsEnabled = true;
             }
         }
     }

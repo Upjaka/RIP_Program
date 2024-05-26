@@ -16,12 +16,12 @@ public partial class StationStateWindow : Window
     public Station Station { get; }
     public StationControl StationControl;
 
-    public StationStateWindow(Station station, MainWindowViewModel dataContext)
+    public StationStateWindow(StationControl stationControl, MainWindowViewModel dataContext)
     {
         DataContext = dataContext;
-        Station = station;
+        Station = stationControl.Station;
 
-        StationControl stationControl = new StationControl(this, Station);
+        //StationControl stationControl = new StationControl(this, Station);
         StationControl = stationControl;
 
         InitializeComponent();
@@ -33,6 +33,16 @@ public partial class StationStateWindow : Window
         HotKeyManager.SetHotKey(StationControl, new KeyGesture(Key.Tab));
 
         AddHandler(KeyDownEvent, StationWindow_KeyDown, RoutingStrategies.Tunnel);
+
+        Closed += (s, e) =>
+        {
+            (DataContext as MainWindowViewModel).MainWindow.StationWindows.Remove(this);
+        };
+    }
+
+    private void StationStateWindow_Closed(object? sender, EventArgs e)
+    {
+        throw new NotImplementedException();
     }
 
     protected void StationWindow_KeyDown(object? sender, KeyEventArgs e)

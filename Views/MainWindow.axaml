@@ -28,13 +28,13 @@
           <MenuItem x:Name="SaveMenuItem" Header="Сохранить" Click="SaveMenuItem_Click" HotKey="Ctrl+S"/>
           <MenuItem Header="Выйти"/>
         </MenuItem>
-        <MenuItem Header="Диспетчер">
+        <MenuItem Header="Диспетчер" SubmenuOpened="Dispatcher_MenuItem_SubmenuOpened">
           <MenuItem Header="Архив движения" IsEnabled="False"/>
           <MenuItem x:Name="NewComing_MenuItem" Header="Приход в район" Click="NewComing_Click" IsEnabled="False"/>
           <MenuItem x:Name="TrackEdit_MenuItem" Header="Редактор-путь" Click="TrackEdit_Click" IsEnabled="False"/>
           <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click" IsEnabled="False"/>
           <MenuItem Header="Паспорртные данные" IsEnabled="False"/>
-          <MenuItem Header="Натурный лист" Click="ReportMenuItem_Click"/>
+          <MenuItem x:Name="FieldSheet_MenuItem" Header="Натурный лист" Click="ReportMenuItem_Click" IsEnabled="False"/>
           <MenuItem Header="Натурный лист №2" IsEnabled="False"/>
           <MenuItem Header="Натурный лист №3" IsEnabled="False"/>
           <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>
@@ -43,7 +43,7 @@
           <MenuItem Header="Поиск вагона"/>
           <Separator/>
         </MenuItem>
-        <MenuItem x:Name="Windows_MenuItem" Header="Окна">
+        <MenuItem x:Name="Windows_MenuItem" Header="Окна" Click="WindowsMenuItem_Click" SubmenuOpened="Windows_MenuItem_SubmenuOpened">
           <!--  -->
         </MenuItem>
         <MenuItem Header="Справка">

@@ -12,7 +12,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class StationControl : UserControl
 {
-    public StationStateWindow ParentWindow { get; }
+    public StationStateWindow? ParentWindow { get; set; }
 
     private TrackControl? selectedTrack;
     public TrackControl? SelectedTrack { get { return selectedTrack; } }
@@ -41,25 +41,19 @@ public partial class StationControl : UserControl
         InitializeComponent();
     }
 
-    public StationControl(StationStateWindow parentWindow, Station station) 
+    public StationControl(Station station)
     {
-        ParentWindow = parentWindow;
         Station = station;
-
-        DataContext = ParentWindow.DataContext as MainWindowViewModel;
 
         InitializeComponent();
 
         StationName.Text = Station.StationName;
 
-        ControlPanel.IsVisible = false;
+        //ControlPanel.IsVisible = false;
         //StationWrapper.Height = mainWindow.FindControl<WrapPanel>("Workplace").Bounds.Height;
         //TracksBorder.Height = StationWrapper.Height;
 
-        var dataContext = (MainWindowViewModel)ParentWindow.DataContext;
-        DataContext = dataContext;
-
-        foreach (Track track in Station.Tracks) 
+        foreach (Track track in Station.Tracks)
         {
             var trackControl = new TrackControl(track, this);
             trackControl.Margin = new Thickness(10, 5, 0, 5);
@@ -70,6 +64,12 @@ public partial class StationControl : UserControl
 
         AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
         AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
+    }
+
+    public StationControl(MainWindowViewModel dataContext, Station station) : this(station)
+    {
+        DataContext = dataContext;
+        AttachButton.IsVisible = false;
     }
 
     public void StationControl_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -84,7 +84,30 @@ public partial class StationControl : UserControl
 
     private void CloseButton_Click(object? sender, RoutedEventArgs e)
     {
+        if (ParentWindow == null)
+        {
+            (DataContext as MainWindowViewModel).MainWindow.CloseStationControl(this);
+        }
+        else
+        {
+            ParentWindow.Close();
+        }
+    }
+
+    private void DetachButton_Click(object? sender, RoutedEventArgs e)
+    {
+        DetachButton.IsVisible = false;
+        AttachButton.IsVisible = true;
+        (DataContext as MainWindowViewModel).MainWindow.DetachStationControl(this);
+    }
+
+    private void AttachButton_Click(object? sender, RoutedEventArgs e)
+    {
+        DetachButton.IsVisible = true;
+        AttachButton.IsVisible = false;
         ParentWindow.Close();
+        ParentWindow.StationPanel.Children.Remove(this);
+        (DataContext as MainWindowViewModel).MainWindow.AttachStationControl(this);
     }
 
     private void UnselectOtherTracks(Track track) 
@@ -217,5 +240,10 @@ public partial class StationControl : UserControl
                 scrollViewer.Offset = new Vector(scrollViewer.Offset.X - e.Delta.Y * 20, scrollViewer.Offset.Y);
             }
         }        
+    }
+
+    public void Dettach()
+    {
+
     }
 }

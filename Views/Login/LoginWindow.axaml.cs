@@ -34,6 +34,7 @@ public partial class LoginWindow : Window
     private void LoginButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
     {
         (DataContext as MainWindowViewModel).IsLoggedIn = true;
+        (DataContext as MainWindowViewModel).IsOperator = (UserNameComboBox.SelectedIndex == 0) ? true : false;
         Close();
     }
 
