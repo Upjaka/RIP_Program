@@ -161,8 +161,8 @@ public partial class MoveCarsDialogWindow : Window
                 lackOfSpaceOnTrackWindow.ShowDialog(this);
             } else
             {
-                (Owner as StationStateWindow).UpdateTrack(SelectedTrack);
-                (Owner as StationStateWindow).UpdateTrack(viewModel.SelectedTrack);
+                viewModel.MainWindow.UpdateTrack(SelectedTrack);
+                viewModel.MainWindow.UpdateTrack(viewModel.SelectedTrack);
                 Close();
             }
         }

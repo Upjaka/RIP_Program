@@ -12,7 +12,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class StationControl : UserControl
 {
-    public StationStateWindow? ParentWindow { get; set; }
+    public StationStateWindow ParentWindow { get; set; }
 
     private TrackControl? selectedTrack;
     public TrackControl? SelectedTrack { get { return selectedTrack; } }

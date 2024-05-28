@@ -19,7 +19,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
-    private StationStateWindow ParentWindow;
+    private Window ParentWindow;
     private StationControl ParentControl;
 
     private static bool _isDrugging = false;
@@ -394,7 +394,9 @@ public partial class TrackControl : UserControl
 
     private void MoveCarsMenuItem_Click(object? sender, RoutedEventArgs e)
     {
-        ParentWindow.MoveCars_Clicked();
+        MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow();
+
+        moveCarsDialogWindow.ShowDialog((DataContext as MainWindowViewModel).MainWindow);
     }
 
     private void DevelopTrackMenuItem_Click(object? sender, RoutedEventArgs e)

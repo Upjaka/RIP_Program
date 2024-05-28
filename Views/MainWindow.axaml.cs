@@ -15,8 +15,6 @@ namespace AvaloniaApplication2.Views
     {
         private MainWindowViewModel viewModel;
         public List<StationStateWindow> StationWindows;
-
-        public Dictionary<Station, StationControl> OpenedStations;
         private PDFCreator PDFCreator { get; set; }
 
         public MainWindow()
@@ -25,7 +23,7 @@ namespace AvaloniaApplication2.Views
 
             InitializeComponent();
             StationWindows = new List<StationStateWindow>();
-            OpenedStations = new Dictionary<Station, StationControl>();
+
 
             Opened += async (s, e) =>
             {
@@ -43,13 +41,13 @@ namespace AvaloniaApplication2.Views
                         string name = (s as MenuItem).Header.ToString();
                         Station station = viewModel.GetStationByName(name);
 
-                        if (!OpenedStations.Keys.Contains(station))
+                        if (!viewModel.OpenedStations.Keys.Contains(station))
                         {
                             StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
 
                             Workplace.Children.Add(stationControl);
 
-                            OpenedStations.Add(station, stationControl);
+                            viewModel.OpenedStations.Add(station, stationControl);
                         }                            
                     };
 
@@ -136,7 +134,7 @@ namespace AvaloniaApplication2.Views
             stationControl.ParentWindow = stationWindow;
 
             //StationWindows.Add(stationWindow);
-            OpenedStations[station] = stationControl;
+            viewModel.OpenedStations[station] = stationControl;
             stationWindow.Show();
         }
 
@@ -171,11 +169,11 @@ namespace AvaloniaApplication2.Views
 
         public void UpdateTrack(Track track)
         {
-            foreach (Station station in OpenedStations.Keys)
+            foreach (Station station in viewModel.OpenedStations.Keys)
             {
                 if (station.StationId == track.StationId)
                 {
-                    OpenedStations[station].UpdateTrack(track.TrackNumber);
+                    viewModel.OpenedStations[station].UpdateTrack(track.TrackNumber);
                 }
             }
         }

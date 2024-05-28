@@ -11,6 +11,7 @@ using DynamicData;
 using System.Xml;
 using System.Data.SqlClient;
 using Dapper;
+using AvaloniaApplication2.CustomControls;
 
 namespace AvaloniaApplication2.ViewModels
 {
@@ -44,6 +45,7 @@ namespace AvaloniaApplication2.ViewModels
         public Station ?SelectedStation { get; set; } = null;
         public List<Car> movingCarsList {  get; set; }
         public Car LastFocusedCar { get; set; }
+        public Dictionary<Station, StationControl> OpenedStations;
 
 
         public bool HasUnsavedChanges
@@ -63,6 +65,8 @@ namespace AvaloniaApplication2.ViewModels
             OldCarsInfo = new List<CarInfo>();
 
             DefectCodes = new ObservableCollection<DefectCode>();
+
+            OpenedStations = new Dictionary<Station, StationControl>();
 
             localChanges = new ChangeList();
 
