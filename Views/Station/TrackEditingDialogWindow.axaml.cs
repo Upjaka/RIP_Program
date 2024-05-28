@@ -6,6 +6,8 @@ using AvaloniaApplication2.ViewModels;
 using System;
 using System.Diagnostics;
 using AvaloniaApplication2.Views;
+using Avalonia.Input;
+using Avalonia.Interactivity;
 
 namespace AvaloniaApplication2;
 
@@ -19,15 +21,32 @@ public partial class TrackEditingDialogWindow : Window
     {
         this.mainWindow = mainWindow;
         DataContext = dataContext;
+
         InitializeComponent();
-        Debug.WriteLine(dataContext.CarsInfo);
+
         if (dataContext.SelectedTrack != null)
         {
             Title = "Редактор района: " + dataContext.SelectedStation.StationName + " путь: " + dataContext.SelectedTrack.TrackNumber;
         }
+
+        TrackGrid.CurrentCellChanged += (sender, e) =>
+        {
+            DataGridColumn gridColumn = TrackGrid.CurrentColumn;
+
+            if (gridColumn != null)
+            {
+                if (!gridColumn.IsReadOnly)
+                {
+                    if (gridColumn is DataGridTextColumn) 
+                        TrackGrid.BeginEdit();
+                }
+            }            
+        };
+        
+        TrackGrid.AddHandler(KeyDownEvent, TrackGrid_KeyDown, RoutingStrategies.Tunnel);
     }
 
-    private async void ExitButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private async void ExitButton_Click(object? sender, RoutedEventArgs e)
     {
         MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
         
@@ -88,5 +107,55 @@ public partial class TrackEditingDialogWindow : Window
             };
             await saveChangesDialogWindow.ShowDialog<bool>(this);
         }
+    }
+
+    private void TrackGrid_KeyDown(object? sender, KeyEventArgs e)
+    {
+        if (e.Key == Key.Enter || e.Key == Key.Down)
+        {
+            TrackGrid.CommitEdit();
+
+            var trackGridColumn = TrackGrid.CurrentColumn;
+
+            TrackGrid.SelectedIndex += 1;
+
+            if (TrackGrid.SelectedIndex == -1)
+            {
+                TrackGrid.SelectedIndex = 0;
+
+                TrackGrid.CurrentColumn = trackGridColumn;
+            }
+
+            TrackGrid.ScrollIntoView(TrackGrid.SelectedItem, trackGridColumn);
+
+            TrackGrid.BeginEdit();
+
+            e.Handled = true;
+        }
+        if (e.Key == Key.Up)
+        {
+            TrackGrid.CommitEdit();
+
+            var trackGridColumn = TrackGrid.CurrentColumn;
+
+            TrackGrid.SelectedIndex -= 1;
+
+            if (TrackGrid.SelectedIndex == -1)
+            {
+                TrackGrid.SelectedIndex = (DataContext as MainWindowViewModel).CarsInfo.Count - 1;
+
+                TrackGrid.CurrentColumn = trackGridColumn;
+            }
+
+            TrackGrid.ScrollIntoView(TrackGrid.SelectedItem, trackGridColumn);
+
+            TrackGrid.BeginEdit();
+
+            e.Handled = true;
+        }
+    }
+
+    private void Window_SizeChanged(object? sender, SizeChangedEventArgs e)
+    {
     }
 }

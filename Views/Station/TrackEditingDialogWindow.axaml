@@ -10,7 +10,8 @@
         Width="775" Height="375"
         MinWidth="770" MinHeight="300"
         WindowStartupLocation="CenterScreen"
-        Closing="TrackEditing_Closing">
+        Closing="TrackEditing_Closing"
+        SizeChanged="Window_SizeChanged">
 
   <Design.DataContext>
     <vm:MainWindowViewModel/>
@@ -18,11 +19,13 @@
 
   <StackPanel x:Name="Wrapper" Orientation="Horizontal">
     <Border BorderBrush="Gray" BorderThickness="0, 1, 1, 1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-      <ScrollViewer Height="300">
         <DataGrid x:Name="TrackGrid" ItemsSource="{Binding CarsInfo}"
-                  AutoGenerateColumns="False" Height="500" IsReadOnly="False">
+                  AutoGenerateColumns="False" IsReadOnly="False"
+                  Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}"
+                  Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Window}}"
+                  CanUserResizeColumns="True">
           <DataGrid.Columns>
-            <DataGridCheckBoxColumn Header="Отм." Binding="{Binding IsSelected}"/>
+            <DataGridCheckBoxColumn Header="Отм." IsReadOnly="True" Binding="{Binding IsSelected}"/>
             <DataGridTextColumn Header="№п/п" IsReadOnly="True" Binding="{Binding SerialNumber}"/>
             <DataGridTextColumn Header="№вагона" IsReadOnly="True" Binding="{Binding CarNumber}"/>
             <DataGridCheckBoxColumn Header="Испр." Binding="{Binding IsFixed}"/>
@@ -32,8 +35,6 @@
             <DataGridTextColumn Header="Груз" Binding="{Binding Cargo}"/>
           </DataGrid.Columns>
         </DataGrid>
-      </ScrollViewer>
     </Border>
-    <Button x:Name="ExitButton" Content="Выход" Click="ExitButton_Click" Margin="10, 0, 5, 0"/>
   </StackPanel>
 </Window>
