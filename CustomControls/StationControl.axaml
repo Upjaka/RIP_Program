@@ -6,7 +6,8 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaApplication2.CustomControls.StationControl"
              Focusable="False"
-             SizeChanged="StationControl_SizeChanged">
+             SizeChanged="StationControl_SizeChanged"
+             Width="960">
 
   <UserControl.Styles>
     <Style Selector="TextBlock.CarInfo">

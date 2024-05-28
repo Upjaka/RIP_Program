@@ -290,7 +290,7 @@ namespace AvaloniaApplication2.ViewModels
 
                         foreach (var track in station.Tracks)
                         {
-                            // Получаем все автомобили для текущего трека
+                            // Получаем все вагоны для текущего трека
                             var getCarsFromTrackQueryString = "SELECT * FROM Cars WHERE TrackID = @TrackId";
                             var cars = connection.Query<Car>(getCarsFromTrackQueryString, new { TrackId = track.TrackId }).AsList();
 

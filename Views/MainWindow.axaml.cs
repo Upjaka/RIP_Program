@@ -15,6 +15,8 @@ namespace AvaloniaApplication2.Views
     {
         private MainWindowViewModel viewModel;
         public List<StationStateWindow> StationWindows;
+
+        public Dictionary<Station, StationControl> OpenedStations;
         private PDFCreator PDFCreator { get; set; }
 
         public MainWindow()
@@ -23,6 +25,7 @@ namespace AvaloniaApplication2.Views
 
             InitializeComponent();
             StationWindows = new List<StationStateWindow>();
+            OpenedStations = new Dictionary<Station, StationControl>();
 
             Opened += async (s, e) =>
             {
@@ -38,12 +41,16 @@ namespace AvaloniaApplication2.Views
                     stationMenuItem.Click += (s, e) =>
                     {
                         string name = (s as MenuItem).Header.ToString();
-
                         Station station = viewModel.GetStationByName(name);
 
-                        StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
+                        if (!OpenedStations.Keys.Contains(station))
+                        {
+                            StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
 
-                        Workplace.Children.Add(stationControl);
+                            Workplace.Children.Add(stationControl);
+
+                            OpenedStations.Add(station, stationControl);
+                        }                            
                     };
 
                     StationsList_MenuItem.Items.Add(stationMenuItem);
@@ -59,6 +66,8 @@ namespace AvaloniaApplication2.Views
                     Title += " (только для чтения)";
                 }
             };
+
+            AddHandler(KeyDownEvent, MainWindow_KeyDown, RoutingStrategies.Tunnel);
         }
 
         private void LoginWindow_Closing(object? sender, WindowClosingEventArgs e)
@@ -75,12 +84,23 @@ namespace AvaloniaApplication2.Views
         {
             string name = (sender as MenuItem).Header.ToString();
 
-            Station station = viewModel.GetStationByName(name);
+            StationStateWindow? stationWindow = null;
+            foreach (StationStateWindow stationStateWindow in StationWindows)
+            {
+                if (stationStateWindow.Station.StationName == name)
+                    stationWindow = stationStateWindow;
+            }
+
+
+            if (stationWindow == null)
+            {
+                Station station = viewModel.GetStationByName(name);
+
+                StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
+
+                Workplace.Children.Add(stationControl);
+            }
             
-            StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
-
-            Workplace.Children.Add(stationControl);
-
             /**
             StationStateWindow stationWindow = new StationStateWindow(viewModel.GetStationByName(name), (MainWindowViewModel)DataContext);
 
@@ -115,7 +135,8 @@ namespace AvaloniaApplication2.Views
 
             stationControl.ParentWindow = stationWindow;
 
-            StationWindows.Add(stationWindow);
+            //StationWindows.Add(stationWindow);
+            OpenedStations[station] = stationControl;
             stationWindow.Show();
         }
 
@@ -148,25 +169,13 @@ namespace AvaloniaApplication2.Views
             defectCodesWindow.ShowDialog(this);
         }
 
-        public void UpdateSelectedTrack(int trackNumber)
-        {
-            MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
-            foreach (StationStateWindow stationWindow in StationWindows)
-            {
-                if (stationWindow.StationControl.Station.StationName == viewModel.SelectedStation.StationName)
-                {
-                    stationWindow.StationControl.UpdateTrack(trackNumber);
-                }
-            }
-        }
-
         public void UpdateTrack(Track track)
         {
-            foreach (StationStateWindow stationWindow in StationWindows)
+            foreach (Station station in OpenedStations.Keys)
             {
-                if (stationWindow.Station.StationId == track.StationId)
+                if (station.StationId == track.StationId)
                 {
-                    stationWindow.UpdateTrack(track);
+                    OpenedStations[station].UpdateTrack(track.TrackNumber);
                 }
             }
         }
@@ -317,6 +326,20 @@ namespace AvaloniaApplication2.Views
                 NewComing_MenuItem.IsEnabled = true;
                 TrackEdit_MenuItem.IsEnabled = true;
                 FieldSheet_MenuItem.IsEnabled = true;
+            }
+        }
+
+        private void MainWindow_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+        {
+            if (Workplace.Children.Count > 0)
+            {
+                foreach (StationControl stationControl in Workplace.Children)
+                {
+                    if (stationControl.Station == viewModel.SelectedStation)
+                    {
+                        stationControl.StationControl_KeyDown(this, e);
+                    }
+                }
             }
         }
     }

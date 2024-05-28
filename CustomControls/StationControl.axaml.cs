@@ -41,11 +41,15 @@ public partial class StationControl : UserControl
         InitializeComponent();
     }
 
-    public StationControl(Station station)
+    public StationControl(MainWindowViewModel dataContext, Station station)
     {
+        DataContext = dataContext;
+
         Station = station;
 
         InitializeComponent();
+
+        AttachButton.IsVisible = false;
 
         StationName.Text = Station.StationName;
 
@@ -62,14 +66,12 @@ public partial class StationControl : UserControl
             TracksPanel.Children.Add(trackControl);
         }
 
+        Width = TracksPanel.Children[0].Width + 18;        
+        Height = ControlPanel.Height + CarInfoPanel.Height + TracksBorder.Height + 10;
+        
+
         AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
         AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
-    }
-
-    public StationControl(MainWindowViewModel dataContext, Station station) : this(station)
-    {
-        DataContext = dataContext;
-        AttachButton.IsVisible = false;
     }
 
     public void StationControl_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -79,6 +81,7 @@ public partial class StationControl : UserControl
             selectedTrack = trackControl;
             UnselectOtherTracks(trackControl.Track);
         }
+        (DataContext as MainWindowViewModel).SelectedStation = Station;
         e.Handled = true;
     }
 
@@ -103,6 +106,10 @@ public partial class StationControl : UserControl
 
     private void AttachButton_Click(object? sender, RoutedEventArgs e)
     {
+        Width = TracksPanel.Children[0].Width + 18;
+        TrackControl lastTrackControl = TracksPanel.Children[TracksPanel.Children.Count - 1] as TrackControl;
+        Height = lastTrackControl.Bounds.Bottom + lastTrackControl.Height + 15;
+
         DetachButton.IsVisible = true;
         AttachButton.IsVisible = false;
         ParentWindow.Close();
@@ -132,7 +139,7 @@ public partial class StationControl : UserControl
         }
     }
 
-    private void StationControl_SizeChanged(object? sender, Avalonia.Controls.SizeChangedEventArgs e)
+    private void StationControl_SizeChanged(object? sender, SizeChangedEventArgs e)
     {
         StationWrapper.Width = Width;
         StationWrapper.Height = Height;
@@ -146,7 +153,7 @@ public partial class StationControl : UserControl
         }
     }
 
-    public void StationControl_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+    public void StationControl_KeyDown(object? sender, KeyEventArgs e)
     {
         switch (e.Key)
         {
