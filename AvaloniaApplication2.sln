@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaApplication2", "AvaloniaApplication2.csproj", "{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaApplication2", "AvaloniaApplication2.csproj", "{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RIP_Setup", "..\RIP_Setup\RIP_Setup.vdproj", "{19960F63-0BBF-4A72-BB49-014C819E97DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -13,8 +15,10 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{C708DD5C-08EE-449E-B2B4-4F032D8C8F7D}.Release|Any CPU.Build.0 = Debug|Any CPU
+		{19960F63-0BBF-4A72-BB49-014C819E97DF}.Debug|Any CPU.ActiveCfg = Debug
+		{19960F63-0BBF-4A72-BB49-014C819E97DF}.Release|Any CPU.ActiveCfg = Debug
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

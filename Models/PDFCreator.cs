@@ -28,18 +28,19 @@ namespace AvaloniaApplication2.Models
         public static readonly string TEMP_FILE_NAME = "natur_list.pdf";
         private static string projectDir;
         private static PdfFont FONT;
-        private static readonly float[] COLUMN_WIDTHS = { 1, 3, 2, 3, 3, 3, 1, 3 };
+        private static readonly float[] COLUMN_WIDTHS = { 1, 3, 2, 3, 3, 3, 1, 5 };
         private static readonly string[] COLUMN_NAMES = { "№п\\п", "№ ВЦ", "Рег №", "Завод", "ВОиГИ", "Депо", "Прод", "Брак" };
 
         public PDFCreator() 
         {
             string currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            projectDir = Directory.GetParent(currentDir).FullName;
-            projectDir = Directory.GetParent(projectDir).FullName;
-            projectDir = Directory.GetParent(projectDir).FullName;
+            //projectDir = Directory.GetParent(currentDir).FullName;
+            //projectDir = Directory.GetParent(projectDir).FullName;
+            //projectDir = Directory.GetParent(projectDir).FullName;
 
-            string fontPath = Path.Combine("Fonts", "arial.ttf");
-            FONT = PdfFontFactory.CreateFont(Path.Combine(projectDir, fontPath));
+            //string fontPath = Path.Combine("Fonts", "arial.ttf");
+            string fontPath = "arial.ttf";
+            FONT = PdfFontFactory.CreateFont(Path.Combine(currentDir, fontPath));
         }
 
         public void Create(Station station, Track track)

@@ -32,7 +32,7 @@ public partial class CarControl : UserControl
         }
     }
     private bool _isFocused;
-    public bool IsFocused
+    public bool IsCarFocused
     {
         get { return _isFocused; }
         set 
@@ -40,7 +40,7 @@ public partial class CarControl : UserControl
             if (_isFocused != value)
             {
                 _isFocused = value;
-                if (IsFocused)
+                if (IsCarFocused)
                 {
                     CarBorderWrapper.Classes.Add("Focused");
                 }
@@ -99,7 +99,7 @@ public partial class CarControl : UserControl
 
     private void RemoveStyles()
     {
-        IsFocused = false;
+        IsCarFocused = false;
         CarImage.Classes.RemoveAll(["Fixed", "Loaded"]);
         CarBorderWrapper.Classes.Remove("Selected");
     }

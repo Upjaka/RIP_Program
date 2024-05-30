@@ -318,159 +318,52 @@ namespace AvaloniaApplication2.ViewModels
         }
 
         public bool SaveChangesToDataBase()
-    {
-        if (localChanges.Count > 0)
         {
-            using (var connection = new SqlConnection(connectionToSQLServerString))
+            if (localChanges.Count > 0)
             {
-                try
+                using (var connection = new SqlConnection(connectionToSQLServerString))
                 {
-                    connection.Open();
-
-                    foreach (var updateRequestString in localChanges.GetSQLRequests())
+                    try
                     {
-                        try
-                        {
-                            // Выполнение запроса с помощью Dapper
-                            int rowsAffected = connection.Execute(updateRequestString);
+                        connection.Open();
 
-                            // Проверка на количество затронутых строк (обычно 1)
-                            if (rowsAffected > 0)
+                        foreach (var updateRequestString in localChanges.GetSQLRequests())
+                        {
+                            try
                             {
-                                Debug.WriteLine("Запись успешно добавлена в базу данных.");
+                                // Выполнение запроса с помощью Dapper
+                                int rowsAffected = connection.Execute(updateRequestString);
+
+                                // Проверка на количество затронутых строк (обычно 1)
+                                if (rowsAffected > 0)
+                                {
+                                    Debug.WriteLine("Запись успешно добавлена в базу данных.");
+                                }
+                                else
+                                {
+                                    Debug.WriteLine("Ошибка при добавлении записи в базу данных.");
+                                }
                             }
-                            else
+                            catch (SqlException ex)
                             {
-                                Debug.WriteLine("Ошибка при добавлении записи в базу данных.");
+                                Debug.WriteLine("Ошибка при выполнении запроса: " + ex.Message);
                             }
                         }
-                        catch (SqlException ex)
-                        {
-                            Debug.WriteLine("Ошибка при выполнении запроса: " + ex.Message);
-                        }
+
+                        localChanges.Clear();
+                        return true;
                     }
-
-                    localChanges.Clear();
-                    return true;
-                }
-                catch (SqlException ex)
-                {
-                    Debug.WriteLine("Error connecting to the database: " + ex.Message);
-                    return false;
-                }
-            }
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-        public void AddCarsToDatabase()
-        {
-            try
-            {
-                string connectionString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
-
-                var insertQueryString = "INSERT INTO CARS (CarNumber, SerialNumber, IsFixed, DefectCodes, IsLoaded, Product, Cargo, Arrival, TrackID) VALUES (@CarNumber, @SerialNumber, @IsFixed, @DefectCodes, @IsLoaded, @Product, @Cargo, @Arrival, @TrackID)";
-
-                using (OleDbConnection connection = new OleDbConnection(connectionString))
-                {
-                    connection.Open();
-
-                    for (int i = 0; i < 8; i++)
+                    catch (SqlException ex)
                     {
-
-                        using (OleDbCommand command = new OleDbCommand(insertQueryString, connection))
-                        {
-                            // Задание значений параметров
-                            command.Parameters.AddWithValue("@CarNumber", "11111");
-                            command.Parameters.Add("@SerialNumber", OleDbType.Integer).Value = i + 1;
-                            command.Parameters.Add("@IsFixed", OleDbType.Boolean).Value = true;
-                            command.Parameters.AddWithValue("@DefectCodes", "1");
-                            command.Parameters.Add("@IsLoaded", OleDbType.Boolean).Value = false; 
-                            command.Parameters.AddWithValue("@Product", "1");
-                            command.Parameters.AddWithValue("@Cargo", "1");
-                            command.Parameters.Add("@Arrival", OleDbType.DBDate).Value = DateTime.Now;
-                            command.Parameters.Add("@TrackID", OleDbType.Integer).Value = 31;
-
-                            // Выполнение запроса
-                            int rowsAffected = command.ExecuteNonQuery();
-
-                            // Проверка на количество затронутых строк (обычно 1)
-                            if (rowsAffected > 0)
-                            {
-                                Console.WriteLine("Запись успешно добавлена в базу данных.");
-                            }
-                            else
-                            {
-                                Console.WriteLine("Ошибка при добавлении записи в базу данных.");
-                            }
-                        }
+                        Debug.WriteLine("Error connecting to the database: " + ex.Message);
+                        return false;
                     }
-
-                }
-            }                   
-            catch (OleDbException ex)
-            {
-                Debug.WriteLine("Error connecting to the database: " + ex.Message);
-            }
-        }     
-
-
-        public void UpdateCarNumbers()
-        {
-            using (OleDbConnection connection = new OleDbConnection(connectionToStationsDbString))
-            {
-                try
-                {
-                    var queryString = "SELECT * FROM Cars";
-                    OleDbCommand command = new OleDbCommand(queryString, connection);
-
-                    connection.Open();
-                    OleDbDataReader reader = command.ExecuteReader();
-
-                    while (reader.Read())
-                    {
-                        int carId = reader.GetInt32(0);
-
-                        UpdateCarNumber(connection, carId, 10000 + carId);
-                    }
-                    reader.Close();
-                }
-                catch (OleDbException ex)
-                {
-                    Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
             }
-        }
-
-        private void UpdateCarNumber(OleDbConnection connection, int carId, int newCarNumber)
-        {
-            string updateQuery = "UPDATE Cars SET CarNumber = @NewCarNumber WHERE Код = @CarId";
-            OleDbCommand updateCommand = new OleDbCommand(updateQuery, connection);
-            updateCommand.Parameters.AddWithValue("@NewCarNumber", newCarNumber);
-            updateCommand.Parameters.AddWithValue("@CarId", carId);
-            try
+            else
             {
-                int rowsAffected = updateCommand.ExecuteNonQuery();
-
-                // Проверка на количество затронутых строк (обычно 1)
-                if (rowsAffected > 0)
-                {
-                    Console.WriteLine("Запись успешно добавлена в базу данных.");
-                }
-                else
-                {
-                    Console.WriteLine("Ошибка при добавлении записи в базу данных.");
-                }
+                return false;
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Error updating car number: " + ex.Message);
-            }
-        }
-
-        
+        }        
     }
 }
