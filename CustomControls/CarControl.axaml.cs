@@ -56,6 +56,26 @@ public partial class CarControl : UserControl
             }
         }
     }
+    private bool _isDrugging;
+    public bool IsDrugging
+    {
+        get { return _isDrugging; }
+        set
+        {
+            if (_isDrugging != value)
+            {
+                _isDrugging = value;
+                if (IsDrugging)
+                {
+                    CarBorderWrapper.Classes.Add("Drugging");
+                }
+                else
+                {
+                    CarBorderWrapper.Classes.Remove("Drugging");
+                }
+            }
+        }
+    }
 
     public CarControl(TrackControl parent)
     {

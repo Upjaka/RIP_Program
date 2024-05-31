@@ -21,19 +21,13 @@ namespace AvaloniaApplication2.ViewModels
 
         private ChangeList localChanges;
 
-        public string Greetings => "Welcome to Avalonia!";
         public string Loaded => "Груж.";
         public string NotLoaded => "Незагруж.";
         public bool IsLoggedIn {  get; set; }
         public bool IsOperator { get; set; }
-        public MainWindow MainWindow { get; set; }
-        public string Station { get; set; }
+        public MainWindow MainWindow { get; set; }        
         public string TrackNumber { get; set; }
         public Track NewComingTrack { get; set; }
-        public bool IsCarLoaded { get; set; }
-        public string CarNumber { get; set; }
-        public int CarId { get; set; }
-        public DateTime ComingDate { get; set; }
         public ObservableCollection<CarInfo> CarsInfo { get; }
         public List<CarInfo> OldCarsInfo { get; }
         public ObservableCollection<DefectCode> DefectCodes { get; }
@@ -77,9 +71,6 @@ namespace AvaloniaApplication2.ViewModels
 
         public MainWindowViewModel()
         {
-            CarId = 1;
-            Station = "";
-            CarNumber = "";
             TrackNumber = "";       
 
             CarsInfo = new ObservableCollection<CarInfo>();

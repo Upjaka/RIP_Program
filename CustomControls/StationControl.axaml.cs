@@ -8,6 +8,7 @@ using Avalonia.Input;
 using Avalonia.Interactivity;
 using System;
 using Avalonia.LogicalTree;
+using System.Diagnostics;
 
 namespace AvaloniaApplication2.CustomControls;
 
@@ -78,6 +79,7 @@ public partial class StationControl : UserControl
         }
         Height = ControlPanel.Height + CarInfoPanel.Height + TracksBorder.Height + 10;
 
+        VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
 
         AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
         AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
@@ -329,10 +331,14 @@ public partial class StationControl : UserControl
             trackControl.ZoomIn();
         }
 
-        Width = TracksPanel.Children[0].Width + 18;
+        TracksBorder.Width = TracksPanel.Children[0].Width + 18;
         foreach (TrackControl child in TracksPanel.Children)
         {
-            if (child.Width + 18 > Width) Width = child.Width + 18;
+            if (child.Width + 18 > TracksBorder.Width) TracksBorder.Width = child.Width + 18;
+        }
+        if (ParentWindow == null)
+        {
+            Width = TracksBorder.Width;
         }
     }
 
@@ -350,10 +356,43 @@ public partial class StationControl : UserControl
             trackControl.ZoomOut();
         }
 
-        Width = TracksPanel.Children[0].Width + 18;
+        TracksBorder.Width = TracksPanel.Children[0].Width + 18;
         foreach (TrackControl child in TracksPanel.Children)
         {
-            if (child.Width + 18 > Width) Width = child.Width + 18;
+            if (child.Width + 18 > TracksBorder.Width) TracksBorder.Width = child.Width + 18;
         }
+        if (ParentWindow == null)
+        {
+            Width = TracksBorder.Width;
+        }
+    }
+
+
+    public TrackControl? GetTrackControlByPoint(TrackControl startTrack, Point point)
+    {
+        int currentIndex = TracksPanel.Children.IndexOf(startTrack);
+
+        var transform = startTrack.TransformToVisual(TracksPanel);
+
+        var position = transform.Value.Transform(point);
+
+        foreach (TrackControl trackControl in TracksPanel.Children)
+        {
+            if (HitTest(trackControl, position)) return trackControl;
+        }
+
+        return null;
+    }
+
+    public bool HitTest(TrackControl trackControl, Point point)
+    {
+        if (point.X > trackControl.Bounds.Left && point.X < trackControl.Bounds.Right)
+        {
+            if (point.Y < trackControl.Bounds.Bottom && point.Y > trackControl.Bounds.Top)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }

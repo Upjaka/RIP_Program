@@ -19,6 +19,9 @@
     <Style Selector="Border#CarBorderWrapper.Focused">
       <Setter Property="Background" Value="White"/>
     </Style>
+    <Style Selector="Border#CarBorderWrapper.Focused.Drugging">
+      <Setter Property="Background" Value="LightBlue"/>
+    </Style>
     <Style Selector="Border#CarBorderWrapper">
       <Setter Property="BorderBrush" Value="Black"/>
     </Style>

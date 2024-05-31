@@ -86,7 +86,7 @@
             </Grid>  
           </ScrollViewer>
         </StackPanel>
-        <Border x:Name="TracksBorder"
+        <Border x:Name="TracksBorder" HorizontalAlignment="Left"
                 Width="{Binding Width, ElementName=StationWrapper}">
           <ScrollViewer x:Name="TracksScrollViewer"
                         HorizontalScrollBarVisibility="Hidden"

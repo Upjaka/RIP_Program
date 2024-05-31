@@ -28,6 +28,14 @@ namespace AvaloniaApplication2.Views
             Closed += (s, e) =>
             {
                 PDFCreator.Delete();
+
+                foreach (KeyValuePair<Station, StationControl> kvp in viewModel.OpenedStations)
+                {
+                    if (kvp.Value.ParentWindow is StationStateWindow window)
+                    {
+                        window.Close();
+                    }
+                }
             };
 
             Opened += async (s, e) =>
@@ -256,9 +264,9 @@ namespace AvaloniaApplication2.Views
             newComingDialogWindow.ShowDialog(this);
         }
 
-        public void OpenMovingCarsWindow()
+        public void OpenMovingCarsWindow(Station destStation = null, Track destTrack = null)
         {
-            MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow();
+            MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow(destStation, destTrack);
 
             moveCarsDialogWindow.ShowDialog(this);
         }

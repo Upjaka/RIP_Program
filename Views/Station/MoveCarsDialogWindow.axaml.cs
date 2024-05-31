@@ -4,6 +4,7 @@ using Avalonia.Markup.Xaml;
 using Avalonia.Media;
 using AvaloniaApplication2.ViewModels;
 using AvaloniaApplication2.Models;
+using Avalonia.Input;
 
 namespace AvaloniaApplication2;
 
@@ -14,7 +15,7 @@ public partial class MoveCarsDialogWindow : Window
     private Station? SelectedStation = null;
     private Track? SelectedTrack = null;
 
-    public MoveCarsDialogWindow()
+    public MoveCarsDialogWindow(Station destStation = null, Track destTrack = null)
     {
         InitializeComponent();
 
@@ -76,20 +77,27 @@ public partial class MoveCarsDialogWindow : Window
                 };
 
                 StationsListPanel.Children.Add(stationBorder);
+
+                if (destStation != null && station == destStation)
+                {
+                    stationBorder.Classes.Add("Selected");
+                    UpdateTracksList(destStation, destTrack);
+                    SelectedStation = destStation;
+                }
                 i++;
             }            
         };
 
         KeyDown += (s, e) =>
         {
-            if (e.Key == Avalonia.Input.Key.Enter && e.KeyModifiers == Avalonia.Input.KeyModifiers.None)
+            if (e.Key == Key.Enter && e.KeyModifiers == KeyModifiers.None)
             {
                 MoveCars();
             }
         };
     }
 
-    private void UpdateTracksList(Station selectedStation)
+    private void UpdateTracksList(Station selectedStation, Track selectedTrack = null)
     {
         TracksListPanel.Children.Clear();
 
@@ -117,6 +125,12 @@ public partial class MoveCarsDialogWindow : Window
             };
 
             TracksListPanel.Children.Add(trackBorder);
+
+            if (selectedTrack == track)
+            {
+                trackBorder.Classes.Add("Selected");
+                SelectedTrack = track;
+            }
         }
     }
 
@@ -159,7 +173,8 @@ public partial class MoveCarsDialogWindow : Window
             {
                 LackOfSpaceOnTrackDialogWindow lackOfSpaceOnTrackWindow = new LackOfSpaceOnTrackDialogWindow();
                 lackOfSpaceOnTrackWindow.ShowDialog(this);
-            } else
+            }
+            else
             {
                 viewModel.MainWindow.UpdateTrack(SelectedTrack);
                 viewModel.MainWindow.UpdateTrack(viewModel.SelectedTrack);
