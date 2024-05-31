@@ -65,9 +65,10 @@ public partial class TrackControl : UserControl
         TrackWrapper.Width = width;
         BottomLine.EndPoint = new Point(width - 20, 1);
 
-        for (var i=0; i<track.Capacity; i++)
+        for (var i = 0; i < track.Capacity; i++)
         {
-            ColumnDefinition cd = new ColumnDefinition { 
+            ColumnDefinition cd = new ColumnDefinition
+            {
                 Width = new GridLength(CAR_WIDTH, GridUnitType.Pixel)
             };
 
@@ -146,7 +147,7 @@ public partial class TrackControl : UserControl
 
             var rect = new Rect(left, top, SelectingRect.Width, SelectingRect.Height);
 
-            var transform = TrackGrid.TransformToVisual(TrackWrapper);           
+            var transform = TrackGrid.TransformToVisual(TrackWrapper);
 
             foreach (CarControl carControl in TrackGrid.Children)
             {
@@ -160,7 +161,7 @@ public partial class TrackControl : UserControl
                         FocusCarControl(carControl);
                     }
                 }
-                
+
             }
 
             _isDrugging = false;
@@ -293,7 +294,7 @@ public partial class TrackControl : UserControl
                 {
                     viewModel.MainWindow.SaveChanges();
                 }
-                break;                   
+                break;
         }
     }
 
@@ -327,69 +328,99 @@ public partial class TrackControl : UserControl
     {
         if (Track.Cars.Count != 0)
         {
-            int nextIndex = (focusedCars.Count == 0) ? 0 : focusedCars[focusedCars.Count - 1].Car.SerialNumber % Track.Cars.Count;
-
-            if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber > focusedCars[1].Car.SerialNumber)
+            if (focusedCars.Count == 0)
             {
-                nextIndex = focusedCars[0].Car.SerialNumber % Track.Cars.Count;
-            }
-
-            CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
-
-            if (!savePreviusFocused)
-            {
-                UnfocusAllCars();
-                FocusNthCar(nextIndex);
+                FocusNthCar(0);
             }
             else
             {
-                if (nextCar.IsCarFocused)
+                int nextIndex;
+                int curreIndex = focusedCars[focusedCars.Count - 1].Car.SerialNumber - 1;
+
+                if (focusedCars.Count > 1 && focusedCars[1].Car.SerialNumber < focusedCars[0].Car.SerialNumber)
                 {
-                    CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex - 1 + Track.Cars.Count) % Track.Cars.Count];
-                    currentCar.IsCarFocused = false;
-                    focusedCars.Remove(currentCar);
+                    // Справо налево                
+                    if (!savePreviusFocused)
+                    {
+                        nextIndex = focusedCars[0].Car.SerialNumber % Track.Cars.Count;
+                        UnfocusAllCars();
+                        FocusNthCar(nextIndex);
+                    }
+                    else
+                    {
+                        CarControl currentCar = (CarControl)TrackGrid.Children[curreIndex];
+                        currentCar.IsCarFocused = false;
+                        focusedCars.Remove(currentCar);
+                        ParentControl.LastFocusedCar = focusedCars[focusedCars.Count - 1].Car;
+                    }
                 }
                 else
                 {
-                    FocusNthCar(nextIndex);
+                    // Слева направо
+                    nextIndex = focusedCars[focusedCars.Count - 1].Car.SerialNumber % Track.Cars.Count;
+
+                    CarControl nextCar = TrackGrid.Children[nextIndex] as CarControl;
+                    if (!focusedCars.Contains(nextCar))
+                    {
+                        if (!savePreviusFocused)
+                        {
+                            UnfocusAllCars();
+                        }
+                        FocusNthCar(nextIndex);
+                    }
                 }
-            }
-        }        
+            }            
+        }
     }
 
     private void FocusPreviousCar(bool savePreviusFocused = false)
     {
-        if (Track.Cars.Count != 0)
+        if (Track.Cars.Count != 0)        
         {
-            int nextIndex = (focusedCars.Count == 0) ? Track.Cars.Count - 1 : (focusedCars[focusedCars.Count - 1].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
-
-            if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber < focusedCars[1].Car.SerialNumber)
+            if (focusedCars.Count == 0)
             {
-                nextIndex = (focusedCars[0].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
-            }
-
-            CarControl nextCar = ((CarControl)TrackGrid.Children[nextIndex]);
-
-            if (!savePreviusFocused)
-            {
-                UnfocusAllCars();
-                FocusNthCar(nextIndex);
+                FocusNthCar(Track.Cars.Count - 1);
             }
             else
             {
-                if (nextCar.IsCarFocused)
+                int nextIndex;
+                int curreIndex = focusedCars[focusedCars.Count - 1].Car.SerialNumber - 1;
+
+                if (focusedCars.Count > 1 && focusedCars[0].Car.SerialNumber < focusedCars[1].Car.SerialNumber)
                 {
-                    CarControl currentCar = (CarControl)TrackGrid.Children[(nextIndex + 1) % Track.Cars.Count];
-                    currentCar.IsCarFocused = false;
-                    focusedCars.Remove(currentCar);
+                    // Слева направо
+                    if (!savePreviusFocused)
+                    {
+                        nextIndex = (focusedCars[0].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
+                        UnfocusAllCars();
+                        FocusNthCar(nextIndex);
+                    }
+                    else
+                    {
+                        CarControl currentCar = (CarControl)TrackGrid.Children[curreIndex];
+                        currentCar.IsCarFocused = false;
+                        focusedCars.Remove(currentCar);
+                        ParentControl.LastFocusedCar = focusedCars[focusedCars.Count - 1].Car;
+                    }
                 }
                 else
                 {
-                    FocusNthCar(nextIndex);
+                    // Справо налево
+                    nextIndex = (focusedCars[focusedCars.Count - 1].Car.SerialNumber - 2 + Track.Cars.Count) % Track.Cars.Count;
+                    CarControl nextCar = TrackGrid.Children[nextIndex] as CarControl;
+                    if (!focusedCars.Contains(nextCar))
+                    {
+                        if (!savePreviusFocused)
+                        {
+                            UnfocusAllCars();
+                        }
+                        FocusNthCar(nextIndex);
+                    }
                 }
-            }
+            }            
         }
     }
+
 
     private void SelectAllCars()
     {
