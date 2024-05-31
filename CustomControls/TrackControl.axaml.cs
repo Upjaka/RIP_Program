@@ -32,6 +32,7 @@ public partial class TrackControl : UserControl
 
     private static bool _isDrugging = false;
     private Point _pressedPoint;
+    private CarControl? _pressedCarControl;
 
     public bool IsSelected { get { return (DataContext as MainWindowViewModel).SelectedTrack == Track; } }
     public Track Track { get; }
@@ -115,13 +116,10 @@ public partial class TrackControl : UserControl
         {
             _isDrugging = true;
             _pressedPoint = e.GetCurrentPoint(TrackWrapper).Position;
+            _pressedCarControl = sender as CarControl;
             SelectingRect[Canvas.TopProperty] = _pressedPoint.Y;
             SelectingRect[Canvas.LeftProperty] = _pressedPoint.X;
 
-            if (!IsSelected)
-            {
-                Select();
-            }
             ParentControl.StationControl_PointerPressed(this, e);
         }
     }
@@ -150,35 +148,40 @@ public partial class TrackControl : UserControl
     {
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
-            UnfocusAllCars();
-
-            var point = e.GetCurrentPoint(TrackWrapper).Position;
-
-            double left = Math.Min(point.X, _pressedPoint.X);
-            double top = Math.Min(point.Y, _pressedPoint.Y);
-
-            var rect = new Rect(left, top, SelectingRect.Width, SelectingRect.Height);
-
-            var transform = TrackGrid.TransformToVisual(TrackWrapper);
-
-            foreach (CarControl carControl in TrackGrid.Children)
+            if (_pressedCarControl != null && _pressedCarControl == sender as CarControl)
             {
-                if (!carControl.IsEmpty)
-                {
-                    var carPosition = transform.Value.Transform(new Point(carControl.Bounds.X, carControl.Bounds.Y));
-                    var carRect = new Rect(carPosition, carControl.Bounds.Size);
+                UnfocusAllCars();
 
-                    if (rect.Intersects(carRect))
+                var point = e.GetCurrentPoint(TrackWrapper).Position;
+
+                double left = Math.Min(point.X, _pressedPoint.X);
+                double top = Math.Min(point.Y, _pressedPoint.Y);
+
+                var rect = new Rect(left, top, SelectingRect.Width, SelectingRect.Height);
+
+                var transform = TrackGrid.TransformToVisual(TrackWrapper);
+
+                foreach (CarControl carControl in TrackGrid.Children)
+                {
+                    if (!carControl.IsEmpty)
                     {
-                        FocusCarControl(carControl);
+                        var carPosition = transform.Value.Transform(new Point(carControl.Bounds.X, carControl.Bounds.Y));
+                        var carRect = new Rect(carPosition, carControl.Bounds.Size);
+
+                        if (rect.Intersects(carRect))
+                        {
+                            FocusCarControl(carControl);
+                        }
                     }
+
                 }
 
-            }
+                _isDrugging = false;
+                SelectingRect.Width = 0;
+                SelectingRect.Height = 0;
 
-            _isDrugging = false;
-            SelectingRect.Width = 0;
-            SelectingRect.Height = 0;
+                _pressedCarControl = null;
+            }            
         }
     }
 

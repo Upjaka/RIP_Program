@@ -72,6 +72,10 @@ public partial class StationControl : UserControl
         }
 
         Width = TracksPanel.Children[0].Width + 18;
+        foreach (TrackControl child in TracksPanel.Children)
+        {
+            if (child.Width + 18 > Width) Width = child.Width + 18;
+        }
         Height = ControlPanel.Height + CarInfoPanel.Height + TracksBorder.Height + 10;
 
 
@@ -324,6 +328,12 @@ public partial class StationControl : UserControl
         {
             trackControl.ZoomIn();
         }
+
+        Width = TracksPanel.Children[0].Width + 18;
+        foreach (TrackControl child in TracksPanel.Children)
+        {
+            if (child.Width + 18 > Width) Width = child.Width + 18;
+        }
     }
 
     private void ZoomOut()
@@ -338,6 +348,12 @@ public partial class StationControl : UserControl
         foreach (TrackControl trackControl in TracksPanel.Children)
         {
             trackControl.ZoomOut();
+        }
+
+        Width = TracksPanel.Children[0].Width + 18;
+        foreach (TrackControl child in TracksPanel.Children)
+        {
+            if (child.Width + 18 > Width) Width = child.Width + 18;
         }
     }
 }
