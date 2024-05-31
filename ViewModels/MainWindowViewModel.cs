@@ -17,10 +17,7 @@ namespace AvaloniaApplication2.ViewModels
 {
     public class MainWindowViewModel : ViewModelBase
     {
-        private static readonly string connectionToDefectCodesDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\DefectCodes.accdb;";
-        private static readonly string connectionToStationsDbString = @"Provider=Microsoft.ACE.OLEDB.12.0;Data Source=C:\Users\User\source\repos\AvaloniaApplication2\Stations.accdb;";
-
-        private static readonly string connectionToSQLServerString = "Server=alesantpc\\my_mssqlserver;Database=RIP;Trusted_Connection=True;";
+        private static readonly string connectionToSQLServerString = "Server=alesantpc\\my_mssqlserver;Database=RIP;User Id=rip;Password=rip;";
 
         private ChangeList localChanges;
 
@@ -41,8 +38,33 @@ namespace AvaloniaApplication2.ViewModels
         public List<CarInfo> OldCarsInfo { get; }
         public ObservableCollection<DefectCode> DefectCodes { get; }
         public List<Station> Stations { get; } = new List<Station>();
-        public Track ?SelectedTrack { get; set; } = null;
-        public Station ?SelectedStation { get; set; } = null;
+        private Station? _selectedStation = null;
+        public Station ? SelectedStation
+        {
+            get => _selectedStation;
+            set
+            {
+                if (_selectedStation != value)
+                {
+                    _selectedStation = value;
+                    MainWindow.SetMenuItemsEnabling();
+
+                }
+            }
+        }
+        private Track? _selectedTrack = null;
+        public Track? SelectedTrack
+        {
+            get => _selectedTrack;
+            set
+            {
+                if (_selectedTrack != value)
+                {
+                    _selectedTrack = value;
+                    MainWindow.SetMenuItemsEnabling();
+                }
+            }
+        }
         public List<Car> movingCarsList {  get; set; }
         public Car LastFocusedCar { get; set; }
         public Dictionary<Station, StationControl> OpenedStations;
@@ -69,10 +91,6 @@ namespace AvaloniaApplication2.ViewModels
             OpenedStations = new Dictionary<Station, StationControl>();
 
             localChanges = new ChangeList();
-
-            ConnectToDefectCodesDatabase();
-
-            ConnectToStationsDatabase();
         }
 
         private void OnCarChanged(object sender, CarChangedEventArgs e)
@@ -264,9 +282,12 @@ namespace AvaloniaApplication2.ViewModels
                     var defectCodes = connection.Query<DefectCode>(queryString).AsList();
 
                     DefectCodes.AddRange(defectCodes);
+
+                    MainWindow.StatusBarTextBlock.Text = "Подключено";
                 }
                 catch (SqlException ex)
                 {
+                    MainWindow.StatusBarTextBlock.Text = "Ошибка при получении кодов брака:" + ex.Message;
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
             }
@@ -308,10 +329,12 @@ namespace AvaloniaApplication2.ViewModels
                         }
                     }
 
+                    MainWindow.StatusBarTextBlock.Text = "Подключено";
                     Console.WriteLine("Data loaded successfully.");
                 }
                 catch (SqlException ex)
                 {
+                    MainWindow.StatusBarTextBlock.Text = "Ошибка при получении данных по вагонам:" + ex.Message;
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
             }
@@ -351,10 +374,13 @@ namespace AvaloniaApplication2.ViewModels
                         }
 
                         localChanges.Clear();
+
+                        MainWindow.StatusBarTextBlock.Text = "";
                         return true;
                     }
                     catch (SqlException ex)
                     {
+                        MainWindow.StatusBarTextBlock.Text = "Ошибка сохранения данных:" + ex.Message;
                         Debug.WriteLine("Error connecting to the database: " + ex.Message);
                         return false;
                     }

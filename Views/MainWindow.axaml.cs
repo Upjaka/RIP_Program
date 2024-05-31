@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using AvaloniaApplication2.Models;
 using System.Diagnostics;
 using System;
+using Avalonia.Input;
 
 
 
@@ -24,12 +25,31 @@ namespace AvaloniaApplication2.Views
             InitializeComponent();
             StationWindows = new List<StationStateWindow>();
 
+            Closed += (s, e) =>
+            {
+                PDFCreator.Delete();
+            };
 
             Opened += async (s, e) =>
             {
                 viewModel = (MainWindowViewModel)DataContext;
 
                 viewModel.MainWindow = this;
+                
+                LoginWindow loginWindow = new LoginWindow();
+                await loginWindow.ShowDialog<bool>(this);
+                if (!viewModel.IsLoggedIn)
+                {
+                    Close();
+                }
+                else if (!viewModel.IsOperator)
+                {
+                    Title += " (только для чтения)";
+                }
+
+                viewModel.ConnectToDefectCodesDatabase();
+
+                viewModel.ConnectToStationsDatabase();
 
                 foreach (Station station in viewModel.Stations)
                 {
@@ -48,21 +68,12 @@ namespace AvaloniaApplication2.Views
                             Workplace.Children.Add(stationControl);
 
                             viewModel.OpenedStations.Add(station, stationControl);
-                        }                            
+                        }
                     };
 
                     StationsList_MenuItem.Items.Add(stationMenuItem);
                 }
-                LoginWindow loginWindow = new LoginWindow();
-                await loginWindow.ShowDialog<bool>(this);
-                if (!viewModel.IsLoggedIn)
-                {
-                    Close();
-                }
-                else if (!viewModel.IsOperator)
-                {
-                    Title += " (только для чтения)";
-                }
+
             };
 
             AddHandler(KeyDownEvent, MainWindow_KeyDown, RoutingStrategies.Tunnel);
@@ -148,11 +159,18 @@ namespace AvaloniaApplication2.Views
         public void CloseStationControl(StationControl stationControl)
         {
             Workplace.Children.Remove(stationControl);
+            viewModel.OpenedStations.Remove(stationControl.Station);
+            SetMenuItemsEnabling();
         }
 
         private void TrackEdit_Click(object? sender, RoutedEventArgs e)
         {
             OpenTrackEditWindow();
+        }
+
+        private void MoveCars_Click(object? sender, RoutedEventArgs e)
+        {
+            OpenMovingCarsWindow();
         }
 
         private void ChangeTrack_Click(object? sender, RoutedEventArgs e)
@@ -236,6 +254,13 @@ namespace AvaloniaApplication2.Views
             newComingDialogWindow.ShowDialog(this);
         }
 
+        public void OpenMovingCarsWindow()
+        {
+            MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow();
+
+            moveCarsDialogWindow.ShowDialog(this);
+        }
+
         public void SaveChanges()
         {
             var viewModel = (MainWindowViewModel)DataContext;
@@ -313,21 +338,10 @@ namespace AvaloniaApplication2.Views
 
         private void Dispatcher_MenuItem_SubmenuOpened(object? sender, RoutedEventArgs e)
         {
-            if (viewModel.SelectedTrack != null)
-            {
-                NewComing_MenuItem.IsEnabled = true;
-                TrackEdit_MenuItem.IsEnabled = true;
-                FieldSheet_MenuItem.IsEnabled = true;
-            }
-            else
-            {
-                NewComing_MenuItem.IsEnabled = true;
-                TrackEdit_MenuItem.IsEnabled = true;
-                FieldSheet_MenuItem.IsEnabled = true;
-            }
+            SetMenuItemsEnabling();
         }
 
-        private void MainWindow_KeyDown(object? sender, Avalonia.Input.KeyEventArgs e)
+        private void MainWindow_KeyDown(object? sender, KeyEventArgs e)
         {
             if (Workplace.Children.Count > 0)
             {
@@ -338,6 +352,29 @@ namespace AvaloniaApplication2.Views
                         stationControl.StationControl_KeyDown(this, e);
                     }
                 }
+            }
+        }
+
+        private void ExitMenuItem_Click(object? sender, RoutedEventArgs e)
+        {
+            Close();
+        }
+
+        public void SetMenuItemsEnabling()
+        {
+            if (viewModel.SelectedTrack != null && viewModel.IsOperator)
+            {
+                NewComing_MenuItem.IsEnabled = true;
+                TrackEdit_MenuItem.IsEnabled = true;
+                FieldSheet_MenuItem.IsEnabled = true;
+                MoveCars_MenuItem.IsEnabled = true;
+            }
+            else
+            {
+                NewComing_MenuItem.IsEnabled = false;
+                TrackEdit_MenuItem.IsEnabled = false;
+                FieldSheet_MenuItem.IsEnabled = false;
+                MoveCars_MenuItem.IsEnabled = false;
             }
         }
     }

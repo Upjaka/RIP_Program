@@ -8,39 +8,19 @@ using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 
-using iText.Kernel.Pdf;
 using iText.Layout;
-using iText.Layout.Element;
-using iText.Layout.Properties;
-using Avalonia.Controls.Documents;
-using System;
-using iText.IO.Font.Constants;
-using iText.IO.Font;
-using iText.Kernel.Font;
-using System.IO;
-using System.Reflection;
-using iText.Layout.Borders;
 
 namespace AvaloniaApplication2.Models
 {
     public class PDFCreator
     {
         public static readonly string TEMP_FILE_NAME = "natur_list.pdf";
-        private static string projectDir;
-        private static PdfFont FONT;
         private static readonly float[] COLUMN_WIDTHS = { 1, 3, 2, 3, 3, 3, 1, 5 };
         private static readonly string[] COLUMN_NAMES = { "№п\\п", "№ ВЦ", "Рег №", "Завод", "ВОиГИ", "Депо", "Прод", "Брак" };
 
         public PDFCreator() 
         {
-            string currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-            //projectDir = Directory.GetParent(currentDir).FullName;
-            //projectDir = Directory.GetParent(projectDir).FullName;
-            //projectDir = Directory.GetParent(projectDir).FullName;
 
-            //string fontPath = Path.Combine("Fonts", "arial.ttf");
-            string fontPath = "arial.ttf";
-            FONT = PdfFontFactory.CreateFont(Path.Combine(currentDir, fontPath));
         }
 
         public void Create(Station station, Track track)
@@ -52,7 +32,7 @@ namespace AvaloniaApplication2.Models
                     Document document = new Document(pdf);
 
                     Paragraph title = new Paragraph()
-                        .SetFont(FONT)
+                        .SetFont(GetFont())
                         .SetTextAlignment(TextAlignment.CENTER)
                         .SetFontSize(18)
                         .Add(new Text("НАТУРНЫЙ ЛИСТ №3 на ").SetBold())
@@ -64,7 +44,7 @@ namespace AvaloniaApplication2.Models
                     string formattedDateTime = DateTime.Now.ToString("Время HH час mm мин dd MMMM yyyy года");
 
                     Paragraph paragraph = new Paragraph()
-                        .SetFont(FONT)
+                        .SetFont(GetFont())
                         .SetFontSize(14)
                         .Add(new Text(formattedDateTime));
 
@@ -108,6 +88,26 @@ namespace AvaloniaApplication2.Models
             Debug.WriteLine("Printing report");
         }
 
+        public void Delete()
+        {
+            if (File.Exists(TEMP_FILE_NAME))
+            {
+                try
+                {
+                    File.Delete(TEMP_FILE_NAME);
+                    Console.WriteLine("File deleted successfully.");
+                }
+                catch (IOException ex)
+                {
+                    Console.WriteLine("An error occurred while trying to delete the file: " + ex.Message);
+                }
+            }
+            else
+            {
+                Console.WriteLine("File does not exist.");
+            }
+        }
+
         private Cell[] GetRow(bool IsFirst = false)
         {
             var row = new Cell[8];
@@ -115,7 +115,7 @@ namespace AvaloniaApplication2.Models
             for (int i = 0; i < 8; i++)
             {
                 Cell cell = new Cell()
-                   .SetFont(FONT)
+                   .SetFont(GetFont())
                    .SetFontSize(12)
                    .SetTextAlignment(TextAlignment.CENTER);
 
@@ -133,6 +133,18 @@ namespace AvaloniaApplication2.Models
             cell.SetBorderBottom(new SolidBorder(0.5f));
             cell.SetBorderRight((serialNumber == 7) ? new SolidBorder(0.5f) : Border.NO_BORDER);
             cell.SetBorderLeft((serialNumber == 0) ? new SolidBorder(0.5f) : Border.NO_BORDER);
+        }
+
+        private PdfFont GetFont()
+        {
+            string currentDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
+            //projectDir = Directory.GetParent(currentDir).FullName;
+            //projectDir = Directory.GetParent(projectDir).FullName;
+            //projectDir = Directory.GetParent(projectDir).FullName;
+
+            //string fontPath = Path.Combine("Fonts", "arial.ttf");
+            string fontPath = "arial.ttf";
+            return PdfFontFactory.CreateFont(Path.Combine(currentDir, fontPath));
         }
     }
 }

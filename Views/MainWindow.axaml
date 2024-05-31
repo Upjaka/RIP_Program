@@ -24,23 +24,32 @@
     <DockPanel Grid.Row="0" VerticalAlignment="Top" Classes="NavMenu">
       <Menu DockPanel.Dock="Top">
         <MenuItem Header="Файл">
-          <MenuItem Header="Открыть" IsEnabled="False"/>
-          <MenuItem x:Name="SaveMenuItem" Header="Сохранить" Click="SaveMenuItem_Click" HotKey="Ctrl+S"/>
-          <MenuItem Header="Выйти"/>
+          <!-- <MenuItem Header="Открыть" IsEnabled="False"/> -->
+          
+          <MenuItem x:Name="SaveMenuItem" Header="Сохранить        Ctrl+S" Click="SaveMenuItem_Click" HotKey="Ctrl+S"/>
+          <MenuItem x:Name="ExitMenuItem" Header="Выйти" Click="ExitMenuItem_Click"/>
         </MenuItem>
         <MenuItem Header="Диспетчер" SubmenuOpened="Dispatcher_MenuItem_SubmenuOpened">
-          <MenuItem Header="Архив движения" IsEnabled="False"/>
-          <MenuItem x:Name="NewComing_MenuItem" Header="Приход в район" Click="NewComing_Click" IsEnabled="False"/>
-          <MenuItem x:Name="TrackEdit_MenuItem" Header="Редактор-путь" Click="TrackEdit_Click" IsEnabled="False"/>
+          <!-- <MenuItem Header="Архив движения" IsEnabled="False"/> -->          
+          <MenuItem x:Name="NewComing_MenuItem" Header="Приход в район        F3" Click="NewComing_Click"
+                    IsEnabled="False" HotKey="F3"/>
+          <MenuItem x:Name="TrackEdit_MenuItem" Header="Редактор-путь          F4" Click="TrackEdit_Click"
+                    IsEnabled="False" HotKey="F4"/>
+          <MenuItem x:Name="MoveCars_MenuItem" Header="Переместить             F6" Click="MoveCars_Click" IsEnabled="False" HotKey="F6"/>
           <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click" IsEnabled="False"/>
-          <MenuItem Header="Паспорртные данные" IsEnabled="False"/>
-          <MenuItem x:Name="FieldSheet_MenuItem" Header="Натурный лист" Click="ReportMenuItem_Click" IsEnabled="False"/>
+          <!-- <MenuItem Header="Паспорртные данные" IsEnabled="False"/> -->
+          
+          <MenuItem x:Name="FieldSheet_MenuItem" Header="Натурный лист          Alt+2" Click="ReportMenuItem_Click"
+                    IsEnabled="False" HotKey="Alt+D2"/>
+          <!-- 
           <MenuItem Header="Натурный лист №2" IsEnabled="False"/>
           <MenuItem Header="Натурный лист №3" IsEnabled="False"/>
+          -->
+
           <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>
         </MenuItem>
         <MenuItem x:Name="StationsList_MenuItem" Header="Район">
-          <MenuItem Header="Поиск вагона"/>
+          <MenuItem Header="Поиск вагона" IsEnabled="False"/>
           <Separator/>
         </MenuItem>
         <MenuItem x:Name="Windows_MenuItem" Header="Окна" Click="WindowsMenuItem_Click" SubmenuOpened="Windows_MenuItem_SubmenuOpened">

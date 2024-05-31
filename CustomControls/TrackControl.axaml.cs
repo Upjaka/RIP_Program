@@ -19,6 +19,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
+    private MainWindowViewModel viewModel;
     private Window ParentWindow;
     private StationControl ParentControl;
 
@@ -45,6 +46,7 @@ public partial class TrackControl : UserControl
         ParentControl = parentStation;
 
         DataContext = parentStation.DataContext as MainWindowViewModel;
+        viewModel = DataContext as MainWindowViewModel;
 
         InitializeComponent();
 
@@ -172,6 +174,7 @@ public partial class TrackControl : UserControl
         TrackBorderWrapper.BorderThickness = new Thickness(1);
         if (focusedCarNumber != -1) FocusNthCar(focusedCarNumber);
         (DataContext as MainWindowViewModel).SelectedTrack = Track;
+        SetMenuItemsEnabling();
     }
 
     public int Unselect()
@@ -183,7 +186,8 @@ public partial class TrackControl : UserControl
         {
             (DataContext as MainWindowViewModel).SelectedTrack = null;
         }
-            
+        SetMenuItemsEnabling();
+
         return lastFocusedCarIndex;
     }
 
@@ -271,6 +275,25 @@ public partial class TrackControl : UserControl
                     }
                 }
                 break;
+
+            case Key.F3:
+                viewModel.MainWindow.OpenNewComingWindow();
+                break;
+
+            case Key.F4:
+                viewModel.MainWindow.OpenTrackEditWindow();
+                break;
+
+            case Key.F6:
+                viewModel.MainWindow.OpenMovingCarsWindow();
+                break;
+
+            case Key.S:
+                if (e.KeyModifiers == KeyModifiers.Control)
+                {
+                    viewModel.MainWindow.SaveChanges();
+                }
+                break;                   
         }
     }
 
@@ -385,8 +408,8 @@ public partial class TrackControl : UserControl
 
     private void TrackContextMenu_Opened(object? sender, RoutedEventArgs e)
     {
-        MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
-        FieldSheetMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null;
+        MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null && (DataContext as MainWindowViewModel).IsOperator;
+        FieldSheetMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null && (DataContext as MainWindowViewModel).IsOperator;
     }
 
     private void NewComingMenuItem_Click(object? sender, RoutedEventArgs e)
@@ -401,14 +424,7 @@ public partial class TrackControl : UserControl
 
     private void MoveCarsMenuItem_Click(object? sender, RoutedEventArgs e)
     {
-        MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow();
-
-        moveCarsDialogWindow.ShowDialog((DataContext as MainWindowViewModel).MainWindow);
-    }
-
-    private void DevelopTrackMenuItem_Click(object? sender, RoutedEventArgs e)
-    {
-
+        viewModel.MainWindow.OpenMovingCarsWindow();
     }
 
     private void SaveMenuItem_Click(object? sender, RoutedEventArgs e)
@@ -419,5 +435,25 @@ public partial class TrackControl : UserControl
     private void FieldSheetMenuItem_Click(object? sender, RoutedEventArgs e)
     {
         (DataContext as MainWindowViewModel).MainWindow.ShowFieldSheet();
+    }
+
+    public void SetMenuItemsEnabling()
+    {
+        if (viewModel.SelectedTrack != null && viewModel.IsOperator)
+        {
+            SaveMenuItem.IsEnabled = true;
+            NewComingMenuItem.IsEnabled = true;
+            TrackEditMenuItem.IsEnabled = true;
+            MoveCarsMenuItem.IsEnabled = true;
+            FieldSheetMenuItem.IsEnabled = true;
+        }
+        else
+        {
+            SaveMenuItem.IsEnabled = false;
+            NewComingMenuItem.IsEnabled = false;
+            TrackEditMenuItem.IsEnabled = false;
+            MoveCarsMenuItem.IsEnabled = false;
+            FieldSheetMenuItem.IsEnabled = false;
+        }
     }
 }

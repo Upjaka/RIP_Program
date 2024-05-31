@@ -82,8 +82,9 @@
         </StackPanel>
         <Border x:Name="TracksBorder"
                 Width="{Binding Width, ElementName=StationWrapper}">
-          <ScrollViewer HorizontalScrollBarVisibility="Visible"
-                        VerticalScrollBarVisibility="Visible"
+          <ScrollViewer x:Name="TracksScrollViewer"
+                        HorizontalScrollBarVisibility="Hidden"
+                        VerticalScrollBarVisibility="Hidden"                      
                         Height="{Binding Height, ElementName=TracksBorder}"
                         Width="{Binding Width, ElementName=TracksBorder}">
             <StackPanel x:Name="TracksPanel" Orientation="Vertical"/>

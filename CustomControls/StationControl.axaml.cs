@@ -12,6 +12,7 @@ namespace AvaloniaApplication2.CustomControls;
 
 public partial class StationControl : UserControl
 {
+    private MainWindowViewModel viewModel;
     public StationStateWindow ParentWindow { get; set; }
 
     private TrackControl? selectedTrack;
@@ -44,6 +45,8 @@ public partial class StationControl : UserControl
     public StationControl(MainWindowViewModel dataContext, Station station)
     {
         DataContext = dataContext;
+
+        viewModel = (DataContext as MainWindowViewModel);
 
         Station = station;
 
@@ -87,20 +90,21 @@ public partial class StationControl : UserControl
 
     private void CloseButton_Click(object? sender, RoutedEventArgs e)
     {
-        if (ParentWindow == null)
-        {
-            (DataContext as MainWindowViewModel).MainWindow.CloseStationControl(this);
-        }
-        else
+        viewModel.SelectedStation = null;
+        viewModel.SelectedTrack = null;
+        if (ParentWindow != null)
         {
             ParentWindow.Close();
         }
+        viewModel.MainWindow.CloseStationControl(this);
     }
 
     private void DetachButton_Click(object? sender, RoutedEventArgs e)
     {
         DetachButton.IsVisible = false;
         AttachButton.IsVisible = true;
+        TracksScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
+        TracksScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
         (DataContext as MainWindowViewModel).MainWindow.DetachStationControl(this);
     }
 
@@ -112,6 +116,8 @@ public partial class StationControl : UserControl
 
         DetachButton.IsVisible = true;
         AttachButton.IsVisible = false;
+        TracksScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
+        TracksScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         ParentWindow.Close();
         ParentWindow.StationPanel.Children.Remove(this);
         (DataContext as MainWindowViewModel).MainWindow.AttachStationControl(this);
@@ -198,6 +204,10 @@ public partial class StationControl : UserControl
                     SelectPreviousTrack();
                 }
                 break;
+
+            default:
+                selectedTrack.TrackControl_KeyDown(this, e);
+                break;
         }
     }
 
@@ -247,10 +257,5 @@ public partial class StationControl : UserControl
                 scrollViewer.Offset = new Vector(scrollViewer.Offset.X - e.Delta.Y * 20, scrollViewer.Offset.Y);
             }
         }        
-    }
-
-    public void Dettach()
-    {
-
     }
 }
