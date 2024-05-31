@@ -7,18 +7,21 @@ using AvaloniaApplication2.ViewModels;
 using Avalonia.Input;
 using Avalonia.Interactivity;
 using System;
+using Avalonia.LogicalTree;
 
 namespace AvaloniaApplication2.CustomControls;
 
 public partial class StationControl : UserControl
 {
+    private static readonly int[] FONT_SIZES = { 11, 12, 12, 12, 13, 13, 14 };
+    private static readonly int[] CARINFOGRID_SIZES = { 725, 750, 750, 750, 875, 875, 1000 };
+
+    private int ZoomLevel = 1;
     private MainWindowViewModel viewModel;
     public StationStateWindow ParentWindow { get; set; }
-
     private TrackControl? selectedTrack;
     public TrackControl? SelectedTrack { get { return selectedTrack; } }
     public Station Station { get; }
-
     private Car _lastFocusedCar;
     public Car LastFocusedCar
     {
@@ -35,7 +38,6 @@ public partial class StationControl : UserControl
             CarDowntimeTextBlock.Text = (value == null) ? "" : (DateTime.Now - _lastFocusedCar.Arrival).Days.ToString() + " дн";
         }
     }
-
 
     public StationControl()
     {
@@ -69,9 +71,9 @@ public partial class StationControl : UserControl
             TracksPanel.Children.Add(trackControl);
         }
 
-        Width = TracksPanel.Children[0].Width + 18;        
+        Width = TracksPanel.Children[0].Width + 18;
         Height = ControlPanel.Height + CarInfoPanel.Height + TracksBorder.Height + 10;
-        
+
 
         AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
         AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
@@ -103,6 +105,7 @@ public partial class StationControl : UserControl
     {
         DetachButton.IsVisible = false;
         AttachButton.IsVisible = true;
+        StationWrapper.BorderThickness = new Thickness(0);
         TracksScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
         TracksScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
         (DataContext as MainWindowViewModel).MainWindow.DetachStationControl(this);
@@ -116,6 +119,7 @@ public partial class StationControl : UserControl
 
         DetachButton.IsVisible = true;
         AttachButton.IsVisible = false;
+        StationWrapper.BorderThickness = new Thickness(1);
         TracksScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         TracksScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
         ParentWindow.Close();
@@ -123,11 +127,11 @@ public partial class StationControl : UserControl
         (DataContext as MainWindowViewModel).MainWindow.AttachStationControl(this);
     }
 
-    private void UnselectOtherTracks(Track track) 
+    private void UnselectOtherTracks(Track track)
     {
-        foreach (TrackControl otherTrackControl in TracksPanel.Children) 
+        foreach (TrackControl otherTrackControl in TracksPanel.Children)
         {
-            if (otherTrackControl.Track != track) 
+            if (otherTrackControl.Track != track)
             {
                 otherTrackControl.Unselect();
             }
@@ -184,7 +188,7 @@ public partial class StationControl : UserControl
                 break;
 
             case Key.Down:
-                if (selectedTrack == null) 
+                if (selectedTrack == null)
                 {
                     SelectFirstTrack();
                 }
@@ -205,8 +209,23 @@ public partial class StationControl : UserControl
                 }
                 break;
 
+            case Key.OemPlus:
+                if (e.KeyModifiers == KeyModifiers.Control)
+                {
+                    ZoomIn();
+                }
+                break;
+
+            case Key.OemMinus:
+                if (e.KeyModifiers == KeyModifiers.Control)
+                {
+                    ZoomOut();
+                }
+                break;
+
             default:
-                selectedTrack.TrackControl_KeyDown(this, e);
+                if (selectedTrack != null)
+                    selectedTrack.TrackControl_KeyDown(this, e);
                 break;
         }
     }
@@ -256,6 +275,69 @@ public partial class StationControl : UserControl
             {
                 scrollViewer.Offset = new Vector(scrollViewer.Offset.X - e.Delta.Y * 20, scrollViewer.Offset.Y);
             }
-        }        
+        }
+    }
+
+    private void ZoomInButton_Click(object? sender, RoutedEventArgs e)
+    {
+        ZoomIn();
+    }
+
+    private void ZoomOutButton_Click(object? sender, RoutedEventArgs e)
+    {
+        ZoomOut();
+    }
+
+    private void UpdateFontSize()
+    {
+        var carInfoTextBlocks = CarInfoGrid.GetLogicalChildren();
+
+        foreach (var child in carInfoTextBlocks)
+        {
+            if (child is TextBlock textBlock)
+            {
+                textBlock.FontSize = FONT_SIZES[ZoomLevel];
+            }
+            else
+            {
+                foreach (var child1 in child.GetLogicalChildren())
+                {
+                    if (child1 is TextBlock textBlock1)
+                    {
+                        textBlock1.FontSize = FONT_SIZES[ZoomLevel];
+                    }
+                }
+            }
+        }
+    }
+
+    private void ZoomIn()
+    {
+        if (ZoomLevel != FONT_SIZES.Length - 1)
+        {
+            ZoomLevel++;
+
+            CarInfoGrid.Width = CARINFOGRID_SIZES[ZoomLevel];
+            UpdateFontSize();
+        }
+        foreach (TrackControl trackControl in TracksPanel.Children)
+        {
+            trackControl.ZoomIn();
+        }
+    }
+
+    private void ZoomOut()
+    {
+        if (ZoomLevel != 0)
+        {
+            ZoomLevel--;
+
+            CarInfoGrid.Width = CARINFOGRID_SIZES[ZoomLevel];
+            UpdateFontSize();
+        }
+        foreach (TrackControl trackControl in TracksPanel.Children)
+        {
+            trackControl.ZoomOut();
+        }
     }
 }

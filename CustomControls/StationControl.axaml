@@ -40,6 +40,12 @@
           <Button x:Name="AttachButton" FontSize="12" DockPanel.Dock="Right"
                   Margin="1" HorizontalAlignment="Right" Focusable="False"
                   Click="AttachButton_Click">&lt;</Button>
+          <Button x:Name="ZoomInButton" FontSize="12" DockPanel.Dock="Right"
+                  Margin="1, 1, 20, 1" HorizontalAlignment="Right" Focusable="False"
+                  Click="ZoomInButton_Click">+</Button>
+          <Button x:Name="ZoomOutButton" FontSize="12" DockPanel.Dock="Right"
+                  Margin="1" HorizontalAlignment="Right" Focusable="False"
+                  Click="ZoomOutButton_Click">-</Button>
         </DockPanel>
         <StackPanel x:Name="CarInfoPanel" Orientation="Vertical">
           <ScrollViewer x:Name="CarInfoScrollViewer" HorizontalScrollBarVisibility="Auto"

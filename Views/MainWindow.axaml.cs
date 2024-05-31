@@ -68,6 +68,8 @@ namespace AvaloniaApplication2.Views
                             Workplace.Children.Add(stationControl);
 
                             viewModel.OpenedStations.Add(station, stationControl);
+
+                            viewModel.SelectedStation = station;
                         }
                     };
 
@@ -100,15 +102,15 @@ namespace AvaloniaApplication2.Views
                     stationWindow = stationStateWindow;
             }
 
-
             if (stationWindow == null)
             {
                 Station station = viewModel.GetStationByName(name);
 
                 StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
 
-                Workplace.Children.Add(stationControl);
+                Workplace.Children.Add(stationControl);             
             }
+
             
             /**
             StationStateWindow stationWindow = new StationStateWindow(viewModel.GetStationByName(name), (MainWindowViewModel)DataContext);

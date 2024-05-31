@@ -1,5 +1,6 @@
 using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Controls.Primitives;
 using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
@@ -14,14 +15,20 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Track = AvaloniaApplication2.Models.Track;
 
 namespace AvaloniaApplication2.CustomControls;
 
 public partial class TrackControl : UserControl
 {
+    private readonly int[] CAR_WIDTHS = { 6, 7, 8, 9, 10, 11, 12 };
+    private readonly int[] TRACK_CONTROL_HEIGHS = { 41, 44, 46, 48, 51, 53, 56};
+    private static readonly int[] FONT_SIZES = { 11, 12, 12, 12, 13, 13, 14 };
+
     private MainWindowViewModel viewModel;
     private Window ParentWindow;
     private StationControl ParentControl;
+    public int ZoomLevel = 1;
 
     private static bool _isDrugging = false;
     private Point _pressedPoint;
@@ -29,7 +36,6 @@ public partial class TrackControl : UserControl
     public bool IsSelected { get { return (DataContext as MainWindowViewModel).SelectedTrack == Track; } }
     public Track Track { get; }
     private List<CarControl> focusedCars;
-    public static int CAR_WIDTH = 8;
     public static int TURNOUT_WIDTH = 40;
 
     public TrackControl()
@@ -61,22 +67,28 @@ public partial class TrackControl : UserControl
         TrackNumberTextBlock.Text = track.TrackNumber.ToString();
         CarsCountTextBlock.Text = track.Cars.Count.ToString();
 
-        var width = TURNOUT_WIDTH * 2 + CAR_WIDTH * track.Capacity;
+        AddCarsToTrackGrid();
+        UpdateSizes();
+    }
+
+    private void AddCarsToTrackGrid()
+    {
+        var width = TURNOUT_WIDTH * 2 + CAR_WIDTHS[ZoomLevel] * Track.Capacity;
         TrackWrapper.Width = width;
         BottomLine.EndPoint = new Point(width - 20, 1);
 
-        for (var i = 0; i < track.Capacity; i++)
+        for (var i = 0; i < Track.Capacity; i++)
         {
             ColumnDefinition cd = new ColumnDefinition
             {
-                Width = new GridLength(CAR_WIDTH, GridUnitType.Pixel)
+                Width = new GridLength(CAR_WIDTHS[ZoomLevel], GridUnitType.Pixel)
             };
 
             TrackGrid.ColumnDefinitions.Add(cd);
 
-            if (i < track.Cars.Count)
+            if (i < Track.Cars.Count)
             {
-                TrackGrid.Children.Add(new CarControl(track.GetCar(i + 1), this)
+                TrackGrid.Children.Add(new CarControl(Track.GetCar(i + 1), this)
                 {
                     [Grid.RowProperty] = 0,
                     [Grid.ColumnProperty] = i,
@@ -369,13 +381,13 @@ public partial class TrackControl : UserControl
                         FocusNthCar(nextIndex);
                     }
                 }
-            }            
+            }
         }
     }
 
     private void FocusPreviousCar(bool savePreviusFocused = false)
     {
-        if (Track.Cars.Count != 0)        
+        if (Track.Cars.Count != 0)
         {
             if (focusedCars.Count == 0)
             {
@@ -417,7 +429,7 @@ public partial class TrackControl : UserControl
                         FocusNthCar(nextIndex);
                     }
                 }
-            }            
+            }
         }
     }
 
@@ -485,6 +497,58 @@ public partial class TrackControl : UserControl
             TrackEditMenuItem.IsEnabled = false;
             MoveCarsMenuItem.IsEnabled = false;
             FieldSheetMenuItem.IsEnabled = false;
+        }
+    }
+
+    public void ZoomIn()
+    {
+        if (ZoomLevel != CAR_WIDTHS.Length - 1)
+        {
+            ZoomLevel++;
+            
+            UpdateSizes();
+        }
+    }
+
+    public void ZoomOut()
+    {
+        if (ZoomLevel != 0)
+        {
+            ZoomLevel--;
+
+            UpdateSizes();
+        }
+    }
+
+    private void UpdateSizes()
+    {
+        var width = TURNOUT_WIDTH * 2 + CAR_WIDTHS[ZoomLevel] * Track.Capacity;
+        TrackWrapper.Width = width;
+        BottomLine.EndPoint = new Point(width - 20, 1);
+
+        Width = width;
+        Height = TRACK_CONTROL_HEIGHS[ZoomLevel];
+
+        TrackGrid.Height = CAR_WIDTHS[ZoomLevel] * 2 + 8;
+        LeftSwitchBorder.Height = TrackGrid.Height;
+        RightSwitchBorder.Height = TrackGrid.Height;
+        TrackImageTop.Height = TrackGrid.Height;
+
+        TrackNumberSuffixTextBlock.FontSize = FONT_SIZES[ZoomLevel];
+        TrackNumberTextBlock.FontSize = FONT_SIZES[ZoomLevel];
+        SelectedCarsCountSuffixTextBlock.FontSize = FONT_SIZES[ZoomLevel];
+        SelectedCarsCountTextBlock.FontSize = FONT_SIZES[ZoomLevel];
+        CarsCountSuffixTextBlock.FontSize = FONT_SIZES[ZoomLevel];
+        CarsCountTextBlock.FontSize = FONT_SIZES[ZoomLevel];
+
+        foreach (ColumnDefinition columnDefinition in TrackGrid.ColumnDefinitions)
+        {
+            columnDefinition.Width = new GridLength(CAR_WIDTHS[ZoomLevel], GridUnitType.Pixel);
+        }
+
+        foreach (CarControl carControl in TrackGrid.Children)
+        {
+            carControl.UpdateCarImageSize();
         }
     }
 }

@@ -41,11 +41,9 @@
       <StackPanel x:Name="TrackWrapper" Orientation="Vertical" Width="410" MinWidth="230" Canvas.Left="0" Canvas.Top="0">
         <StackPanel x:Name="TrackImage" Orientation="Vertical">
           <StackPanel x:Name="TrackImageTop" Orientation="Horizontal" Height="30">
-            <Border BorderBrush="Black" Width="40"/>
-            <Border BorderThickness="0" BorderBrush="Black" Margin="0,0,0,0">
-              <Grid x:Name="TrackGrid"/>
-            </Border>
-            <Border BorderBrush="Black" Width="40"/>
+            <Border x:Name="LeftSwitchBorder" BorderBrush="Black" Width="40"/>
+            <Grid x:Name="TrackGrid"/>
+            <Border x:Name="RightSwitchBorder" BorderBrush="Black" Width="40"/>
           </StackPanel>
           <StackPanel x:Name="TrackImageBottom" Height="5">
             <Line x:Name="BottomLine"
@@ -56,15 +54,15 @@
         </StackPanel>
         <StackPanel x:Name="TrackInfo" Orientation="Horizontal" HorizontalAlignment="Left">
           <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal" Margin="30, 0, 10, 0">
-            <TextBlock Text="Путь-"/>
+            <TextBlock x:Name="TrackNumberSuffixTextBlock" Text="Путь-"/>
             <TextBlock x:Name="TrackNumberTextBlock" Text="0"/>
           </StackPanel>
           <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal">
-            <TextBlock Text="Отм.:"/>
+            <TextBlock x:Name="SelectedCarsCountSuffixTextBlock" Text="Отм.:"/>
             <TextBlock x:Name="SelectedCarsCountTextBlock" Text="0"/>
           </StackPanel>
           <StackPanel Classes="TrackInfoComponent" Orientation="Horizontal">
-            <TextBlock Text="&lt;"/>
+            <TextBlock x:Name="CarsCountSuffixTextBlock" Text="&lt;"/>
             <TextBlock x:Name="CarsCountTextBlock" Text="0"/>
           </StackPanel>
         </StackPanel>
