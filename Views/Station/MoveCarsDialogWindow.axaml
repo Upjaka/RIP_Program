@@ -50,7 +50,6 @@
       <CheckBox x:Name="MovingSideCheckBox" Content="четная" IsChecked="True" Margin="10, 0, 0, 0" Focusable="True" TabIndex="3"/>
     </StackPanel>
     <Grid x:Name="Buttons" ColumnDefinitions="*, *, *" Margin="10, 10, 0, 0">
-      <Button Grid.Column="0" Content="Взгляд" Focusable="True" TabIndex="4"/>
       <Button Grid.Column="1" Content="ОК" Focusable="True" TabIndex="5" Click="OkButton_Click" Margin="15, 0, 0, 0"/>
       <Button Grid.Column="2" Content="Отменить" Focusable="True" TabIndex="6" Click="CancelButton_Click"/>
     </Grid>

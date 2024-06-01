@@ -52,7 +52,7 @@
           <MenuItem Header="Поиск вагона" IsEnabled="False"/>
           <Separator/>
         </MenuItem>
-        <MenuItem x:Name="Windows_MenuItem" Header="Окна" Click="WindowsMenuItem_Click" SubmenuOpened="Windows_MenuItem_SubmenuOpened">
+        <MenuItem x:Name="Windows_MenuItem" Header="Окна">
           <!--  -->
         </MenuItem>
         <MenuItem Header="Справка">

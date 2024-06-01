@@ -281,6 +281,10 @@ public partial class StationControl : UserControl
             {
                 scrollViewer.Offset = new Vector(scrollViewer.Offset.X - e.Delta.Y * 20, scrollViewer.Offset.Y);
             }
+            else
+            {
+                scrollViewer.Offset = new Vector(scrollViewer.Offset.X + e.Delta.Y * 20, scrollViewer.Offset.Y);
+            }
         }
     }
 

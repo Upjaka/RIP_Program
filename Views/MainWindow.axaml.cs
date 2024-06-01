@@ -84,6 +84,7 @@ namespace AvaloniaApplication2.Views
                     StationsList_MenuItem.Items.Add(stationMenuItem);
                 }
 
+                SaveMenuItem.IsEnabled = viewModel.IsOperator;
             };
 
             AddHandler(KeyDownEvent, MainWindow_KeyDown, RoutingStrategies.Tunnel);
@@ -154,16 +155,19 @@ namespace AvaloniaApplication2.Views
 
             stationControl.ParentWindow = stationWindow;
 
-            //StationWindows.Add(stationWindow);
+            StationWindows.Add(stationWindow);
+            UpdateWindowsMenuItem();
             viewModel.OpenedStations[station] = stationControl;
             stationWindow.Show();
         }
 
         public void AttachStationControl(StationControl stationControl)
         {
+            StationWindows.Remove(stationControl.ParentWindow);
+            UpdateWindowsMenuItem();
             stationControl.ControlPanel.IsVisible = true;
             stationControl.ParentWindow = null;
-            Workplace.Children.Add(stationControl);
+            Workplace.Children.Add(stationControl);            
         }
 
         public void CloseStationControl(StationControl stationControl)
@@ -251,24 +255,33 @@ namespace AvaloniaApplication2.Views
 
         public void OpenTrackEditWindow()
         {
-            ((MainWindowViewModel)DataContext).UpdateCarsInfo();
-            var trackEditing = new TrackEditingDialogWindow(this, (MainWindowViewModel)DataContext);
-            trackEditing.ShowDialog(this);
+            if (viewModel.IsOperator)
+            {
+                ((MainWindowViewModel)DataContext).UpdateCarsInfo();
+                var trackEditing = new TrackEditingDialogWindow(this, (MainWindowViewModel)DataContext);
+                trackEditing.ShowDialog(this);
+            }           
         }
 
         public void OpenNewComingWindow()
         {
-            var newComingDialogWindow = new NewComingDialogWindow(this);
-            newComingDialogWindow.DataContext = DataContext;
+            if (viewModel.IsOperator)
+            {
+                var newComingDialogWindow = new NewComingDialogWindow(this);
+                newComingDialogWindow.DataContext = DataContext;
 
-            newComingDialogWindow.ShowDialog(this);
+                newComingDialogWindow.ShowDialog(this);
+            }            
         }
 
         public void OpenMovingCarsWindow(Station destStation = null, Track destTrack = null)
         {
-            MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow(destStation, destTrack);
+            if (viewModel.IsOperator)
+            {
+                MoveCarsDialogWindow moveCarsDialogWindow = new MoveCarsDialogWindow(destStation, destTrack);
 
-            moveCarsDialogWindow.ShowDialog(this);
+                moveCarsDialogWindow.ShowDialog(this);
+            }            
         }
 
         public void SaveChanges()
@@ -305,6 +318,7 @@ namespace AvaloniaApplication2.Views
             }
         }
 
+        /**
         private void WindowsMenuItem_Click(object? sender, RoutedEventArgs e)
         {
             if (StationWindows.Count > 0)
@@ -345,6 +359,24 @@ namespace AvaloniaApplication2.Views
                 }
             }
         }
+        */
+
+        private void UpdateWindowsMenuItem()
+        {
+            Windows_MenuItem.Items.Clear();
+
+            foreach (StationStateWindow stationWindow in StationWindows)
+            {
+                MenuItem menuItem = new MenuItem();
+                menuItem.Click += (s, e) =>
+                {
+                    stationWindow.Activate();
+                };
+                menuItem.Header = stationWindow.StationControl.Station.StationName;
+
+                Windows_MenuItem.Items.Add(menuItem);
+            }
+        }
 
         private void Dispatcher_MenuItem_SubmenuOpened(object? sender, RoutedEventArgs e)
         {
@@ -372,12 +404,12 @@ namespace AvaloniaApplication2.Views
 
         public void SetMenuItemsEnabling()
         {
-            if (viewModel.SelectedTrack != null && viewModel.IsOperator)
+            if (viewModel.SelectedTrack != null)
             {
-                NewComing_MenuItem.IsEnabled = true;
-                TrackEdit_MenuItem.IsEnabled = true;
                 FieldSheet_MenuItem.IsEnabled = true;
-                MoveCars_MenuItem.IsEnabled = true;
+                NewComing_MenuItem.IsEnabled = viewModel.IsOperator;
+                TrackEdit_MenuItem.IsEnabled = viewModel.IsOperator;             
+                MoveCars_MenuItem.IsEnabled = viewModel.IsOperator;
             }
             else
             {

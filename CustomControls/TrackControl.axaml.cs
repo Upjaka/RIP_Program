@@ -33,7 +33,7 @@ public partial class TrackControl : UserControl
     private bool isFirstClick = true;
     private bool isDoubleClick = false;
     private DateTime firstClickTime;
-    private const int DoubleClickThreshold = 200;
+    private const int DoubleClickThreshold = 150;
 
     private static bool _isPointerPressed = false;
     private static bool _isCarsDrugging = false;
@@ -147,7 +147,6 @@ public partial class TrackControl : UserControl
                         {
                             focusedCar.IsDrugging = true;
                         }
-                        SelectAllCars();
                     }
                 }
             }
@@ -188,21 +187,29 @@ public partial class TrackControl : UserControl
                 {
                     foreach (CarControl focusedCar in focusedCars)
                     {
+                        if (!focusedCar.IsSelected && viewModel.IsOperator)
+                        {
+                            focusedCar.IsSelected = true;
+                        }                            
                         focusedCar.IsDrugging = false;
                     }
 
                     isDoubleClick = false;
 
-                    var point = e.GetCurrentPoint(TrackWrapper).Position;
-                    if (point.Y < 0 || point.Y > Height)
+                    if (viewModel.IsOperator)
                     {
-                        TrackControl destTrack = ParentControl.GetTrackControlByPoint(this, point);
-
-                        if (destTrack != null)
+                        var point = e.GetCurrentPoint(TrackWrapper).Position;
+                        if (point.Y < 0 || point.Y > Height)
                         {
-                            viewModel.MainWindow.OpenMovingCarsWindow(ParentControl.Station, destTrack.Track);
+                            TrackControl destTrack = ParentControl.GetTrackControlByPoint(this, point);
+
+                            if (destTrack != null)
+                            {
+                                viewModel.MainWindow.OpenMovingCarsWindow(ParentControl.Station, destTrack.Track);
+                            }
                         }
                     }
+
                 }
                 else
                 {
@@ -333,7 +340,7 @@ public partial class TrackControl : UserControl
 
         focusedCars.Clear();
         foreach (CarControl carControl in TrackGrid.Children)
-        {
+         {
             if (carControl.IsCarFocused)
             {
                 focusedCars.Add(carControl);
@@ -563,8 +570,7 @@ public partial class TrackControl : UserControl
 
     private void TrackContextMenu_Opened(object? sender, RoutedEventArgs e)
     {
-        MoveCarsMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null && (DataContext as MainWindowViewModel).IsOperator;
-        FieldSheetMenuItem.IsEnabled = (DataContext as MainWindowViewModel).SelectedTrack != null && (DataContext as MainWindowViewModel).IsOperator;
+        SetMenuItemsEnabling();
     }
 
     private void NewComingMenuItem_Click(object? sender, RoutedEventArgs e)
@@ -594,18 +600,24 @@ public partial class TrackControl : UserControl
 
     public void SetMenuItemsEnabling()
     {
-        if (viewModel.SelectedTrack != null && viewModel.IsOperator)
+        if (viewModel.SelectedStation == ParentControl.Station && viewModel.IsOperator)
         {
-            SaveMenuItem.IsEnabled = true;
-            NewComingMenuItem.IsEnabled = true;
-            TrackEditMenuItem.IsEnabled = true;
-            MoveCarsMenuItem.IsEnabled = true;
+            NewComingMenuItem.IsEnabled = viewModel.IsOperator;
+        }
+        else
+        {
+            NewComingMenuItem.IsEnabled = false;
+        }
+        if (viewModel.SelectedTrack != null)
+        {
+            SaveMenuItem.IsEnabled = viewModel.IsOperator;
+            TrackEditMenuItem.IsEnabled = viewModel.IsOperator;
+            MoveCarsMenuItem.IsEnabled = viewModel.IsOperator;
             FieldSheetMenuItem.IsEnabled = true;
         }
         else
         {
             SaveMenuItem.IsEnabled = false;
-            NewComingMenuItem.IsEnabled = false;
             TrackEditMenuItem.IsEnabled = false;
             MoveCarsMenuItem.IsEnabled = false;
             FieldSheetMenuItem.IsEnabled = false;
