@@ -1,8 +1,6 @@
-using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
+using Avalonia.Interactivity;
 using AvaloniaApplication2.ViewModels;
-using AvaloniaApplication2.Views;
 
 namespace AvaloniaApplication2;
 
@@ -16,7 +14,7 @@ public partial class LoginWindow : Window
         Opened += (s, e) =>
         {
             UserNameComboBox.SelectionChanged += ComboBox_SelectionChanged;
-            DataContext = (Owner.DataContext as MainWindowViewModel);
+            DataContext = Owner.DataContext as MainWindowViewModel;
         };
     }
 
@@ -28,18 +26,20 @@ public partial class LoginWindow : Window
     private void ComboBox_SelectionChanged(object? sender, SelectionChangedEventArgs e)
     {
         if (sender is ComboBox comboBox)
-            UserLevelTextBox.Watermark = (comboBox.SelectedIndex == 0) ? "Оператор" : "Наблюдатель";
+            UserLevelTextBox.Watermark = (comboBox.SelectedIndex == 0) ? "Оператор" :
+                "Наблюдатель";
     }
 
-    private void LoginButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void LoginButton_Click(object? sender, RoutedEventArgs e)
     {
         (DataContext as MainWindowViewModel).IsLoggedIn = true;
-        (DataContext as MainWindowViewModel).IsOperator = (UserNameComboBox.SelectedIndex == 0) ? true : false;
+        (DataContext as MainWindowViewModel).IsOperator = UserNameComboBox.SelectedIndex == 0;
         Close();
     }
 
-    private void CancelButton_Click(object? sender, Avalonia.Interactivity.RoutedEventArgs e)
+    private void CancelButton_Click(object? sender, RoutedEventArgs e)
     {
         Close();
     }
 }
+

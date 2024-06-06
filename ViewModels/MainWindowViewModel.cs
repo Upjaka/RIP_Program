@@ -18,6 +18,7 @@ namespace AvaloniaApplication2.ViewModels
     public class MainWindowViewModel : ViewModelBase
     {
         private static readonly string connectionToSQLServerString = "Server=alesantpc\\my_mssqlserver;Database=RIP;User Id=rip;Password=rip;";
+        //private static readonly string connectionToSQLServerString = "Server=tob-rip-srv\\tob-rip-srv;Database=RIP;User Id=rip;Password=rip;";
 
         private ChangeList localChanges;
 
@@ -63,6 +64,10 @@ namespace AvaloniaApplication2.ViewModels
         public Car LastFocusedCar { get; set; }
         public Dictionary<Station, StationControl> OpenedStations;
 
+        public string ServerAddress {  get; set; }
+        public string ServerUser { get; set; }
+        public string ServerPassword { get; set; }
+
 
         public bool HasUnsavedChanges
         {
@@ -82,6 +87,11 @@ namespace AvaloniaApplication2.ViewModels
             OpenedStations = new Dictionary<Station, StationControl>();
 
             localChanges = new ChangeList();
+        }
+
+        private string GetConnectionString()
+        {
+            return $"Server={ServerAddress};Database=RIP;User Id={ServerUser};Password={ServerPassword};";
         }
 
         private void OnCarChanged(object sender, CarChangedEventArgs e)
@@ -278,7 +288,8 @@ namespace AvaloniaApplication2.ViewModels
                 }
                 catch (SqlException ex)
                 {
-                    MainWindow.StatusBarTextBlock.Text = "Ошибка при получении кодов брака:" + ex.Message;
+                    MainWindow.StatusBarTextBlock.Text =
+                        "Ошибка при получении кодов брака:" + ex.Message;
                     Debug.WriteLine("Error connecting to the database: " + ex.Message);
                 }
             }
@@ -345,10 +356,8 @@ namespace AvaloniaApplication2.ViewModels
                         {
                             try
                             {
-                                // Выполнение запроса с помощью Dapper
                                 int rowsAffected = connection.Execute(updateRequestString);
 
-                                // Проверка на количество затронутых строк (обычно 1)
                                 if (rowsAffected > 0)
                                 {
                                     Debug.WriteLine("Запись успешно добавлена в базу данных.");

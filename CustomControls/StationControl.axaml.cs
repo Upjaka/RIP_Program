@@ -80,6 +80,7 @@ public partial class StationControl : UserControl
         Height = ControlPanel.Height + CarInfoPanel.Height + TracksBorder.Height + 10;
 
         VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
+        HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left;
 
         AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
         AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
