@@ -6,9 +6,10 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.TrackEditingDialogWindow"
         x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/tracks.ico"
         Title="Редактор района: ... путь: ..."
         Width="775" Height="375"
-        MinWidth="770" MinHeight="300"
+        MinWidth="700" MinHeight="300"
         WindowStartupLocation="CenterScreen"
         Closing="TrackEditing_Closing"
         SizeChanged="Window_SizeChanged">

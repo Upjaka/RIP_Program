@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaApplication2", "Ava
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "RIP_Setup", "..\RIP_Setup\RIP_Setup.vdproj", "{19960F63-0BBF-4A72-BB49-014C819E97DF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AvaloniaNunitTest", "..\AvaloniaNunitTest\AvaloniaNunitTest.csproj", "{A0937ED7-E3E5-4920-9026-F8DB563069DE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AvaloniaNunitTest", "..\AvaloniaNunitTest\AvaloniaNunitTest.csproj", "{A0937ED7-E3E5-4920-9026-F8DB563069DE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

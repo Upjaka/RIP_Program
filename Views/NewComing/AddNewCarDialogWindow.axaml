@@ -6,6 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.AddNewCarDialogWindow"
         x:DataType="vm:MainWindowViewModel"
+        Icon="/Assets/tracks.ico"
         Title="Приход в район ... на путь ..."
         Width="680" Height="350" CanResize="False">
   

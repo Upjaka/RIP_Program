@@ -5,6 +5,7 @@
         xmlns:controls="clr-namespace:AvaloniaApplication2.CustomControls"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.StationStateWindow"
+        Icon="/Assets/tracks.ico"
         Title="Неизвестный район"
         Width="800" Height="800"
         WindowStartupLocation="CenterScreen"

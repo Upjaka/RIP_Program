@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Data;
-using System.Data.OleDb;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Dynamic;
 using AvaloniaApplication2.Models;
 using System.Diagnostics;
 using AvaloniaApplication2.Views;
 using DynamicData;
-using System.Xml;
 using System.Data.SqlClient;
 using Dapper;
 using AvaloniaApplication2.CustomControls;

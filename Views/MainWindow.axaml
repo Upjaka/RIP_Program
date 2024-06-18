@@ -6,7 +6,7 @@
         mc:Ignorable="d" d:DesignWidth="650" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
-        Icon="/Assets/avalonia-logo.ico"
+        Icon="/Assets/tracks.ico"
         Title="РИП-2.0"
         Closing="MainWindow_Closing">
 
@@ -22,7 +22,7 @@
 
   <Grid RowDefinitions="Auto, *, Auto" Classes="Wrapper">
     <DockPanel Grid.Row="0" VerticalAlignment="Top" Classes="NavMenu">
-      <Menu DockPanel.Dock="Top">
+      <Menu DockPanel.Dock="Top" Background="#cc87CEEB">
         <MenuItem Header="Файл">
           <!-- <MenuItem Header="Открыть" IsEnabled="False"/> -->
           
@@ -36,7 +36,9 @@
           <MenuItem x:Name="TrackEdit_MenuItem" Header="Редактор-путь          F4" Click="TrackEdit_Click"
                     IsEnabled="False" HotKey="F4"/>
           <MenuItem x:Name="MoveCars_MenuItem" Header="Переместить             F6" Click="MoveCars_Click" IsEnabled="False" HotKey="F6"/>
+          <!--
           <MenuItem Header="Раскрыть путь" Click="ChangeTrack_Click" IsEnabled="False"/>
+          -->
           <!-- <MenuItem Header="Паспорртные данные" IsEnabled="False"/> -->
           
           <MenuItem x:Name="FieldSheet_MenuItem" Header="Натурный лист          Alt+2" Click="ReportMenuItem_Click"
@@ -70,7 +72,7 @@
       </ScrollViewer>
     </Border>
 
-    <Border Grid.Row="2" Classes="StatusBar">
+    <Border Grid.Row="2" Classes="StatusBar" Background="#bb87CEEB">
       <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
         <TextBlock x:Name="StatusBarTextBlock" Text="Статус"/>
       </StackPanel>

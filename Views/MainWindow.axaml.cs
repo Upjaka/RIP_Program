@@ -64,22 +64,7 @@ namespace AvaloniaApplication2.Views
                     MenuItem stationMenuItem = new MenuItem();
 
                     stationMenuItem.Header = station.StationName;
-                    stationMenuItem.Click += (s, e) =>
-                    {
-                        string name = (s as MenuItem).Header.ToString();
-                        Station station = viewModel.GetStationByName(name);
-
-                        if (!viewModel.OpenedStations.Keys.Contains(station))
-                        {
-                            StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
-
-                            Workplace.Children.Add(stationControl);
-
-                            viewModel.OpenedStations.Add(station, stationControl);
-
-                            viewModel.SelectedStation = station;
-                        }
-                    };
+                    stationMenuItem.Click += (s, e) => OpenStation_Click(s, e);
 
                     StationsList_MenuItem.Items.Add(stationMenuItem);
                 }
@@ -103,46 +88,18 @@ namespace AvaloniaApplication2.Views
         private void OpenStation_Click(object? sender, RoutedEventArgs e)
         {
             string name = (sender as MenuItem).Header.ToString();
+            Station station = viewModel.GetStationByName(name);
 
-            StationStateWindow? stationWindow = null;
-            foreach (StationStateWindow stationStateWindow in StationWindows)
+            if (!viewModel.OpenedStations.Keys.Contains(station))
             {
-                if (stationStateWindow.Station.StationName == name)
-                    stationWindow = stationStateWindow;
-            }
-
-            if (stationWindow == null)
-            {
-                Station station = viewModel.GetStationByName(name);
-
                 StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
 
-                Workplace.Children.Add(stationControl);             
-            }
+                Workplace.Children.Add(stationControl);
 
-            
-            /**
-            StationStateWindow stationWindow = new StationStateWindow(viewModel.GetStationByName(name), (MainWindowViewModel)DataContext);
+                viewModel.OpenedStations.Add(station, stationControl);
 
-            StationStateWindow? openedStationWindow = null;
-
-            foreach (StationStateWindow stationStateWindow in StationWindows)
-            {
-                if (stationStateWindow.StationControl.Station.StationName == name)
-                {
-                    openedStationWindow = stationStateWindow;
-                }
+                viewModel.SelectedStation = station;
             }
-            if (openedStationWindow != null)
-            {
-                openedStationWindow.Activate();
-            }
-            else
-            {
-                StationWindows.Add(stationWindow);
-                stationWindow.Show();
-            }
-            */
         }
 
         public void DetachStationControl(StationControl stationControl)
@@ -196,7 +153,7 @@ namespace AvaloniaApplication2.Views
         private void DefectCodes_Click(object? sender, RoutedEventArgs e)
         {
             var defectCodesWindow = new DefectCodesDialogWindow((MainWindowViewModel)DataContext);
-            defectCodesWindow.ShowDialog(this);
+            defectCodesWindow.Show();
         }
 
         public void UpdateTrack(Track track)

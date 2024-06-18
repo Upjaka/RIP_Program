@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.DefectCodesDialogWindow"
+        Icon="/Assets/tracks.ico"
         x:DataType="vm:MainWindowViewModel"
         Title="Коды брака"
         Width="660" Height="600"

@@ -37,6 +37,8 @@ public partial class StationStateWindow : Window
         Closed += (s, e) =>
         {
             (DataContext as MainWindowViewModel).MainWindow.StationWindows.Remove(this);
+            (DataContext as MainWindowViewModel).OpenedStations.Remove(Station);
+
         };
     }
 

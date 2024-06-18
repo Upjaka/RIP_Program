@@ -10,7 +10,14 @@
     </Application.DataTemplates>
 
   <Application.Styles>
-    <FluentTheme/>
+    <FluentTheme>
+      <FluentTheme.Palettes>
+        <ColorPaletteResources x:Key="Light" Accent="#ff0073cf" AltHigh="White" AltLow="White" AltMedium="White" AltMediumHigh="White" AltMediumLow="White" BaseHigh="Black" BaseLow="#ff0073cf" BaseMedium="#ff6ba1c1" BaseMediumHigh="#ff287297" BaseMediumLow="#ff498aac" ChromeAltLow="#ff287297" ChromeBlackHigh="Black" ChromeBlackLow="#ffcfe8ff" ChromeBlackMedium="#ff287297" ChromeBlackMediumLow="#ff6ba1c1" ChromeDisabledHigh="#ffcfe8ff" ChromeDisabledLow="#ff6ba1c1" ChromeGray="#ff498aac" ChromeHigh="#ffcfe8ff" ChromeLow="#ffe3f7ff" ChromeMedium="#ffdff4ff" ChromeMediumLow="#ffe3f7ff" ChromeWhite="White" ListLow="#ffdff4ff" ListMedium="#ffcfe8ff" RegionColor="White" />
+        <ColorPaletteResources x:Key="Dark" Accent="#ff0073cf" AltHigh="Black" AltLow="Black" AltMedium="Black" AltMediumHigh="Black" AltMediumLow="Black" BaseHigh="White" BaseLow="#ff333333" BaseMedium="#ff9a9a9a" BaseMediumHigh="#ffb4b4b4" BaseMediumLow="#ff676767" ChromeAltLow="#ffb4b4b4" ChromeBlackHigh="Black" ChromeBlackLow="#ffb4b4b4" ChromeBlackMedium="Black" ChromeBlackMediumLow="Black" ChromeDisabledHigh="#ff333333" ChromeDisabledLow="#ff9a9a9a" ChromeGray="Gray" ChromeHigh="Gray" ChromeLow="#ff151515" ChromeMedium="#ff1d1d1d" ChromeMediumLow="#ff2c2c2c" ChromeWhite="White" ListLow="#ff1d1d1d" ListMedium="#ff333333" RegionColor="Black" />
+      </FluentTheme.Palettes>
+    </FluentTheme>
+
     <StyleInclude Source="avares://Avalonia.Controls.DataGrid/Themes/Fluent.xaml"/>
+    <StyleInclude Source="avares://AvaloniaApplication2/Styles/CustomStyles.axaml"/>
   </Application.Styles>
 </Application>

@@ -1,20 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
-using Avalonia.Controls.Shapes;
 using Avalonia.Input;
 using Avalonia.Interactivity;
-using Avalonia.Markup.Xaml;
-using Avalonia.Media;
-using Avalonia.VisualTree;
 using AvaloniaApplication2.Models;
 using AvaloniaApplication2.ViewModels;
-using AvaloniaApplication2.Views;
-using iText.StyledXmlParser.Jsoup.Nodes;
+using iText.IO.Codec;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 using Track = AvaloniaApplication2.Models.Track;
 
@@ -258,8 +250,11 @@ public partial class TrackControl : UserControl
 
                     if (sender is CarControl carControl)
                     {
-                        UnfocusAllCars();
-                        FocusNthCar(carControl.Car.SerialNumber - 1);
+                        if (!carControl.IsCarFocused)
+                        {
+                            UnfocusAllCars();
+                            FocusNthCar(carControl.Car.SerialNumber - 1);                            
+                        }
                         SelectAllCars();
                     }
                 }
@@ -355,6 +350,36 @@ public partial class TrackControl : UserControl
     {
         switch (e.Key)
         {
+            case Key.Home:
+                if (e.KeyModifiers == KeyModifiers.Shift)
+                {
+                    int lastFocusedIndex = Convert.ToInt32(focusedCars[focusedCars.Count - 1].Car.SerialNumber) - 1;
+                    for (int i = lastFocusedIndex - 1; i >= 0; i--)
+                    {
+                        FocusNthCar(i);
+                    }
+                }
+                else
+                {
+                    UnfocusAllCars();
+                    FocusNthCar(0);
+                }
+                break;
+            case Key.End:
+                if (e.KeyModifiers == KeyModifiers.Shift)
+                {
+                    int lastFocusedIndex = Convert.ToInt32(focusedCars[focusedCars.Count - 1].Car.SerialNumber) - 1;
+                    for (int i = lastFocusedIndex + 1; i <= Track.Cars.Count - 1; i++)
+                    {
+                        FocusNthCar(i);
+                    }
+                }
+                else
+                {
+                    UnfocusAllCars();
+                    FocusPreviousCar();
+                }
+                break;
             case Key.Tab:
                 if (focusedCars.Count == 0)
                 {
@@ -377,35 +402,16 @@ public partial class TrackControl : UserControl
                 break;
 
             case Key.Enter:
+            case Key.Insert:
                 SelectAllCars();
                 break;
 
             case Key.Right:
-                if (e.KeyModifiers == KeyModifiers.Shift)
-                {
-                    FocusNextCar(true);
-                }
-                else
-                {
-                    if (e.KeyModifiers == KeyModifiers.None)
-                    {
-                        FocusNextCar();
-                    }
-                }
+                FocusNextCar(e.KeyModifiers == KeyModifiers.Shift);                
                 break;
 
             case Key.Left:
-                if (e.KeyModifiers == KeyModifiers.Shift)
-                {
-                    FocusPreviousCar(true);
-                }
-                else
-                {
-                    if (e.KeyModifiers == KeyModifiers.None)
-                    {
-                        FocusPreviousCar();
-                    }
-                }
+                FocusPreviousCar(e.KeyModifiers == KeyModifiers.Shift);
                 break;
 
             case Key.F3:
@@ -437,7 +443,7 @@ public partial class TrackControl : UserControl
     }
 
     private void FocusNthCar(int n)
-    {
+    { 
         if (Track.Cars.Count > 0)
         {
             CarControl focusedCar = (n < Track.Cars.Count) ? (CarControl)TrackGrid.Children[n] : (CarControl)TrackGrid.Children[Track.Cars.Count - 1];
