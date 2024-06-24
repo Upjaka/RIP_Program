@@ -102,6 +102,7 @@ public partial class AddNewCarDialogWindow : Window
             [Grid.ColumnProperty] = 1,
             HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Center,
             Margin = new Thickness(0, 8, 0, 0),
+            Focusable = true,
         };
         TextBox carNumberTextBox = new TextBox()
         {
@@ -171,7 +172,9 @@ public partial class AddNewCarDialogWindow : Window
         CarGrid.Children.Add(serialNumberTextBlock);
         CarGrid.Children.Add(carNumberTextBox);
         CarGrid.Children.Add(isCarLoadedTextBlock);
-        CarGrid.Children.Add(deleteButton);
+        CarGrid.Children.Add(deleteButton);       
+
+        Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(() => carNumberTextBox.Focus());
 
         carGridRows[carNumberTextBox] = [serialNumberTextBlock, isCarLoadedTextBlock, deleteButton];
 

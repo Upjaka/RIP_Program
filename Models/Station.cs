@@ -11,7 +11,13 @@ namespace AvaloniaApplication2.Models
         public int StationId { get; set; }
         public string StationName { get; set; }
         public List<Track> Tracks { get; set; } = new List<Track>();
-        
+
+        private Comparison<Track> customComparison = (x, y) =>
+        {
+            int result = x.TrackPosition.CompareTo(y.TrackPosition);
+            return result;
+        };
+
         public Station()
         {
             StationId = 0;
@@ -37,6 +43,11 @@ namespace AvaloniaApplication2.Models
                 if (track.TrackNumber == n) return track;
             }
             return null;
+        }
+
+        public void Sort()
+        {
+            Tracks.Sort(customComparison);
         }
 
         public override string ToString()

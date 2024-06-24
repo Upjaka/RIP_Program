@@ -148,7 +148,8 @@ namespace AvaloniaApplication2.Models
             else
             {
                 CarInfo other = (CarInfo)obj;
-                if (other.CarNumber == CarNumber &&
+                if (other.IsSelected == IsSelected &&
+                    other.CarNumber == CarNumber &&
                     other.SerialNumber == SerialNumber && 
                     other.IsFixed == IsFixed &&
                     other.DefectCodes == DefectCodes &&

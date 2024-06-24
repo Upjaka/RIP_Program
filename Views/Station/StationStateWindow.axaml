@@ -14,7 +14,7 @@
         Focusable="False">
 
   <Border x:Name="StationBorderWrapper" BorderBrush="Black" BorderThickness="0">
-    <StackPanel x:Name="StationPanel" Orientation="Vertical" Margin="0" Background="LightGray"/>
+    <StackPanel x:Name="StationPanel" Orientation="Vertical" Margin="0" Background="White"/>
   </Border>
 
 </Window>

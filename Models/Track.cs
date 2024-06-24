@@ -13,6 +13,7 @@ namespace AvaloniaApplication2.Models
         public int Capacity { get; set; }
         public LinkedList<Car> Cars { get; set; } = new LinkedList<Car>();
         public int StationId { get; set; }
+        public int TrackPosition { get; set; }
 
         private Comparison<Car> customComparison = (x, y) =>
         {
@@ -26,14 +27,16 @@ namespace AvaloniaApplication2.Models
             TrackNumber = 0;
             Capacity = 0;
             StationId = 0;
+            TrackPosition = 1;
         }
 
-        public Track(int trackId, int trackNumber, int capacity, int stationId) 
+        public Track(int trackId, int trackNumber, int capacity, int stationId, int trackPosition) 
         {
             TrackId = trackId;
             TrackNumber = trackNumber;
             Capacity = capacity;
             StationId = stationId;
+            TrackPosition = trackPosition;
         }
 
         public Car? GetCar(int serialNumber) 

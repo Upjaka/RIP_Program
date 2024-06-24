@@ -325,6 +325,8 @@ namespace AvaloniaApplication2.ViewModels
 
                             track.Sort();
                         }
+
+                        station.Sort();
                     }
 
                     MainWindow.StatusBarTextBlock.Text = "Подключено";

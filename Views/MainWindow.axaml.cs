@@ -129,9 +129,14 @@ namespace AvaloniaApplication2.Views
 
         public void CloseStationControl(StationControl stationControl)
         {
+            if (stationControl.ParentWindow != null)
+            {
+                StationWindows.Remove(stationControl.ParentWindow);
+            }
             Workplace.Children.Remove(stationControl);
             viewModel.OpenedStations.Remove(stationControl.Station);
             SetMenuItemsEnabling();
+            UpdateWindowsMenuItem();
         }
 
         private void TrackEdit_Click(object? sender, RoutedEventArgs e)

@@ -93,7 +93,10 @@
                         VerticalScrollBarVisibility="Hidden"                      
                         Height="{Binding Height, ElementName=TracksBorder}"
                         Width="{Binding Width, ElementName=TracksBorder}">
-            <StackPanel x:Name="TracksPanel" Orientation="Vertical"/>
+
+              <Grid x:Name="TracksGrid" Width="{Binding Width, ElementName=TracksBorder}"
+                       HorizontalAlignment="Left" ColumnDefinitions="*">
+              </Grid>      
           </ScrollViewer>
         </Border>
       </StackPanel>

@@ -128,6 +128,8 @@ public partial class TrackControl : UserControl
                 isDoubleClick = true;
                 isFirstClick = true;
 
+                Cursor = new Cursor(StandardCursorType.Hand);
+
                 if (sender is CarControl carControl)
                 {
                     if (carControl.IsCarFocused)
@@ -169,6 +171,8 @@ public partial class TrackControl : UserControl
 
     public void TrackControl_PointerReleased(object? sender, PointerReleasedEventArgs e)
     {
+        Cursor = new Cursor(StandardCursorType.Arrow);
+
         if (e.InitialPressMouseButton == MouseButton.Left)
         {
             var timeSinceFirstClick = DateTime.Now - firstClickTime;

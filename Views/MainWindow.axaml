@@ -22,14 +22,14 @@
 
   <Grid RowDefinitions="Auto, *, Auto" Classes="Wrapper">
     <DockPanel Grid.Row="0" VerticalAlignment="Top" Classes="NavMenu">
-      <Menu DockPanel.Dock="Top" Background="#cc87CEEB">
-        <MenuItem Header="Файл">
+      <Menu DockPanel.Dock="Top" Background="#cc87CEEB" Focusable="False">
+        <MenuItem Header="Файл" Focusable="False">
           <!-- <MenuItem Header="Открыть" IsEnabled="False"/> -->
           
           <MenuItem x:Name="SaveMenuItem" Header="Сохранить        Ctrl+S" Click="SaveMenuItem_Click" HotKey="Ctrl+S"/>
           <MenuItem x:Name="ExitMenuItem" Header="Выйти" Click="ExitMenuItem_Click"/>
         </MenuItem>
-        <MenuItem Header="Диспетчер" SubmenuOpened="Dispatcher_MenuItem_SubmenuOpened">
+        <MenuItem Header="Диспетчер" SubmenuOpened="Dispatcher_MenuItem_SubmenuOpened" Focusable="False">
           <!-- <MenuItem Header="Архив движения" IsEnabled="False"/> -->          
           <MenuItem x:Name="NewComing_MenuItem" Header="Приход в район        F3" Click="NewComing_Click"
                     IsEnabled="False" HotKey="F3"/>
@@ -50,14 +50,14 @@
 
           <MenuItem Header="Коды брака" Click="DefectCodes_Click"/>
         </MenuItem>
-        <MenuItem x:Name="StationsList_MenuItem" Header="Район">
+        <MenuItem x:Name="StationsList_MenuItem" Header="Район" Focusable="False">
           <MenuItem Header="Поиск вагона" IsEnabled="False"/>
           <Separator/>
         </MenuItem>
-        <MenuItem x:Name="Windows_MenuItem" Header="Окна">
+        <MenuItem x:Name="Windows_MenuItem" Header="Окна" Focusable="False">
           <!--  -->
         </MenuItem>
-        <MenuItem Header="Справка">
+        <MenuItem Header="Справка" Focusable="False">
           <MenuItem Header="Просмотр справки" IsEnabled="False"/>
           <MenuItem Header="О программе" IsEnabled="False"/>
         </MenuItem>

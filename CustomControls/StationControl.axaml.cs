@@ -9,6 +9,8 @@ using Avalonia.Interactivity;
 using System;
 using Avalonia.LogicalTree;
 using System.Diagnostics;
+using Avalonia.Controls.Primitives;
+using System.Collections.Generic;
 
 namespace AvaloniaApplication2.CustomControls;
 
@@ -22,6 +24,7 @@ public partial class StationControl : UserControl
     public StationStateWindow ParentWindow { get; set; }
     private TrackControl? selectedTrack;
     public TrackControl? SelectedTrack { get { return selectedTrack; } }
+    private List<TrackControl> trackControls;
     public Station Station { get; }
     private Car _lastFocusedCar;
     public Car LastFocusedCar
@@ -63,6 +66,41 @@ public partial class StationControl : UserControl
         //StationWrapper.Height = mainWindow.FindControl<WrapPanel>("Workplace").Bounds.Height;
         //TracksBorder.Height = StationWrapper.Height;
 
+        StationSchema schema = new StationSchema(Station.StationName);
+        trackControls = new List<TrackControl>();
+
+        for (var i = 0; i < schema.Rows; i++)
+        {
+            var row = schema.schema[i];
+            RowDefinition rowDefinition = new RowDefinition { Height = GridLength.Auto };
+            TracksGrid.RowDefinitions.Add(rowDefinition);
+
+            StackPanel rowPanel = new StackPanel()
+            {
+                Margin = new Thickness(0),
+                HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                [Grid.RowProperty] = i,
+                [Grid.ColumnProperty] = 0,
+                Orientation = Avalonia.Layout.Orientation.Horizontal,
+            };
+
+            for (var j = 0; j < row.Count; j++)
+            {
+                var trackControl = new TrackControl(Station.GetTrackByNumber(row[j]), this)
+                {
+                    Margin = new Thickness(10, 5, 0, 5),
+                    HorizontalAlignment = Avalonia.Layout.HorizontalAlignment.Left,
+                    ZIndex = 0,
+                };
+
+                rowPanel.Children.Add(trackControl);
+                trackControls.Add(trackControl);
+            }
+
+            TracksGrid.Children.Add(rowPanel);
+        }
+
+        /**
         foreach (Track track in Station.Tracks)
         {
             var trackControl = new TrackControl(track, this);
@@ -77,6 +115,7 @@ public partial class StationControl : UserControl
         {
             if (child.Width + 18 > Width) Width = child.Width + 18;
         }
+        */
         Height = ControlPanel.Height + CarInfoPanel.Height + TracksBorder.Height + 10;
 
         VerticalAlignment = Avalonia.Layout.VerticalAlignment.Top;
@@ -84,6 +123,17 @@ public partial class StationControl : UserControl
 
         AddHandler(KeyDownEvent, StationControl_KeyDown, RoutingStrategies.Tunnel);
         AddHandler(PointerPressedEvent, StationControl_PointerPressed, RoutingStrategies.Bubble);
+
+        DetachedFromVisualTree += (s, e) =>
+        {
+            viewModel.SelectedStation = null;
+            viewModel.SelectedTrack = null;
+            if (ParentWindow != null)
+            {
+                ParentWindow.Close();
+            }
+            viewModel.MainWindow.CloseStationControl(this);
+        };
     }
 
     public void StationControl_PointerPressed(object? sender, PointerPressedEventArgs e)
@@ -120,38 +170,44 @@ public partial class StationControl : UserControl
 
     private void AttachButton_Click(object? sender, RoutedEventArgs e)
     {
-        Width = TracksPanel.Children[0].Width + 18;
-        TrackControl lastTrackControl = TracksPanel.Children[TracksPanel.Children.Count - 1] as TrackControl;
+        Width = TracksGrid.Children[0].Width + 18;
+        TrackControl lastTrackControl = (TracksGrid.Children[TracksGrid.Children.Count - 1] as StackPanel).Children[0] as TrackControl;
         Height = lastTrackControl.Bounds.Bottom + lastTrackControl.Height + 15;
 
         DetachButton.IsVisible = true;
         AttachButton.IsVisible = false;
         StationWrapper.BorderThickness = new Thickness(1);
-        TracksScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
-        TracksScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Hidden;
+        TracksScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
+        TracksScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;
         ParentWindow.Close();
         ParentWindow.StationPanel.Children.Remove(this);
         (DataContext as MainWindowViewModel).MainWindow.AttachStationControl(this);
     }
 
-    private void UnselectOtherTracks(Track track)
+    private void UnselectOtherTracks(Models.Track track)
     {
-        foreach (TrackControl otherTrackControl in TracksPanel.Children)
+        foreach (StackPanel trackPanel in TracksGrid.Children)
         {
-            if (otherTrackControl.Track != track)
+            foreach (TrackControl otherTrackControl in trackPanel.Children)
             {
-                otherTrackControl.Unselect();
+                if (otherTrackControl.Track != track)
+                {
+                    otherTrackControl.Unselect();
+                }
             }
         }
     }
 
     public void UpdateTrack(int trackNumber)
     {
-        foreach (TrackControl trackControl in TracksPanel.Children)
+        foreach (StackPanel trackPanel in TracksGrid.Children)
         {
-            if (trackControl.Track.TrackNumber == trackNumber)
+            foreach (TrackControl trackControl in trackPanel.Children)
             {
-                trackControl.UpdateTrack();
+                if (trackControl.Track.TrackNumber == trackNumber)
+                {
+                    trackControl.UpdateTrack();
+                }
             }
         }
     }
@@ -239,38 +295,52 @@ public partial class StationControl : UserControl
 
     private void SelectFirstTrack()
     {
-        if (TracksPanel.Children.Count > 0)
+        if (TracksGrid.Children.Count > 0)
         {
-            selectedTrack = (TrackControl)TracksPanel.Children[0];
+            selectedTrack = (TracksGrid.Children[0] as StackPanel).Children[0] as TrackControl;
             selectedTrack.Select(0);
         }
     }
 
     private void SelectLastTrack()
     {
-        if (TracksPanel.Children.Count > 0)
+        if (TracksGrid.Children.Count > 0)
         {
-            selectedTrack = (TrackControl)TracksPanel.Children[TracksPanel.Children.Count - 1];
+            StackPanel lastStackPanel = TracksGrid.Children[TracksGrid.Children.Count - 1] as StackPanel;
+            selectedTrack = lastStackPanel.Children[lastStackPanel.Children.Count - 1] as TrackControl;
             selectedTrack.Select(0);
-
         }
     }
 
+    /**
     private void SelectNextTrack()
     {
-        int index = TracksPanel.Children.IndexOf(selectedTrack);
+        StackPanel stackPanel = TracksGrid.Children[0] as StackPanel;
+        TrackControl currentTrack = stackPanel.Children.Count == 0 ? null : stackPanel.Children[0] as TrackControl;
+        TrackControl nextTrack;
+
+        for (int i = 0; i < TracksGrid.Children.Count; i++)
+        {
+
+        }
+    }
+    */
+
+    private void SelectNextTrack()
+    {
+        int index = trackControls.IndexOf(selectedTrack);
 
         int lastFocusedCarIndex = selectedTrack.Unselect();
-        selectedTrack = (TrackControl)TracksPanel.Children[(index + 1) % TracksPanel.Children.Count];
+        selectedTrack = trackControls[(index + 1) % trackControls.Count];
         selectedTrack.Select(lastFocusedCarIndex);
     }
 
     private void SelectPreviousTrack()
     {
-        int index = TracksPanel.Children.IndexOf(selectedTrack);
+        int index = trackControls.IndexOf(selectedTrack);
 
         int lastFocusedCarIndex = selectedTrack.Unselect();
-        selectedTrack = (TrackControl)TracksPanel.Children[(index - 1 + TracksPanel.Children.Count) % TracksPanel.Children.Count];
+        selectedTrack = trackControls[(index - 1 + trackControls.Count) % trackControls.Count];
         selectedTrack.Select(lastFocusedCarIndex);
     }
 
@@ -331,13 +401,13 @@ public partial class StationControl : UserControl
             CarInfoGrid.Width = CARINFOGRID_SIZES[ZoomLevel];
             UpdateFontSize();
         }
-        foreach (TrackControl trackControl in TracksPanel.Children)
+        foreach (TrackControl trackControl in trackControls)
         {
             trackControl.ZoomIn();
         }
 
-        TracksBorder.Width = TracksPanel.Children[0].Width + 18;
-        foreach (TrackControl child in TracksPanel.Children)
+        TracksBorder.Width = trackControls[0].Width + 18;
+        foreach (TrackControl child in trackControls)
         {
             if (child.Width + 18 > TracksBorder.Width) TracksBorder.Width = child.Width + 18;
         }
@@ -356,13 +426,13 @@ public partial class StationControl : UserControl
             CarInfoGrid.Width = CARINFOGRID_SIZES[ZoomLevel];
             UpdateFontSize();
         }
-        foreach (TrackControl trackControl in TracksPanel.Children)
+        foreach (TrackControl trackControl in trackControls)
         {
             trackControl.ZoomOut();
         }
 
-        TracksBorder.Width = TracksPanel.Children[0].Width + 18;
-        foreach (TrackControl child in TracksPanel.Children)
+        TracksBorder.Width = trackControls[0].Width + 18;
+        foreach (TrackControl child in trackControls)
         {
             if (child.Width + 18 > TracksBorder.Width) TracksBorder.Width = child.Width + 18;
         }
@@ -375,13 +445,13 @@ public partial class StationControl : UserControl
 
     public TrackControl? GetTrackControlByPoint(TrackControl startTrack, Point point)
     {
-        int currentIndex = TracksPanel.Children.IndexOf(startTrack);
+        int currentIndex = trackControls.IndexOf(startTrack);
 
-        var transform = startTrack.TransformToVisual(TracksPanel);
+        var transform = startTrack.TransformToVisual(TracksGrid);
 
         var position = transform.Value.Transform(point);
 
-        foreach (TrackControl trackControl in TracksPanel.Children)
+        foreach (TrackControl trackControl in trackControls)
         {
             if (HitTest(trackControl, position)) return trackControl;
         }
