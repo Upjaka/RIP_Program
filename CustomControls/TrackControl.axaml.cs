@@ -7,6 +7,7 @@ using AvaloniaApplication2.ViewModels;
 using iText.IO.Codec;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Track = AvaloniaApplication2.Models.Track;
 
@@ -28,7 +29,6 @@ public partial class TrackControl : UserControl
     private const int DoubleClickThreshold = 150;
 
     private static bool _isPointerPressed = false;
-    private static bool _isCarsDrugging = false;
     private Point _pressedPoint;
     private Control? _pressedControl;
 
@@ -132,16 +132,30 @@ public partial class TrackControl : UserControl
 
                 if (sender is CarControl carControl)
                 {
-                    if (carControl.IsCarFocused)
+                    viewModel.SelectedStation = ParentControl.Station;
+                    viewModel.SelectedTrack = Track;
+
+                    
+                    foreach (CarControl car in TrackGrid.Children)
                     {
-                        _isCarsDrugging = true;
-                        viewModel.SelectedStation = ParentControl.Station;
-                        viewModel.SelectedTrack = Track;
-                        foreach (CarControl focusedCar in focusedCars)
+                        if (car.IsCarFocused)
                         {
-                            focusedCar.IsDrugging = true;
+                            car.IsSelected = true;                            
+                        }
+                        if (car.IsSelected)
+                        {
+                            car.IsDrugging = true;
+                            Debug.WriteLine("Is drugging");
                         }
                     }
+                    
+
+                    /**
+                    foreach (CarControl focusedCar in focusedCars)
+                    {
+                        focusedCar.IsDrugging = true;
+                    }
+                    */
                 }
             }
 
@@ -181,12 +195,8 @@ public partial class TrackControl : UserControl
             {
                 if (isDoubleClick)
                 {
-                    foreach (CarControl focusedCar in focusedCars)
-                    {
-                        if (!focusedCar.IsSelected && viewModel.IsOperator)
-                        {
-                            focusedCar.IsSelected = true;
-                        }                            
+                    foreach (CarControl focusedCar in TrackGrid.Children)
+                    {                            
                         focusedCar.IsDrugging = false;
                     }
 
@@ -285,7 +295,6 @@ public partial class TrackControl : UserControl
             }
             
             _isPointerPressed = false;
-            _isCarsDrugging = false;
             SelectingRect.Width = 0;
             SelectingRect.Height = 0;
 

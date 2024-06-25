@@ -461,9 +461,14 @@ public partial class StationControl : UserControl
 
     public bool HitTest(TrackControl trackControl, Point point)
     {
-        if (point.X > trackControl.Bounds.Left && point.X < trackControl.Bounds.Right)
+        var transform = trackControl.TransformToVisual(TracksGrid);
+
+        var topLeft = transform.Value.Transform(new Point(0, 0));
+        var bottomRight = transform.Value.Transform(new Point(trackControl.Bounds.Width, trackControl.Bounds.Height));
+
+        if (point.X > topLeft.X && point.X < bottomRight.X)
         {
-            if (point.Y < trackControl.Bounds.Bottom && point.Y > trackControl.Bounds.Top)
+            if (point.Y < bottomRight.Y && point.Y > topLeft.Y)
             {
                 return true;
             }
