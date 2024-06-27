@@ -14,6 +14,7 @@ using Avalonia.Media;
 using Org.BouncyCastle.Crmf;
 using System.Linq;
 using DynamicData;
+using System.Windows.Input;
 
 namespace AvaloniaApplication2;
 
@@ -138,6 +139,30 @@ public partial class AddNewCarDialogWindow : Window
             Padding = new Thickness(2, 0, 2, 2)
         };
 
+        // Создайте новое контекстное меню
+        var contextMenu = new ContextMenu();
+
+        // Добавьте элементы меню
+        var cutMenuItem = new MenuItem { Header = "Вырезать" };
+        cutMenuItem.Click += (sender, e) => carNumberTextBox.Cut();
+
+        var copyMenuItem = new MenuItem { Header = "Копировать" };
+        copyMenuItem.Click += (sender, e) => carNumberTextBox.Copy();
+
+        var pasteMenuItem = new MenuItem { Header = "Вставить" };
+        pasteMenuItem.Click += (sender, e) =>
+        {
+            PasteText(carNumberTextBox);
+        };
+
+        // Добавьте элементы в контекстное меню
+        contextMenu.Items.Add(cutMenuItem);
+        contextMenu.Items.Add(copyMenuItem);
+        contextMenu.Items.Add(pasteMenuItem);
+
+        // Установите контекстное меню для TextBox
+        carNumberTextBox.ContextMenu = contextMenu;
+
         carNumberTextBox.AddHandler(KeyDownEvent, CarGrigCell_KeyDown, Avalonia.Interactivity.RoutingStrategies.Tunnel);
         deleteButton.Click += (s, e) =>
         {
@@ -195,38 +220,7 @@ public partial class AddNewCarDialogWindow : Window
             }
             if (e.Key == Key.V && e.KeyModifiers == KeyModifiers.Control)
             {
-                var clipboard = GetTopLevel(this)?.Clipboard;
-                var clipboardString = await clipboard.GetTextAsync();
-
-                int selectionStart = Math.Min(textBox.SelectionStart, textBox.SelectionEnd);
-                int selectionLength = Math.Abs(textBox.SelectionEnd - textBox.SelectionStart);
-
-                if (!string.IsNullOrEmpty(clipboardString))
-                {
-                    string[] splittedString = SplitClipboardText(clipboardString);
-
-                    if (!string.IsNullOrEmpty(textBox.Text))
-                    {
-                        textBox.Text = textBox.Text.Remove(selectionStart, selectionLength);
-                        textBox.Text = textBox.Text.Insert(selectionStart, splittedString[0]);
-                    }
-                    else
-                    {
-                        textBox.Text = splittedString[0];
-                    }
-
-                    if (splittedString.Length != 1)
-                    {
-                        if (CheckUserInput(textBox))
-                        {
-                            textBox = AddEmptyRowToCarGrid();
-
-                            int rowIndex = Grid.GetRow(textBox);
-                            if (rowIndex == CarGrid.RowDefinitions.Count - 1) PasteData(textBox, splittedString.Skip(1).ToArray());
-                            else textBox.Text.Insert(selectionStart, splittedString[0]);
-                        }
-                    } 
-                }
+                PasteText(textBox);
 
                 e.Handled = true;
             }
@@ -268,6 +262,42 @@ public partial class AddNewCarDialogWindow : Window
 
             default:
                 return false;
+        }
+    }
+
+    private async void PasteText(TextBox textBox)
+    {
+        var clipboard = GetTopLevel(this)?.Clipboard;
+        var clipboardString = await clipboard.GetTextAsync();
+
+        int selectionStart = Math.Min(textBox.SelectionStart, textBox.SelectionEnd);
+        int selectionLength = Math.Abs(textBox.SelectionEnd - textBox.SelectionStart);
+
+        if (!string.IsNullOrEmpty(clipboardString))
+        {
+            string[] splittedString = SplitClipboardText(clipboardString);
+
+            if (!string.IsNullOrEmpty(textBox.Text))
+            {
+                textBox.Text = textBox.Text.Remove(selectionStart, selectionLength);
+                textBox.Text = textBox.Text.Insert(selectionStart, splittedString[0]);
+            }
+            else
+            {
+                textBox.Text = splittedString[0];
+            }
+
+            if (splittedString.Length != 1)
+            {
+                if (CheckUserInput(textBox))
+                {
+                    textBox = AddEmptyRowToCarGrid();
+
+                    int rowIndex = Grid.GetRow(textBox);
+                    if (rowIndex == CarGrid.RowDefinitions.Count - 1) PasteData(textBox, splittedString.Skip(1).ToArray());
+                    else textBox.Text.Insert(selectionStart, splittedString[0]);
+                }
+            }
         }
     }
 

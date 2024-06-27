@@ -124,6 +124,7 @@ public partial class NewComingDialogWindow : Window
             {
                 ((Border)tracks[i]).Classes.Remove("Selected");
                 ((Border)tracks[(i + 1) % tracks.Count]).Classes.Add("Selected");
+                ((Border)tracks[(i + 1) % tracks.Count]).BringIntoView();
                 selected = true;
                 break;
             }
@@ -145,6 +146,7 @@ public partial class NewComingDialogWindow : Window
             {
                 ((Border)tracks[i]).Classes.Remove("Selected");
                 ((Border)tracks[(i - 1 + tracks.Count) % tracks.Count]).Classes.Add("Selected");
+                ((Border)tracks[(i - 1 + tracks.Count) % tracks.Count]).BringIntoView();
                 selected = true;
                 break;
             }
