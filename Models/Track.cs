@@ -59,7 +59,7 @@ namespace AvaloniaApplication2.Models
 
         public void AddLast(List<Car> cars) 
         {
-            int lastIndex = (Cars.Count == 0) ? 1 : Cars.Count;
+            int lastIndex = (Cars.Count == 0) ? 1 : Cars.Count + 1;
             foreach (var car in cars)
             {
                 car.SerialNumber = lastIndex++;

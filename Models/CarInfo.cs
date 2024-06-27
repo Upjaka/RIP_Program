@@ -60,7 +60,6 @@ namespace AvaloniaApplication2.Models
                 {
                     _isFixed = value;
                     OnPropertyChanged(nameof(_isFixed));
-                    Debug.WriteLine("IsFixed = " + _isFixed);
                 }
             }
         }
@@ -87,7 +86,6 @@ namespace AvaloniaApplication2.Models
                 {
                     _isLoaded = value;
                     OnPropertyChanged(nameof(_isLoaded));
-                    Debug.WriteLine("IsLoaded = " + _isLoaded);
 
                 }
             }
