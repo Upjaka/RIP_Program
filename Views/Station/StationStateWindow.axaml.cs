@@ -33,11 +33,6 @@ public partial class StationStateWindow : Window
         HotKeyManager.SetHotKey(StationControl, new KeyGesture(Key.Tab));
 
         AddHandler(KeyDownEvent, StationWindow_KeyDown, RoutingStrategies.Tunnel);
-
-        Closed += (s, e) =>
-        {
-            (DataContext as MainWindowViewModel).OpenedStations.Remove(Station);
-        };
     }
 
     private void StationStateWindow_Closed(object? sender, EventArgs e)

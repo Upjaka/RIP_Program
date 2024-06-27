@@ -15,7 +15,7 @@ namespace AvaloniaApplication2.Views
     public partial class MainWindow : Window
     {
         private MainWindowViewModel viewModel;
-        public List<StationStateWindow> StationWindows;
+        public List<StationStateWindow> OpenedStationStateWindows;
         private PDFCreator PDFCreator { get; set; }
 
         public MainWindow()
@@ -23,13 +23,13 @@ namespace AvaloniaApplication2.Views
             PDFCreator = new PDFCreator();
 
             InitializeComponent();
-            StationWindows = new List<StationStateWindow>();
+            OpenedStationStateWindows = new List<StationStateWindow>();
 
             Closed += (s, e) =>
             {
                 PDFCreator.Delete();
 
-                foreach (KeyValuePair<Station, StationControl> kvp in viewModel.OpenedStations)
+                foreach (KeyValuePair<Station, StationControl> kvp in viewModel.OpenedStationControls)
                 {
                     if (kvp.Value.ParentWindow is StationStateWindow window)
                     {
@@ -90,13 +90,13 @@ namespace AvaloniaApplication2.Views
             string name = (sender as MenuItem).Header.ToString();
             Station station = viewModel.GetStationByName(name);
 
-            if (!viewModel.OpenedStations.Keys.Contains(station))
+            if (!viewModel.OpenedStationControls.Keys.Contains(station))
             {
                 StationControl stationControl = new StationControl(DataContext as MainWindowViewModel, station);
 
                 Workplace.Children.Add(stationControl);
 
-                viewModel.OpenedStations.Add(station, stationControl);
+                viewModel.OpenedStationControls.Add(station, stationControl);
 
                 viewModel.SelectedStation = station;
             }
@@ -112,15 +112,16 @@ namespace AvaloniaApplication2.Views
 
             stationControl.ParentWindow = stationWindow;
 
-            StationWindows.Add(stationWindow);
+            OpenedStationStateWindows.Add(stationWindow);
             UpdateWindowsMenuItem();
-            viewModel.OpenedStations[station] = stationControl;
+            viewModel.OpenedStationControls[station] = stationControl;
             stationWindow.Show();
         }
 
         public void AttachStationControl(StationControl stationControl)
         {
-            StationWindows.Remove(stationControl.ParentWindow);
+            viewModel.OpenedStationControls[stationControl.Station] = stationControl;
+            OpenedStationStateWindows.Remove(stationControl.ParentWindow);
             UpdateWindowsMenuItem();
             stationControl.ControlPanel.IsVisible = true;
             stationControl.ParentWindow = null;
@@ -131,10 +132,10 @@ namespace AvaloniaApplication2.Views
         {
             if (stationControl.ParentWindow != null)
             {
-                StationWindows.Remove(stationControl.ParentWindow);
+                OpenedStationStateWindows.Remove(stationControl.ParentWindow);
             }
             Workplace.Children.Remove(stationControl);
-            viewModel.OpenedStations.Remove(stationControl.Station);
+            viewModel.OpenedStationControls.Remove(stationControl.Station);
             SetMenuItemsEnabling();
             UpdateWindowsMenuItem();
         }
@@ -163,11 +164,11 @@ namespace AvaloniaApplication2.Views
 
         public void UpdateTrack(Track track)
         {
-            foreach (Station station in viewModel.OpenedStations.Keys)
+            foreach (Station station in viewModel.OpenedStationControls.Keys)
             {
                 if (station.StationId == track.StationId)
                 {
-                    viewModel.OpenedStations[station].UpdateTrack(track.TrackNumber);
+                    viewModel.OpenedStationControls[station].UpdateTrack(track.TrackNumber);
                 }
             }
         }
@@ -207,7 +208,7 @@ namespace AvaloniaApplication2.Views
 
         private void CloseAllStationWindows()
         {
-            List<StationStateWindow> stationWindowsCopy = new List<StationStateWindow>(StationWindows);
+            List<StationStateWindow> stationWindowsCopy = new List<StationStateWindow>(OpenedStationStateWindows);
 
             foreach (var window in stationWindowsCopy)
             {
@@ -327,7 +328,7 @@ namespace AvaloniaApplication2.Views
         {
             Windows_MenuItem.Items.Clear();
 
-            foreach (StationStateWindow stationWindow in StationWindows)
+            foreach (StationStateWindow stationWindow in OpenedStationStateWindows)
             {
                 MenuItem menuItem = new MenuItem();
                 menuItem.Click += (s, e) =>

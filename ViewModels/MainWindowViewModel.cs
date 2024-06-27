@@ -58,7 +58,7 @@ namespace AvaloniaApplication2.ViewModels
         }
         public List<Car> movingCarsList {  get; set; }
         public Car LastFocusedCar { get; set; }
-        public Dictionary<Station, StationControl> OpenedStations;
+        public Dictionary<Station, StationControl> OpenedStationControls;
 
         public string ServerAddress {  get; set; }
         public string ServerUser { get; set; }
@@ -80,7 +80,7 @@ namespace AvaloniaApplication2.ViewModels
 
             DefectCodes = new ObservableCollection<DefectCode>();
 
-            OpenedStations = new Dictionary<Station, StationControl>();
+            OpenedStationControls = new Dictionary<Station, StationControl>();
 
             localChanges = new ChangeList();
         }
