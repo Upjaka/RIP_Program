@@ -255,7 +255,7 @@ public partial class TrackControl : UserControl
                 // Not druging
                 if (isDoubleClick)
                 {
-                    foreach (CarControl focusedCar in focusedCars)
+                    foreach (CarControl focusedCar in TrackGrid.Children)
                     {
                         focusedCar.IsDrugging = false;
                     }
