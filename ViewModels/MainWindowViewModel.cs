@@ -204,7 +204,10 @@ namespace AvaloniaApplication2.ViewModels
                         car.Product = carInfo.Product;
                         car.Cargo = carInfo.Cargo;
                         car.IsSelected = carInfo.IsSelected;
-                        localChanges.Add(new LocalChange(oldCar, car.Clone()));
+                        if (!carInfo.EqualsWithoutSelected(OldCarsInfo[i]))
+                        {
+                            localChanges.Add(new LocalChange(oldCar, car.Clone()));
+                        }                        
                     }
                 }
             }

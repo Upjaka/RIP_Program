@@ -18,22 +18,75 @@
     <vm:MainWindowViewModel/>
   </Design.DataContext>
 
+  <Window.Styles>
+    <Style Selector="CheckBox">
+      <Setter Property="HorizontalAlignment" Value="Center"/>
+    </Style>
+    <Style Selector="TextBox">
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="Background" Value="Transparent"/>
+    </Style>
+  </Window.Styles>
+
   <StackPanel x:Name="Wrapper" Orientation="Horizontal">
     <Border BorderBrush="Gray" BorderThickness="0, 1, 1, 1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        <DataGrid x:Name="TrackGrid" ItemsSource="{Binding CarsInfo}"
+        <DataGrid x:Name="TrackGrid" ItemsSource="{CompiledBinding CarsInfo}"
                   AutoGenerateColumns="False" IsReadOnly="False"
                   Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}"
                   Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Window}}"
                   CanUserResizeColumns="True">
           <DataGrid.Columns>
-            <DataGridCheckBoxColumn Header="Отм." Binding="{Binding IsSelected}"/>
-            <DataGridTextColumn Header="№п/п" IsReadOnly="True" Binding="{Binding SerialNumber}"/>
-            <DataGridTextColumn Header="№вагона" IsReadOnly="True" Binding="{Binding CarNumber}"/>
-            <DataGridCheckBoxColumn Header="Испр." Binding="{Binding IsFixed}"/>
-            <DataGridTextColumn Header="Коды брака" Binding="{Binding DefectCodes}"/>
-            <DataGridCheckBoxColumn Header="Загр." Binding="{Binding IsLoaded}"/>
-            <DataGridTextColumn Header="Продукт" Binding="{Binding Product}"/>
-            <DataGridTextColumn Header="Груз" Binding="{Binding Cargo}"/>
+            <DataGridTemplateColumn Header="Отм.">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
+            <DataGridTextColumn Header="№п/п" IsReadOnly="True" Binding="{CompiledBinding SerialNumber}"/>
+            
+            <DataGridTextColumn Header="№вагона" IsReadOnly="True" Binding="{CompiledBinding CarNumber}"/>
+            
+            <DataGridTemplateColumn Header="Испр.">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <CheckBox IsChecked="{Binding IsFixed, Mode=TwoWay}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
+            <DataGridTemplateColumn Header="Коды брака">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBox Text="{Binding DefectCodes, Mode=TwoWay}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
+            <DataGridTemplateColumn Header="Загр.">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <CheckBox IsChecked="{Binding IsLoaded, Mode=TwoWay}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
+            <DataGridTemplateColumn Header="Продукт">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBox Text="{Binding Product, Mode=TwoWay}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
+            
+            <DataGridTemplateColumn Header="Груз">
+              <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                  <TextBox Text="{Binding Cargo, Mode=TwoWay}"/>
+                </DataTemplate>
+              </DataGridTemplateColumn.CellTemplate>
+            </DataGridTemplateColumn>
           </DataGrid.Columns>
         </DataGrid>
     </Border>

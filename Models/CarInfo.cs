@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -59,6 +60,7 @@ namespace AvaloniaApplication2.Models
                 {
                     _isFixed = value;
                     OnPropertyChanged(nameof(_isFixed));
+                    Debug.WriteLine("IsFixed = " + _isFixed);
                 }
             }
         }
@@ -85,6 +87,8 @@ namespace AvaloniaApplication2.Models
                 {
                     _isLoaded = value;
                     OnPropertyChanged(nameof(_isLoaded));
+                    Debug.WriteLine("IsLoaded = " + _isLoaded);
+
                 }
             }
         }
@@ -136,7 +140,19 @@ namespace AvaloniaApplication2.Models
 
         public override string ToString()
         {
-            return "№п/п " + SerialNumber + ", №вагона " + CarNumber + ", коды брака " + DefectCodes + ", продукт " + Product + ", груз " + Cargo;
+            return "№п/п " + SerialNumber + ", №вагона " + CarNumber + ", " + ((IsFixed) ? "испр." : "неиспр.") +  ", коды брака " + DefectCodes + ((IsLoaded) ? "груж." : "негруж.");
+        }
+
+        public bool EqualsWithoutSelected(CarInfo other)
+        {
+            if (    other.CarNumber == CarNumber &&
+                    other.SerialNumber == SerialNumber &&
+                    other.IsFixed == IsFixed &&
+                    other.DefectCodes == DefectCodes &&
+                    other.Cargo == Cargo &&
+                    other.Product == Product &&
+                    other.IsLoaded == IsLoaded) return true;
+            else return false;
         }
 
         public override bool Equals(object obj) 
