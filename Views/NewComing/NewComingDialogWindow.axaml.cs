@@ -13,12 +13,12 @@ public partial class NewComingDialogWindow : Window
 {
     private MainWindow mainWindow;
 
-    public NewComingDialogWindow(MainWindow mainWindow)
+    public NewComingDialogWindow(MainWindow mainWindow, int selectedTrack = 0)
     {
         InitializeComponent();
         this.mainWindow = mainWindow;
         DataContext = mainWindow.DataContext;
-        AddTracksToTracksPanel();
+        AddTracksToTracksPanel(selectedTrack);
 
         KeyDown += NewComing_KeyDown;
     }
@@ -29,7 +29,7 @@ public partial class NewComingDialogWindow : Window
         Close();
     }
     
-    private void AddTracksToTracksPanel()
+    private void AddTracksToTracksPanel(int selectedTrack)
     {
         MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
 
@@ -51,6 +51,11 @@ public partial class NewComingDialogWindow : Window
 
             trackBorder.Child = trackNumberTextBlock;            
             TrackNumbersPanel.Children.Add(trackBorder);
+
+            if (track.TrackNumber == selectedTrack)
+            {
+                trackBorder.Classes.Add("Selected");
+            }
         }
     }
 

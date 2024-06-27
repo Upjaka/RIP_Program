@@ -60,7 +60,7 @@ public partial class StationControl : UserControl
 
         AttachButton.IsVisible = false;
 
-        StationName.Text = Station.StationName;
+        StationNameTextBlock.Text = Station.StationName;
 
         //ControlPanel.IsVisible = false;
         //StationWrapper.Height = mainWindow.FindControl<WrapPanel>("Workplace").Bounds.Height;
@@ -162,9 +162,11 @@ public partial class StationControl : UserControl
     {
         DetachButton.IsVisible = false;
         AttachButton.IsVisible = true;
+        CloseButton.IsVisible = false;
         StationWrapper.BorderThickness = new Thickness(0);
-        TracksScrollViewer.VerticalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Auto;
-        TracksScrollViewer.HorizontalScrollBarVisibility = Avalonia.Controls.Primitives.ScrollBarVisibility.Visible;
+        TracksScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Auto;
+        TracksScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Visible;
+        StationNameTextBlock.IsVisible = false;
         (DataContext as MainWindowViewModel).MainWindow.DetachStationControl(this);
     }
 
@@ -172,10 +174,17 @@ public partial class StationControl : UserControl
     {
         Width = TracksGrid.Children[0].Width + 18;
         TrackControl lastTrackControl = (TracksGrid.Children[TracksGrid.Children.Count - 1] as StackPanel).Children[0] as TrackControl;
-        Height = lastTrackControl.Bounds.Bottom + lastTrackControl.Height + 15;
+
+        var transform = lastTrackControl.TransformToVisual(StationWrapper);
+
+        var bottomLeft = transform.Value.Transform(new Point(0, lastTrackControl.Bounds.Height));
+
+        Height = bottomLeft.Y + 15;
 
         DetachButton.IsVisible = true;
         AttachButton.IsVisible = false;
+        CloseButton.IsVisible = true;
+        StationNameTextBlock.IsVisible = true;
         StationWrapper.BorderThickness = new Thickness(1);
         TracksScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Hidden;
         TracksScrollViewer.HorizontalScrollBarVisibility = ScrollBarVisibility.Hidden;

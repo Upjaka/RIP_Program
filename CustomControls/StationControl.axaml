@@ -30,7 +30,7 @@
   <Border x:Name="StationWrapper" BorderBrush="Black" BorderThickness="1">
       <StackPanel Orientation="Vertical">
         <DockPanel x:Name="ControlPanel" Height="27">
-          <TextBlock x:Name="StationName" Margin="5, 3, 5, 0">Station</TextBlock>          
+          <TextBlock x:Name="StationNameTextBlock" Margin="5, 3, 5, 0">Station</TextBlock>          
           <Button x:Name="CloseButton" FontSize="12" DockPanel.Dock="Right"
                   Margin="1"  HorizontalAlignment="Right" Focusable="False"
                   Click="CloseButton_Click">X</Button>

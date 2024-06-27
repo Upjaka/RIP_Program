@@ -229,7 +229,7 @@ namespace AvaloniaApplication2.Views
         {
             if (viewModel.IsOperator)
             {
-                var newComingDialogWindow = new NewComingDialogWindow(this);
+                var newComingDialogWindow = (viewModel.SelectedTrack == null) ? new NewComingDialogWindow(this) : new NewComingDialogWindow(this, viewModel.SelectedTrack.TrackNumber);
                 newComingDialogWindow.DataContext = DataContext;
 
                 newComingDialogWindow.ShowDialog(this);
