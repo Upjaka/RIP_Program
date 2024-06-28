@@ -83,6 +83,8 @@ public partial class TrackEditingDialogWindow : Window
     {
         MainWindowViewModel viewModel = (MainWindowViewModel)DataContext;
 
+        TrackGrid.SelectedIndex += 1;
+
         if (viewModel.HasChanges())
         {
             args.Cancel = true;

@@ -71,7 +71,7 @@ namespace AvaloniaApplication2.Models
                         row[3].Add(new Paragraph("//"));
                         row[4].Add(new Paragraph("//"));
                         row[5].Add(new Paragraph("//"));
-                        row[6].Add(new Paragraph("0"));
+                        row[6].Add(new Paragraph("//"));
                         row[7].Add(new Paragraph(car.DefectCodes));
 
                         foreach (var cell in row)

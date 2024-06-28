@@ -2,6 +2,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:vm="using:AvaloniaApplication2.ViewModels"
+        xmlns:controls="using:AvaloniaApplication2.CustomControls"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="AvaloniaApplication2.TrackEditingDialogWindow"
@@ -30,16 +31,34 @@
 
   <StackPanel x:Name="Wrapper" Orientation="Horizontal">
     <Border BorderBrush="Gray" BorderThickness="0, 1, 1, 1" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        <DataGrid x:Name="TrackGrid" ItemsSource="{CompiledBinding CarsInfo}"
+
+      <DataGrid x:Name="TrackGrid" ItemsSource="{CompiledBinding CarsInfo}"
                   AutoGenerateColumns="False" IsReadOnly="False"
                   Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}"
                   Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Window}}"
                   CanUserResizeColumns="True">
+        <DataGrid.Columns>
+          <DataGridCheckBoxColumn Header="Отм." Binding="{Binding IsSelected}"/>
+          <DataGridTextColumn Header="№п/п" IsReadOnly="True" Binding="{Binding SerialNumber}"/>
+          <DataGridTextColumn Header="№вагона" IsReadOnly="True" Binding="{Binding CarNumber}"/>
+          <DataGridCheckBoxColumn Header="Испр." Binding="{Binding IsFixed}"/>
+          <DataGridTextColumn Header="Коды брака" Binding="{Binding DefectCodes}"/>
+          <DataGridCheckBoxColumn Header="Загр." Binding="{Binding IsLoaded}"/>
+          <DataGridTextColumn Header="Продукт" Binding="{Binding Product}"/>
+          <DataGridTextColumn Header="Груз" Binding="{Binding Cargo}"/>
+        </DataGrid.Columns>
+      </DataGrid>
+      <!--
+      <DataGrid x:Name="TrackGrid" ItemsSource="{CompiledBinding CarsInfo}"
+                  AutoGenerateColumns="False" IsReadOnly="False"
+                  Width="{Binding Width, RelativeSource={RelativeSource AncestorType=Window}}"
+                  Height="{Binding Height, RelativeSource={RelativeSource AncestorType=Window}}"
+                  CanUserResizeColumns="True" Focusable="False">
           <DataGrid.Columns>
             <DataGridTemplateColumn Header="Отм.">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+                  <CheckBox IsChecked="{Binding IsSelected, Mode=TwoWay}" Focusable="True"/>
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
@@ -51,7 +70,7 @@
             <DataGridTemplateColumn Header="Испр.">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <CheckBox IsChecked="{Binding IsFixed, Mode=TwoWay}"/>
+                  <CheckBox IsChecked="{Binding IsFixed, Mode=TwoWay}" Focusable="True"/>
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
@@ -59,7 +78,9 @@
             <DataGridTemplateColumn Header="Коды брака">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <TextBox Text="{Binding DefectCodes, Mode=TwoWay}"/>
+                  
+                  <TextBox Text="{Binding DefectCodes, Mode=TwoWay}" Focusable="True" GotFocus="TextBox_GotFocus"/>
+                  
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
@@ -67,7 +88,7 @@
             <DataGridTemplateColumn Header="Загр.">
               <DataGridTemplateColumn.CellTemplate>
                 <DataTemplate>
-                  <CheckBox IsChecked="{Binding IsLoaded, Mode=TwoWay}"/>
+                  <CheckBox IsChecked="{Binding IsLoaded, Mode=TwoWay}" Focusable="True"/>
                 </DataTemplate>
               </DataGridTemplateColumn.CellTemplate>
             </DataGridTemplateColumn>
@@ -89,6 +110,8 @@
             </DataGridTemplateColumn>
           </DataGrid.Columns>
         </DataGrid>
+      -->
+      
     </Border>
   </StackPanel>
 </Window>
